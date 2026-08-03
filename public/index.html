@@ -133,7 +133,7 @@
             </a>
         </div>
         <div class="p-4 border-t border-surface-border mb-4">
-            <button id="btn-cloud-sync" class="w-full flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-high transition-colors rounded-lg mb-1">
+            <button onclick="window.app.openCloudSyncModal()" id="btn-cloud-sync" class="w-full flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-high transition-colors rounded-lg mb-1">
                 <span class="material-symbols-outlined" data-icon="cloud_sync">cloud_sync</span>
                 <span class="font-label-md text-label-md">Cloud Sync</span>
             </button>
@@ -191,6 +191,43 @@
                 <div class="flex justify-end gap-2 mt-8">
                     <button onclick="window.app.closeProfileModal()" class="px-4 py-2 text-secondary hover:bg-surface-container-high rounded-lg transition-colors font-label-md">Batal</button>
                     <button onclick="window.app.saveProfile()" class="px-6 py-2 bg-primary text-on-primary rounded-lg hover:opacity-90 transition-opacity font-label-md">Simpan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cloud Sync Modal -->
+        <div id="modal-cloud-sync" class="fixed inset-0 z-[100] hidden bg-inverse-surface/50 backdrop-blur-sm flex items-center justify-center">
+            <div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-sm p-6 mx-4">
+                <div class="flex items-center justify-between text-primary mb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-3xl">cloud_sync</span>
+                        <h3 class="font-headline-md text-on-surface">Sinkronisasi Cloud</h3>
+                    </div>
+                    <button onclick="window.app.closeCloudSyncModal()" class="text-secondary hover:bg-surface-container-high rounded-full p-1"><span class="material-symbols-outlined text-xl">close</span></button>
+                </div>
+                
+                <p class="text-sm text-text-muted mb-6">Pilih aksi yang ingin Anda lakukan. Pastikan Anda tidak menimpa data penting secara tidak sengaja.</p>
+                
+                <div class="space-y-3">
+                    <button onclick="window.app.handleBackup()" class="w-full flex items-center gap-4 p-4 border border-outline-variant rounded-xl hover:bg-surface-container-high hover:border-primary transition-all text-left group">
+                        <div class="bg-primary-container text-on-primary-container p-2 rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">cloud_upload</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-text-main text-sm">Backup ke Cloud</p>
+                            <p class="text-xs text-text-muted">Simpan data lokal Anda saat ini ke internet.</p>
+                        </div>
+                    </button>
+                    
+                    <button onclick="window.app.handleRestore()" class="w-full flex items-center gap-4 p-4 border border-outline-variant rounded-xl hover:bg-surface-container-high hover:border-tertiary transition-all text-left group">
+                        <div class="bg-tertiary-container text-on-tertiary-container p-2 rounded-lg group-hover:bg-tertiary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">cloud_download</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-text-main text-sm">Restore dari Cloud</p>
+                            <p class="text-xs text-text-muted">Timpa data lokal dengan data yang ada di internet.</p>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>
