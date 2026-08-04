@@ -77,7 +77,6 @@ class App {
         // Unsubscribe previous view to prevent memory leaks and DOM errors
         if (this.currentViewModule && typeof this.currentViewModule.unsubscribe === 'function') {
             this.currentViewModule.unsubscribe();
-            this.currentViewModule.unsubscribe = null;
         }
 
         const container = document.getElementById('app-content');
