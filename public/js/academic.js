@@ -64,6 +64,18 @@ class AcademicLogic {
         return totalSKS === 0 ? 0 : Number((totalMutu / totalSKS).toFixed(2));
     }
 
+    static getLastValidIps(semesters, upToIndex = -1) {
+        if (!semesters || semesters.length === 0) return 0;
+        const maxIndex = upToIndex === -1 ? semesters.length - 1 : upToIndex;
+        
+        for (let i = maxIndex; i >= 0; i--) {
+            if (semesters[i].courses && semesters[i].courses.length > 0) {
+                return this.calculateIPS(semesters[i].courses);
+            }
+        }
+        return 0; // Jika tidak ada riwayat sama sekali
+    }
+
     static getJatahSKS(ips) {
         if (ips < 1.50) return 12;
         if (ips < 2.00) return 15;

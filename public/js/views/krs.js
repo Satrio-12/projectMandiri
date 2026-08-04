@@ -190,9 +190,10 @@ window.KrsView = {
             const krsPlan = window.appStore.data.krsPlan || [];
             const semesters = window.appStore.data.semesters || [];
             let limit = 24;
-            if (semesters.length > 0) {
-                const lastSem = semesters[semesters.length - 1];
-                const lastIps = window.AcademicLogic.calculateIPS(lastSem.courses);
+            
+            const hasAnyCourse = semesters.some(s => s.courses && s.courses.length > 0);
+            if (hasAnyCourse) {
+                const lastIps = window.AcademicLogic.getLastValidIps(semesters);
                 limit = window.AcademicLogic.getJatahSKS(lastIps);
             }
             limit += (window.appStore.data.krsExtraSks || 0);
@@ -257,12 +258,11 @@ window.KrsView = {
         // Let's keep it visible.
 
         // Calculate limit based on previous semester IPS
-        let lastIps = 0;
         let limit = 24; // Default
+        const hasAnyCourse = semesters.some(s => s.courses && s.courses.length > 0);
         
-        if (semesters.length > 0) {
-            const lastSem = semesters[semesters.length - 1];
-            lastIps = window.AcademicLogic.calculateIPS(lastSem.courses);
+        if (hasAnyCourse) {
+            const lastIps = window.AcademicLogic.getLastValidIps(semesters);
             limit = window.AcademicLogic.getJatahSKS(lastIps);
         }
         limit += (window.appStore.data.krsExtraSks || 0);
@@ -365,9 +365,9 @@ window.KrsView = {
             const semesters = window.appStore.data.semesters || [];
             
             let limit = 24;
-            if (semesters.length > 0) {
-                const lastSem = semesters[semesters.length - 1];
-                const lastIps = window.AcademicLogic.calculateIPS(lastSem.courses);
+            const hasAnyCourse = semesters.some(s => s.courses && s.courses.length > 0);
+            if (hasAnyCourse) {
+                const lastIps = window.AcademicLogic.getLastValidIps(semesters);
                 limit = window.AcademicLogic.getJatahSKS(lastIps);
             }
             limit += (window.appStore.data.krsExtraSks || 0);

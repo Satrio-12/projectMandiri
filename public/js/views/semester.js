@@ -125,7 +125,7 @@ window.SemesterView = {
                 // Calculate Jatah SKS for CURRENT semester (based on previous semester IPS)
                 let currentSksLimit = 24; // Default if first semester or no limit defined
                 if (index > 0) {
-                    const prevIps = window.AcademicLogic.calculateIPS(semesters[index - 1].courses);
+                    const prevIps = window.AcademicLogic.getLastValidIps(semesters, index - 1);
                     currentSksLimit = window.AcademicLogic.getJatahSKS(prevIps);
                 }
                 currentSksLimit += (sem.extraSksLimit || 0);
@@ -371,6 +371,31 @@ window.SemesterView = {
             const numericScore = parseFloat(score);
             const gradeInfo = window.AcademicLogic.getGradeInfoFromScore(numericScore);
             const grade = gradeInfo ? gradeInfo.letter : 'E'; // Kalkulasi paksa dari angka
+
+            // Validasi Limit SKS
+            const semesters = window.appStore.data.semesters;
+            const semIndex = semesters.findIndex(s => s.id === semId);
+            if (semIndex !== -1) {
+                const sem = semesters[semIndex];
+                let limit = 24;
+                if (semIndex > 0) {
+                    const prevIps = window.AcademicLogic.getLastValidIps(semesters, semIndex - 1);
+                    limit = window.AcademicLogic.getJatahSKS(prevIps);
+                }
+                limit += (sem.extraSksLimit || 0);
+
+                let currentTotal = 0;
+                sem.courses.forEach(c => {
+                    if (c.id !== crsId) {
+                        currentTotal += parseInt(c.sks);
+                    }
+                });
+                
+                if (currentTotal + parseInt(sks) > limit) {
+                    window.app.showToast(`Gagal: Melebihi jatah maksimum ${limit} SKS pada semester ini!`, 'error');
+                    return;
+                }
+            }
 
             const courseData = { code, name, sks, grade, score: numericScore };
 
