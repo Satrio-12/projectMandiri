@@ -259,10 +259,11 @@ window.KrsView = {
 
         // Calculate limit based on previous semester IPS
         let limit = 24; // Default
+        let lastIps = 0;
         const hasAnyCourse = semesters.some(s => s.courses && s.courses.length > 0);
         
         if (hasAnyCourse) {
-            const lastIps = window.AcademicLogic.getLastValidIps(semesters);
+            lastIps = window.AcademicLogic.getLastValidIps(semesters);
             limit = window.AcademicLogic.getJatahSKS(lastIps);
         }
         limit += (window.appStore.data.krsExtraSks || 0);
