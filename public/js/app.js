@@ -109,6 +109,7 @@ class App {
     }
 
     async handleBackup() {
+        console.log("Tombol Backup diklik!");
         this.closeCloudSyncModal();
         const statusEl = document.getElementById('sync-status');
         statusEl.classList.remove('hidden');
@@ -147,6 +148,7 @@ class App {
     }
 
     showToast(message, type = 'success') {
+        console.log("Notifikasi Toast:", message);
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
         
