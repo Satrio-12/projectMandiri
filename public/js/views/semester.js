@@ -206,11 +206,13 @@ window.SemesterView = {
                         <div class="flex flex-wrap items-center gap-3 md:gap-6">
                             <h4 class="font-headline-md text-headline-md text-on-surface font-bold min-w-[120px]">${sem.name}</h4>
                             
-                            <!-- Current SKS Badge -->
-                            <div class="px-3 py-1 ${isOverLimit ? 'bg-danger-red/10 text-danger-red border-danger-red/20' : 'bg-primary/10 text-primary border-primary/20'} rounded-full text-[11px] font-bold border whitespace-nowrap flex items-center gap-1">
-                                <span>${currentSksTotal} / ${currentSksLimit} SKS</span>
-                                <button onclick="window.appStore.addSemesterExtraSks('${sem.id}')" class="text-primary hover:text-tertiary p-0.5 rounded-full transition-colors flex items-center justify-center" title="Tambah +1 Jatah SKS Khusus">
-                                    <span class="material-symbols-outlined text-[14px]">add_circle</span>
+                            <!-- Current SKS Badges -->
+                            <div class="flex items-center flex-wrap gap-2">
+                                <div class="px-3 py-1 ${isOverLimit ? 'bg-danger-red/10 text-danger-red border-danger-red/20' : 'bg-primary/10 text-primary border-primary/20'} rounded-full text-[11px] font-bold border whitespace-nowrap">
+                                    ${currentSksTotal} / ${currentSksLimit} SKS
+                                </div>
+                                <button onclick="window.appStore.addSemesterExtraSks('${sem.id}')" class="px-2 py-1 ${sem.extraSksLimit ? 'bg-primary text-white border-primary' : 'bg-surface-container-highest text-secondary border-outline-variant hover:border-primary/50'} rounded-lg text-[10px] font-bold border transition-colors flex items-center gap-1" title="Aktifkan/Matikan kuota bantuan dari Dosen PA">
+                                    ${sem.extraSksLimit ? '<span class="material-symbols-outlined text-[12px]">check</span> +1 SKS Khusus' : '<span class="material-symbols-outlined text-[12px]">add</span> +1 SKS Khusus'}
                                 </button>
                             </div>
                             

@@ -67,13 +67,16 @@ window.KrsView = {
                     
                     <div class="relative z-10 flex-1">
                         <h5 class="text-secondary font-label-md uppercase tracking-wider mb-2">RENCANA KRS (DRAFT) - SKS Anda</h5>
-                        <div class="flex items-end gap-2 mb-2">
-                            <span class="font-headline-xl text-headline-xl text-primary" id="krs-sks-taken">0</span>
-                            <span class="font-headline-md text-secondary">/</span>
-                            <span class="font-headline-md text-secondary" id="krs-sks-limit">24</span>
-                            <span class="text-secondary font-bold ml-1">SKS Terencana</span>
-                            <button onclick="window.appStore.addKrsExtraSks()" class="ml-2 text-primary hover:bg-primary/20 p-1 rounded transition-colors flex items-center justify-center" title="Tambah +1 SKS Khusus (Bantuan Dosen PA)">
-                                <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                        <div class="flex items-center flex-wrap gap-2 mb-4">
+                            <div class="flex items-end gap-2">
+                                <span class="font-headline-xl text-headline-xl text-primary" id="krs-sks-taken">0</span>
+                                <span class="font-headline-md text-secondary">/</span>
+                                <span class="font-headline-md text-secondary" id="krs-sks-limit">24</span>
+                                <span class="text-secondary font-bold ml-1">SKS Terencana</span>
+                            </div>
+                            
+                            <button onclick="window.appStore.addKrsExtraSks()" class="ml-auto px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all flex items-center gap-1 ${window.appStore.data.krsExtraSks ? 'bg-primary text-white border-primary shadow-sm' : 'bg-surface-container text-secondary border-outline-variant hover:border-primary/50'}" title="Klik untuk mengaktifkan/mematikan kuota tambahan dari Dosen PA">
+                                ${window.appStore.data.krsExtraSks ? '<span class="material-symbols-outlined text-[14px]">check_circle</span> Bantuan +1 SKS Aktif' : '<span class="material-symbols-outlined text-[14px]">add_circle</span> Bantuan +1 SKS Khusus'}
                             </button>
                         </div>
                         

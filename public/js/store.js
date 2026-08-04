@@ -172,14 +172,14 @@ class Store {
     }
     
     addKrsExtraSks() {
-        this.data.krsExtraSks = (this.data.krsExtraSks || 0) + 1;
+        this.data.krsExtraSks = this.data.krsExtraSks ? 0 : 1;
         this.saveLocal();
     }
 
     addSemesterExtraSks(semId) {
         const sem = this.data.semesters.find(s => s.id === semId);
         if (sem) {
-            sem.extraSksLimit = (sem.extraSksLimit || 0) + 1;
+            sem.extraSksLimit = sem.extraSksLimit ? 0 : 1;
             this.saveLocal();
         }
     }
