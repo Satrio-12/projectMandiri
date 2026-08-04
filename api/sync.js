@@ -1,8 +1,4 @@
-const { put, head } = require('@vercel/blob');
-
-// Because fetching a blob requires its full URL, Vercel Blob often works better by storing the blob URL somewhere (e.g. Postgres)
-// However, since we want a simple cloud sync, we can just use the `put` and overwrite it, and list it to find the URL.
-const { list } = require('@vercel/blob');
+import { put, list } from '@vercel/blob';
 
 export default async function handler(request, response) {
     try {
