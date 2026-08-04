@@ -141,13 +141,13 @@ window.KrsView = {
                 <h3 class="font-headline-md text-primary mb-4">Tambah Draf Matkul</h3>
                 
                 <label class="block text-sm mb-1 text-secondary">Kode Matkul</label>
-                <input type="text" id="input-krs-code" class="w-full border-outline-variant rounded-lg p-2 mb-3 focus:ring-primary focus:border-primary" placeholder="Misal: IF101"/>
+                <input type="text" id="input-krs-code" oninput="window.KrsView.handleCourseCodeInput(this)" onkeydown="if(event.key==='Enter') window.KrsView.saveCourse()" class="w-full border-outline-variant rounded-lg p-2 mb-3 focus:ring-primary focus:border-primary" placeholder="Misal: IF101"/>
                 
                 <label class="block text-sm mb-1 text-secondary">Nama Matkul</label>
-                <input type="text" id="input-krs-name" class="w-full border-outline-variant rounded-lg p-2 mb-3 focus:ring-primary focus:border-primary" placeholder="Misal: Kalkulus I"/>
+                <input type="text" id="input-krs-name" onkeydown="if(event.key==='Enter') window.KrsView.saveCourse()" class="w-full border-outline-variant rounded-lg p-2 mb-3 focus:ring-primary focus:border-primary" placeholder="Misal: Kalkulus I"/>
                 
                 <label class="block text-sm mb-1 text-secondary">SKS</label>
-                <input type="number" id="input-krs-sks" class="w-full border-outline-variant rounded-lg p-2 mb-6 focus:ring-primary focus:border-primary" min="1" max="6" value="3"/>
+                <input type="number" id="input-krs-sks" onkeydown="if(event.key==='Enter') window.KrsView.saveCourse()" class="w-full border-outline-variant rounded-lg p-2 mb-6 focus:ring-primary focus:border-primary" min="1" max="6" value="3"/>
 
                 <div class="flex justify-end gap-2">
                     <button onclick="window.KrsView.closeCourseModal()" class="px-4 py-2 text-secondary hover:bg-surface-container-high rounded-lg transition-colors">Batal</button>
@@ -303,6 +303,31 @@ window.KrsView = {
         document.getElementById('modal-krs-course').classList.add('hidden');
     },
     
+    handleCourseCodeInput: function(inputEl) {
+        const start = inputEl.selectionStart;
+        const end = inputEl.selectionEnd;
+        inputEl.value = inputEl.value.toUpperCase();
+        inputEl.setSelectionRange(start, end);
+        
+        // Auto fill if found
+        const code = inputEl.value.trim();
+        const nameInput = document.getElementById('input-krs-name');
+        const sksInput = document.getElementById('input-krs-sks');
+        if (code.length >= 3) {
+            const semesters = window.appStore.data.semesters;
+            for (let sem of semesters) {
+                const found = sem.courses.find(c => c.code === code);
+                if (found) {
+                    nameInput.value = found.name;
+                    sksInput.value = found.sks;
+                    nameInput.classList.add('border-primary', 'bg-primary/5');
+                    setTimeout(() => nameInput.classList.remove('border-primary', 'bg-primary/5'), 1000);
+                    break;
+                }
+            }
+        }
+    },
+    
     saveCourse: function() {
         const code = document.getElementById('input-krs-code').value.trim();
         const name = document.getElementById('input-krs-name').value.trim();
@@ -310,7 +335,7 @@ window.KrsView = {
 
         if (code && name) {
             window.appStore.addKrsCourse({ code, name, sks });
-            this.closeCourseModal();
+            window.KrsView.closeCourseModal();
             window.app.showToast('Mata kuliah ditambahkan ke draf KRS');
         } else {
             alert("Kode dan Nama mata kuliah harus diisi");

@@ -37,7 +37,7 @@ window.SemesterView = {
         <div id="modal-semester" class="fixed inset-0 z-[100] hidden bg-inverse-surface/50 backdrop-blur-sm flex items-center justify-center">
             <div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-md p-6">
                 <h3 class="font-headline-md text-primary mb-4">Tambah Semester</h3>
-                <input type="text" id="input-sem-name" class="w-full border-outline-variant rounded-lg p-2 mb-4" placeholder="Misal: Semester 10"/>
+                <input type="text" id="input-sem-name" onkeydown="if(event.key==='Enter') window.SemesterView.saveSemester()" class="w-full border-outline-variant rounded-lg p-2 mb-4" placeholder="Misal: Semester 10"/>
                 <div class="flex justify-end gap-2">
                     <button onclick="window.SemesterView.closeSemesterModal()" class="px-4 py-2 text-secondary hover:bg-surface-container-high rounded-lg">Batal</button>
                     <button onclick="window.SemesterView.saveSemester()" class="px-4 py-2 bg-primary text-white rounded-lg">Simpan</button>
@@ -53,19 +53,19 @@ window.SemesterView = {
                 <input type="hidden" id="input-crs-id"/>
                 
                 <label class="block text-sm mb-1 text-secondary">Kode Matkul</label>
-                <input type="text" id="input-crs-code" oninput="window.SemesterView.handleCourseCodeInput(this)" class="w-full border-outline-variant rounded-lg p-2 mb-3" placeholder="Misal: IF101"/>
+                <input type="text" id="input-crs-code" oninput="window.SemesterView.handleCourseCodeInput(this)" onkeydown="if(event.key==='Enter') window.SemesterView.saveCourse()" class="w-full border-outline-variant rounded-lg p-2 mb-3" placeholder="Misal: IF101"/>
                 
                 <label class="block text-sm mb-1 text-secondary">Nama Matkul</label>
-                <input type="text" id="input-crs-name" class="w-full border-outline-variant rounded-lg p-2 mb-3" placeholder="Misal: Kalkulus I"/>
+                <input type="text" id="input-crs-name" onkeydown="if(event.key==='Enter') window.SemesterView.saveCourse()" class="w-full border-outline-variant rounded-lg p-2 mb-3" placeholder="Misal: Kalkulus I"/>
                 
                 <div class="flex gap-4 mb-4">
                     <div class="w-1/4">
                         <label class="block text-sm mb-1 text-secondary">SKS</label>
-                        <input type="number" id="input-crs-sks" class="w-full border-outline-variant rounded-lg p-2" min="1" max="6" value="3"/>
+                        <input type="number" id="input-crs-sks" onkeydown="if(event.key==='Enter') window.SemesterView.saveCourse()" class="w-full border-outline-variant rounded-lg p-2" min="1" max="6" value="3"/>
                     </div>
                     <div class="w-1/3">
                         <label class="block text-sm mb-1 text-secondary whitespace-nowrap">Skor (0-100)</label>
-                        <input type="number" step="0.01" id="input-crs-score" oninput="window.SemesterView.handleScoreInput(this)" class="w-full border-outline-variant rounded-lg p-2" min="0" max="100" placeholder="0-100"/>
+                        <input type="number" step="0.01" id="input-crs-score" oninput="window.SemesterView.handleScoreInput(this)" onkeydown="if(event.key==='Enter') window.SemesterView.saveCourse()" class="w-full border-outline-variant rounded-lg p-2" min="0" max="100" placeholder="0-100"/>
                     </div>
                     <div class="flex-1">
                         <label class="block text-sm mb-1 text-secondary">Grade</label>
@@ -263,8 +263,11 @@ window.SemesterView = {
     },
 
     handleCourseCodeInput: function(inputEl) {
-        // 1. Otomatis jadikan huruf besar (Capslock)
+        // 1. Otomatis jadikan huruf besar (Capslock) tanpa menggeser kursor
+        const start = inputEl.selectionStart;
+        const end = inputEl.selectionEnd;
         inputEl.value = inputEl.value.toUpperCase();
+        inputEl.setSelectionRange(start, end);
         
         const code = inputEl.value.trim();
         const nameInput = document.getElementById('input-crs-name');
@@ -372,7 +375,7 @@ window.SemesterView = {
                 window.appStore.addCourse(semId, courseData);
                 window.app.showToast('Mata kuliah ditambahkan');
             }
-            this.closeCourseModal();
+            window.SemesterView.closeCourseModal();
         } else {
             alert("Kode, Nama, dan Nilai Akhir mata kuliah harus diisi dengan lengkap");
         }
