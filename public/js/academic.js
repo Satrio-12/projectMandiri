@@ -101,21 +101,25 @@ class AcademicLogic {
         });
 
         let totalMutu = 0;
-        let totalSKSTaken = 0;
+        let totalSKSTaken = 0; // Total SKS yang pernah diambil
+        let totalSKSForIPK = 0; // Total SKS khusus untuk perhitungan IPK (hanya yang lulus)
         let totalSKSPassed = 0; // >= C
 
         latestCoursesMap.forEach((course) => {
             const gradeInfo = this.getGradeInfoFromLetter(course.grade);
             if (gradeInfo) {
-                totalMutu += (gradeInfo.gpa * course.sks);
                 totalSKSTaken += course.sks;
+                
+                // Sesuai permintaan: IPK hanya dihitung dari nilai yang LULUS (C sampai A)
                 if (gradeInfo.gpa >= 2.00) { // C is 2.00
+                    totalMutu += (gradeInfo.gpa * course.sks);
+                    totalSKSForIPK += course.sks;
                     totalSKSPassed += course.sks;
                 }
             }
         });
 
-        const ipk = totalSKSTaken === 0 ? 0 : Number((totalMutu / totalSKSTaken).toFixed(2));
+        const ipk = totalSKSForIPK === 0 ? 0 : Number((totalMutu / totalSKSForIPK).toFixed(2));
 
         return {
             ipk,
