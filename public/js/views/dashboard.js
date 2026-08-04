@@ -163,7 +163,10 @@ window.DashboardView = {
             const lastSem = activeSemesters[activeSemesters.length - 1];
             // Karena ini IPS, mungkin bisa pakai semua course di semester itu tanpa memandang isRetaken (tergantung aturan kampus, tapi asumsi standar: IPS dihitung per semester)
             lastIPS = window.AcademicLogic.calculateIPS(lastSem.courses);
-            document.getElementById('dash-ips-sem-num').innerText = activeSemesters.length;
+            
+            // Ambil angka dari nama semester (contoh: "Semester 3" -> "3")
+            const semNum = lastSem.name.replace(/[^0-9]/g, '') || activeSemesters.length;
+            document.getElementById('dash-ips-sem-num').innerText = semNum;
         } else {
             document.getElementById('dash-ips-sem-num').innerText = '-';
         }
