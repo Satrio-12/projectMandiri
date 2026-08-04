@@ -5,8 +5,7 @@ window.TranscriptView = {
         return `
         <div class="mb-lg flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
             <div>
-                <h3 class="font-headline-xl text-[36px] text-text-main font-bold mb-2">Transkrip Nilai Sementara</h3>
-                <p class="text-text-muted font-body-lg">Daftar seluruh mata kuliah yang telah lulus (Grade C ke atas).</p>
+                <h3 class="font-headline-xl text-[36px] text-text-main font-bold">Transkrip Nilai Sementara</h3>
             </div>
             <button onclick="window.print()" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-container transition-colors shadow-sm font-label-md font-bold">
                 <span class="material-symbols-outlined">print</span>
