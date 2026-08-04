@@ -125,10 +125,11 @@ window.DashboardView = {
     },
 
     updateView: function() {
-        const data = window.appStore.data;
-        document.getElementById('dash-welcome').innerText = `Selamat pagi, ${data.profile.name}`;
-        
-        if (data.profile.jurusan) {
+        try {
+            const data = window.appStore.data;
+            document.getElementById('dash-welcome').innerText = `Selamat pagi, ${data.profile.name}`;
+            
+            if (data.profile.jurusan) {
             document.getElementById('dash-jurusan').innerText = data.profile.jurusan;
             document.getElementById('dash-jurusan-container').classList.remove('hidden');
             document.getElementById('dash-jurusan-container').classList.add('flex');
@@ -242,6 +243,11 @@ window.DashboardView = {
                     </div>
                 </div>
             `).join('');
+        }
+        } catch (err) {
+            document.getElementById('dash-welcome').innerText = 'ERROR: ' + err.message;
+            document.getElementById('dash-welcome').insertAdjacentHTML('afterend', '<pre class="text-danger-red text-[10px] break-words whitespace-pre-wrap max-w-full">' + err.stack + '</pre>');
+            throw err; // throw it so app.js also catches it
         }
     }
 };

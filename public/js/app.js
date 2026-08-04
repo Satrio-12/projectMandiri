@@ -101,7 +101,13 @@ class App {
             }
         } catch (error) {
             console.error("View rendering error", error);
-            container.innerHTML = `<div class="text-danger-red">Failed to load view.</div>`;
+            container.innerHTML = `
+                <div class="text-danger-red p-4 border border-danger-red rounded bg-danger-red/10 overflow-auto">
+                    <h3 class="font-bold mb-2">Failed to load view.</h3>
+                    <p class="font-mono text-sm">${error.message}</p>
+                    <pre class="text-[10px] whitespace-pre-wrap mt-2">${error.stack}</pre>
+                </div>
+            `;
         }
     }
 
