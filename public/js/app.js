@@ -122,49 +122,60 @@ class App {
     }
 
     openCloudSyncModal() {
-        document.getElementById('modal-cloud-sync').classList.remove('hidden');
+        const modal = document.getElementById('modal-cloud-sync');
+        if (modal) modal.classList.remove('hidden');
     }
 
     closeCloudSyncModal() {
-        document.getElementById('modal-cloud-sync').classList.add('hidden');
+        const modal = document.getElementById('modal-cloud-sync');
+        if (modal) modal.classList.add('hidden');
     }
 
     async handleBackup() {
         console.log("Tombol Backup diklik!");
         this.closeCloudSyncModal();
         const statusEl = document.getElementById('sync-status');
-        statusEl.classList.remove('hidden');
-        statusEl.innerText = 'Backing up...';
+        if (statusEl) {
+            statusEl.classList.remove('hidden');
+            statusEl.innerText = 'Backing up...';
+        }
         
         try {
             await window.appStore.syncToCloud();
             this.showToast('Data berhasil di-backup ke Cloud!', 'success');
-            statusEl.innerText = 'Backed up just now';
-            setTimeout(() => statusEl.classList.add('hidden'), 3000);
+            if (statusEl) {
+                statusEl.innerText = 'Backed up just now';
+                setTimeout(() => statusEl.classList.add('hidden'), 3000);
+            }
         } catch (e) {
-            this.showToast('Gagal mem-backup: ' + e.message, 'error');
-            statusEl.innerText = 'Backup failed';
+            console.error('Backup fail trace:', e);
+            this.showToast('Gagal mem-backup: ' + (e.message || 'Error tidak diketahui'), 'error');
+            if (statusEl) statusEl.innerText = 'Backup failed';
         }
     }
 
     async handleRestore() {
         this.closeCloudSyncModal();
         const statusEl = document.getElementById('sync-status');
-        statusEl.classList.remove('hidden');
-        statusEl.innerText = 'Restoring...';
+        if (statusEl) {
+            statusEl.classList.remove('hidden');
+            statusEl.innerText = 'Restoring...';
+        }
         
         try {
             await window.appStore.syncFromCloud();
             this.showToast('Data berhasil di-restore dari Cloud!', 'success');
-            statusEl.innerText = 'Restored just now';
-            setTimeout(() => statusEl.classList.add('hidden'), 3000);
+            if (statusEl) {
+                statusEl.innerText = 'Restored just now';
+                setTimeout(() => statusEl.classList.add('hidden'), 3000);
+            }
             
             // Re-render view to reflect new data
             this.updateAvatar();
             this.renderView(this.currentView);
         } catch (e) {
             this.showToast('Gagal me-restore: ' + e.message, 'error');
-            statusEl.innerText = 'Restore failed';
+            if (statusEl) statusEl.innerText = 'Restore failed';
         }
     }
 
