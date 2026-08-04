@@ -52,7 +52,7 @@ window.SemesterView = {
                 <input type="hidden" id="input-crs-semid"/>
                 
                 <label class="block text-sm mb-1 text-secondary">Kode Matkul</label>
-                <input type="text" id="input-crs-code" class="w-full border-outline-variant rounded-lg p-2 mb-3" placeholder="Misal: IF101"/>
+                <input type="text" id="input-crs-code" oninput="window.SemesterView.handleCourseCodeInput(this)" class="w-full border-outline-variant rounded-lg p-2 mb-3" placeholder="Misal: IF101"/>
                 
                 <label class="block text-sm mb-1 text-secondary">Nama Matkul</label>
                 <input type="text" id="input-crs-name" class="w-full border-outline-variant rounded-lg p-2 mb-3" placeholder="Misal: Kalkulus I"/>
@@ -260,10 +260,41 @@ window.SemesterView = {
         }
     },
 
+    handleCourseCodeInput: function(inputEl) {
+        // 1. Otomatis jadikan huruf besar (Capslock)
+        inputEl.value = inputEl.value.toUpperCase();
+        
+        // 2. Cari matkul yang sama dari riwayat sebelumnya
+        const code = inputEl.value.trim();
+        if (code.length >= 3) {
+            const semesters = window.appStore.data.semesters;
+            for (let sem of semesters) {
+                const found = sem.courses.find(c => c.code === code);
+                if (found) {
+                    const nameInput = document.getElementById('input-crs-name');
+                    const sksInput = document.getElementById('input-crs-sks');
+                    
+                    // Auto-fill jika nama matkul belum diubah manual
+                    if (!nameInput.dataset.manualEdit) {
+                        nameInput.value = found.name;
+                        sksInput.value = found.sks;
+                        
+                        // Efek visual sukses
+                        nameInput.classList.add('border-primary', 'bg-primary/5');
+                        setTimeout(() => nameInput.classList.remove('border-primary', 'bg-primary/5'), 1000);
+                    }
+                    break;
+                }
+            }
+        }
+    },
+
     openCourseModal: function(semId) {
         document.getElementById('input-crs-semid').value = semId;
         document.getElementById('input-crs-code').value = '';
         document.getElementById('input-crs-name').value = '';
+        document.getElementById('input-crs-name').dataset.manualEdit = '';
+        document.getElementById('input-crs-name').oninput = function() { this.dataset.manualEdit = 'true'; };
         document.getElementById('input-crs-sks').value = '3';
         document.getElementById('input-crs-grade').value = 'A';
         document.getElementById('modal-course').classList.remove('hidden');
