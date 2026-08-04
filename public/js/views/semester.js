@@ -155,7 +155,7 @@ window.SemesterView = {
                                     <th class="py-4 px-4 text-center w-20">SKS</th>
                                     <th class="py-4 px-4 text-center w-24">Nilai</th>
                                     <th class="py-4 px-4 text-center w-24">Bobot</th>
-                                    <th class="py-4 px-4 text-right w-16"></th>
+                                    <th class="py-4 px-4 text-right w-24"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -185,13 +185,15 @@ window.SemesterView = {
                                             <span class="px-3 py-1 ${badgeColor} border rounded-full font-bold inline-block min-w-[32px] text-center">${crs.grade}</span>
                                         </td>
                                         <td class="py-4 px-4 text-center font-bold text-secondary">${bobot}</td>
-                                        <td class="py-4 px-4 text-right">
-                                            <button onclick="window.SemesterView.editCourseModal('${sem.id}', '${crs.id}')" class="text-outline hover:text-primary hover:bg-primary/10 p-1 rounded transition-colors mr-1" title="Edit">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button onclick="window.SemesterView.deleteCourse('${sem.id}', '${crs.id}')" class="text-outline hover:text-danger-red hover:bg-error-container p-1 rounded transition-colors" title="Hapus">
-                                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                                            </button>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <button onclick="window.SemesterView.editCourseModal('${sem.id}', '${crs.id}')" class="text-outline hover:text-primary hover:bg-primary/10 p-1 rounded transition-colors" title="Edit">
+                                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                </button>
+                                                <button onclick="window.SemesterView.deleteCourse('${sem.id}', '${crs.id}')" class="text-outline hover:text-danger-red hover:bg-error-container p-1 rounded transition-colors" title="Hapus">
+                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>`
                                 }).join('')}
