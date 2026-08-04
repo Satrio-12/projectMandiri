@@ -270,16 +270,25 @@ window.SemesterView = {
         // 1. Otomatis jadikan huruf besar (Capslock)
         inputEl.value = inputEl.value.toUpperCase();
         
-        // 2. Cari matkul yang sama dari riwayat sebelumnya
         const code = inputEl.value.trim();
+        const nameInput = document.getElementById('input-crs-name');
+        const sksInput = document.getElementById('input-crs-sks');
+
+        // Jika kode dihapus sampai kosong, bersihkan juga nama matkulnya
+        if (code.length === 0) {
+            if (!nameInput.dataset.manualEdit) {
+                nameInput.value = '';
+                sksInput.value = '3';
+            }
+            return;
+        }
+
+        // 2. Cari matkul yang sama dari riwayat sebelumnya
         if (code.length >= 3) {
             const semesters = window.appStore.data.semesters;
             for (let sem of semesters) {
                 const found = sem.courses.find(c => c.code === code);
                 if (found) {
-                    const nameInput = document.getElementById('input-crs-name');
-                    const sksInput = document.getElementById('input-crs-sks');
-                    
                     // Auto-fill jika nama matkul belum diubah manual
                     if (!nameInput.dataset.manualEdit) {
                         nameInput.value = found.name;
