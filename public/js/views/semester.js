@@ -69,17 +69,7 @@ window.SemesterView = {
                     </div>
                     <div class="flex-1">
                         <label class="block text-sm mb-1 text-secondary">Nilai Huruf</label>
-                        <select id="input-crs-grade" class="w-full border-outline-variant rounded-lg p-2 bg-surface-container-high opacity-70 cursor-not-allowed" disabled>
-                            <option value="A">A</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B">B</option>
-                            <option value="B-">B-</option>
-                            <option value="C+">C+</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
-                        </select>
+                        <input type="text" id="input-crs-grade" class="w-full border-outline-variant rounded-lg p-2 bg-surface-container-high opacity-70 cursor-not-allowed font-bold text-center text-primary" readonly value="E"/>
                     </div>
                 </div>
 
@@ -157,7 +147,8 @@ window.SemesterView = {
                                     <th class="py-4 px-4 w-32">Kode</th>
                                     <th class="py-4 px-4">Nama Mata Kuliah</th>
                                     <th class="py-4 px-4 text-center w-20">SKS</th>
-                                    <th class="py-4 px-4 text-center w-24">Nilai</th>
+                                    <th class="py-4 px-4 text-center w-24">Angka</th>
+                                    <th class="py-4 px-4 text-center w-24">Huruf</th>
                                     <th class="py-4 px-4 text-center w-24">Bobot</th>
                                     <th class="py-4 px-4 text-right w-24"></th>
                                 </tr>
@@ -185,6 +176,7 @@ window.SemesterView = {
                                             ${retakeHtml}
                                         </td>
                                         <td class="py-4 px-4 text-center font-bold text-secondary">${crs.sks}</td>
+                                        <td class="py-4 px-4 text-center font-bold text-on-surface">${crs.score !== undefined ? crs.score : '-'}</td>
                                         <td class="py-4 px-4 text-center">
                                             <span class="px-3 py-1 ${badgeColor} border rounded-full font-bold inline-block min-w-[32px] text-center">${crs.grade}</span>
                                         </td>
