@@ -59,13 +59,17 @@ window.SemesterView = {
                 <input type="text" id="input-crs-name" class="w-full border-outline-variant rounded-lg p-2 mb-3" placeholder="Misal: Kalkulus I"/>
                 
                 <div class="flex gap-4 mb-4">
-                    <div class="flex-1">
+                    <div class="w-1/4">
                         <label class="block text-sm mb-1 text-secondary">SKS</label>
                         <input type="number" id="input-crs-sks" class="w-full border-outline-variant rounded-lg p-2" min="1" max="6" value="3"/>
                     </div>
+                    <div class="w-1/3">
+                        <label class="block text-sm mb-1 text-secondary whitespace-nowrap">Nilai Akhir</label>
+                        <input type="number" step="0.01" id="input-crs-score" oninput="window.SemesterView.handleScoreInput(this)" class="w-full border-outline-variant rounded-lg p-2" min="0" max="100" placeholder="0-100"/>
+                    </div>
                     <div class="flex-1">
                         <label class="block text-sm mb-1 text-secondary">Nilai Huruf</label>
-                        <select id="input-crs-grade" class="w-full border-outline-variant rounded-lg p-2">
+                        <select id="input-crs-grade" class="w-full border-outline-variant rounded-lg p-2 bg-surface-container-high opacity-70 cursor-not-allowed" disabled>
                             <option value="A">A</option>
                             <option value="A-">A-</option>
                             <option value="B+">B+</option>
@@ -304,6 +308,22 @@ window.SemesterView = {
         }
     },
 
+    handleScoreInput: function(inputEl) {
+        if(inputEl.value === '') return;
+        const score = parseFloat(inputEl.value);
+        if(!isNaN(score)) {
+            const gradeInfo = window.AcademicLogic.getGradeInfoFromScore(score);
+            if(gradeInfo) {
+                const selectEl = document.getElementById('input-crs-grade');
+                selectEl.value = gradeInfo.letter;
+                
+                // Efek visual menandakan auto-select
+                selectEl.classList.add('border-primary', 'bg-primary/5');
+                setTimeout(() => selectEl.classList.remove('border-primary', 'bg-primary/5'), 1000);
+            }
+        }
+    },
+
     openCourseModal: function(semId) {
         document.getElementById('modal-course-title').innerText = 'Tambah Mata Kuliah';
         document.getElementById('input-crs-semid').value = semId;
@@ -313,7 +333,8 @@ window.SemesterView = {
         document.getElementById('input-crs-name').dataset.manualEdit = '';
         document.getElementById('input-crs-name').oninput = function() { this.dataset.manualEdit = 'true'; };
         document.getElementById('input-crs-sks').value = '3';
-        document.getElementById('input-crs-grade').value = 'A';
+        document.getElementById('input-crs-score').value = '';
+        document.getElementById('input-crs-grade').value = 'E'; // Default kosong/E
         document.getElementById('modal-course').classList.remove('hidden');
     },
     editCourseModal: function(semId, crsId) {
@@ -328,6 +349,7 @@ window.SemesterView = {
                 document.getElementById('input-crs-name').value = crs.name;
                 document.getElementById('input-crs-name').dataset.manualEdit = 'true';
                 document.getElementById('input-crs-sks').value = crs.sks;
+                document.getElementById('input-crs-score').value = crs.score || '';
                 document.getElementById('input-crs-grade').value = crs.grade;
                 document.getElementById('modal-course').classList.remove('hidden');
             }
@@ -342,19 +364,25 @@ window.SemesterView = {
         const code = document.getElementById('input-crs-code').value.trim();
         const name = document.getElementById('input-crs-name').value.trim();
         const sks = document.getElementById('input-crs-sks').value;
-        const grade = document.getElementById('input-crs-grade').value;
+        const score = document.getElementById('input-crs-score').value;
 
-        if (semId && code && name) {
+        if (semId && code && name && score !== '') {
+            const numericScore = parseFloat(score);
+            const gradeInfo = window.AcademicLogic.getGradeInfoFromScore(numericScore);
+            const grade = gradeInfo ? gradeInfo.letter : 'E'; // Kalkulasi paksa dari angka
+
+            const courseData = { code, name, sks, grade, score: numericScore };
+
             if (crsId) {
-                window.appStore.editCourse(semId, crsId, { code, name, sks, grade });
+                window.appStore.editCourse(semId, crsId, courseData);
                 window.app.showToast('Mata kuliah diperbarui');
             } else {
-                window.appStore.addCourse(semId, { code, name, sks, grade });
+                window.appStore.addCourse(semId, courseData);
                 window.app.showToast('Mata kuliah ditambahkan');
             }
             this.closeCourseModal();
         } else {
-            alert("Kode dan Nama mata kuliah harus diisi");
+            alert("Kode, Nama, dan Nilai Akhir mata kuliah harus diisi dengan lengkap");
         }
     }
 };
