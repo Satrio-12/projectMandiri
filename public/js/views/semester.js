@@ -48,8 +48,9 @@ window.SemesterView = {
         <!-- Modal: Tambah Matkul -->
         <div id="modal-course" class="fixed inset-0 z-[100] hidden bg-inverse-surface/50 backdrop-blur-sm flex items-center justify-center">
             <div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-md p-6">
-                <h3 class="font-headline-md text-primary mb-4">Tambah Mata Kuliah</h3>
+                <h3 id="modal-course-title" class="font-headline-md text-primary mb-4">Tambah Mata Kuliah</h3>
                 <input type="hidden" id="input-crs-semid"/>
+                <input type="hidden" id="input-crs-id"/>
                 
                 <label class="block text-sm mb-1 text-secondary">Kode Matkul</label>
                 <input type="text" id="input-crs-code" oninput="window.SemesterView.handleCourseCodeInput(this)" class="w-full border-outline-variant rounded-lg p-2 mb-3" placeholder="Misal: IF101"/>
@@ -185,6 +186,9 @@ window.SemesterView = {
                                         </td>
                                         <td class="py-4 px-4 text-center font-bold text-secondary">${bobot}</td>
                                         <td class="py-4 px-4 text-right">
+                                            <button onclick="window.SemesterView.editCourseModal('${sem.id}', '${crs.id}')" class="text-outline hover:text-primary hover:bg-primary/10 p-1 rounded transition-colors mr-1" title="Edit">
+                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
                                             <button onclick="window.SemesterView.deleteCourse('${sem.id}', '${crs.id}')" class="text-outline hover:text-danger-red hover:bg-error-container p-1 rounded transition-colors" title="Hapus">
                                                 <span class="material-symbols-outlined text-[18px]">delete</span>
                                             </button>
@@ -290,7 +294,9 @@ window.SemesterView = {
     },
 
     openCourseModal: function(semId) {
+        document.getElementById('modal-course-title').innerText = 'Tambah Mata Kuliah';
         document.getElementById('input-crs-semid').value = semId;
+        document.getElementById('input-crs-id').value = '';
         document.getElementById('input-crs-code').value = '';
         document.getElementById('input-crs-name').value = '';
         document.getElementById('input-crs-name').dataset.manualEdit = '';
@@ -299,20 +305,43 @@ window.SemesterView = {
         document.getElementById('input-crs-grade').value = 'A';
         document.getElementById('modal-course').classList.remove('hidden');
     },
+    editCourseModal: function(semId, crsId) {
+        const semester = window.appStore.data.semesters.find(s => s.id === semId);
+        if (semester) {
+            const crs = semester.courses.find(c => c.id === crsId);
+            if (crs) {
+                document.getElementById('modal-course-title').innerText = 'Edit Mata Kuliah';
+                document.getElementById('input-crs-semid').value = semId;
+                document.getElementById('input-crs-id').value = crs.id;
+                document.getElementById('input-crs-code').value = crs.code;
+                document.getElementById('input-crs-name').value = crs.name;
+                document.getElementById('input-crs-name').dataset.manualEdit = 'true';
+                document.getElementById('input-crs-sks').value = crs.sks;
+                document.getElementById('input-crs-grade').value = crs.grade;
+                document.getElementById('modal-course').classList.remove('hidden');
+            }
+        }
+    },
     closeCourseModal: function() {
         document.getElementById('modal-course').classList.add('hidden');
     },
     saveCourse: function() {
         const semId = document.getElementById('input-crs-semid').value;
+        const crsId = document.getElementById('input-crs-id').value;
         const code = document.getElementById('input-crs-code').value.trim();
         const name = document.getElementById('input-crs-name').value.trim();
         const sks = document.getElementById('input-crs-sks').value;
         const grade = document.getElementById('input-crs-grade').value;
 
         if (semId && code && name) {
-            window.appStore.addCourse(semId, { code, name, sks, grade });
+            if (crsId) {
+                window.appStore.editCourse(semId, crsId, { code, name, sks, grade });
+                window.app.showToast('Mata kuliah diperbarui');
+            } else {
+                window.appStore.addCourse(semId, { code, name, sks, grade });
+                window.app.showToast('Mata kuliah ditambahkan');
+            }
             this.closeCourseModal();
-            window.app.showToast('Mata kuliah ditambahkan');
         } else {
             alert("Kode dan Nama mata kuliah harus diisi");
         }

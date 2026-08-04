@@ -111,6 +111,19 @@ class Store {
         }
     }
 
+    editCourse(semesterId, courseId, updatedData) {
+        const semester = this.data.semesters.find(s => s.id === semesterId);
+        if (semester) {
+            const courseIdx = semester.courses.findIndex(c => c.id === courseId);
+            if (courseIdx !== -1) {
+                updatedData.sks = Number(updatedData.sks);
+                semester.courses[courseIdx] = { ...semester.courses[courseIdx], ...updatedData };
+                this.markPreviousCoursesAsRetaken(updatedData.code);
+                this.saveLocal();
+            }
+        }
+    }
+
     markPreviousCoursesAsRetaken(courseCode) {
         if (!courseCode) return;
         const codeLower = courseCode.toLowerCase().trim();
