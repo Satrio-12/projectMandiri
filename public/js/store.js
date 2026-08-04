@@ -95,10 +95,8 @@ class Store {
             course.sks = Number(course.sks);
             
             // Check if this course code already exists in previous semesters
-            // and mark the old ones as isRetaken = true
-            this.markPreviousCoursesAsRetaken(course.code);
-
             semester.courses.push(course);
+            this.recalculateRetakes(course.code);
             this.saveLocal();
         }
     }
@@ -106,7 +104,10 @@ class Store {
     deleteCourse(semesterId, courseId) {
         const semester = this.data.semesters.find(s => s.id === semesterId);
         if (semester) {
+            const course = semester.courses.find(c => c.id === courseId);
+            const code = course ? course.code : null;
             semester.courses = semester.courses.filter(c => c.id !== courseId);
+            if (code) this.recalculateRetakes(code);
             this.saveLocal();
         }
     }
@@ -116,25 +117,38 @@ class Store {
         if (semester) {
             const courseIdx = semester.courses.findIndex(c => c.id === courseId);
             if (courseIdx !== -1) {
+                const oldCode = semester.courses[courseIdx].code;
                 updatedData.sks = Number(updatedData.sks);
                 semester.courses[courseIdx] = { ...semester.courses[courseIdx], ...updatedData };
-                this.markPreviousCoursesAsRetaken(updatedData.code);
+                
+                this.recalculateRetakes(oldCode);
+                if (oldCode !== updatedData.code) {
+                    this.recalculateRetakes(updatedData.code);
+                }
+                
                 this.saveLocal();
             }
         }
     }
 
-    markPreviousCoursesAsRetaken(courseCode) {
+    recalculateRetakes(courseCode) {
         if (!courseCode) return;
         const codeLower = courseCode.toLowerCase().trim();
+        let lastFound = null;
         
         this.data.semesters.forEach(sem => {
             sem.courses.forEach(c => {
                 if (c.code && c.code.toLowerCase().trim() === codeLower) {
                     c.isRetaken = true;
+                    lastFound = c;
                 }
             });
         });
+        
+        // Jadikan yang terakhir diambil sebagai nilai yang aktif (tidak retaken)
+        if (lastFound) {
+            lastFound.isRetaken = false;
+        }
     }
 
     // -- KRS (Study Plan) --
@@ -223,8 +237,8 @@ class Store {
                 sks: crs.sks,
                 grade: crs.grade || 'A' // Use drafted grade if exists
             };
-            this.markPreviousCoursesAsRetaken(newCourse.code);
             semester.courses.push(newCourse);
+            this.recalculateRetakes(newCourse.code);
         });
         
         this.data.semesters.push(semester);

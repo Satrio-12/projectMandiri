@@ -64,11 +64,11 @@ window.SemesterView = {
                         <input type="number" id="input-crs-sks" class="w-full border-outline-variant rounded-lg p-2" min="1" max="6" value="3"/>
                     </div>
                     <div class="w-1/3">
-                        <label class="block text-sm mb-1 text-secondary whitespace-nowrap">Nilai Akhir</label>
+                        <label class="block text-sm mb-1 text-secondary whitespace-nowrap">Skor (0-100)</label>
                         <input type="number" step="0.01" id="input-crs-score" oninput="window.SemesterView.handleScoreInput(this)" class="w-full border-outline-variant rounded-lg p-2" min="0" max="100" placeholder="0-100"/>
                     </div>
                     <div class="flex-1">
-                        <label class="block text-sm mb-1 text-secondary">Nilai Huruf</label>
+                        <label class="block text-sm mb-1 text-secondary">Grade</label>
                         <input type="text" id="input-crs-grade" class="w-full border-outline-variant rounded-lg p-2 bg-surface-container-high opacity-70 cursor-not-allowed font-bold text-center text-primary" readonly value="E"/>
                     </div>
                 </div>
@@ -147,9 +147,9 @@ window.SemesterView = {
                                     <th class="py-4 px-4 w-32">Kode</th>
                                     <th class="py-4 px-4">Nama Mata Kuliah</th>
                                     <th class="py-4 px-4 text-center w-20">SKS</th>
-                                    <th class="py-4 px-4 text-center w-24">Angka</th>
-                                    <th class="py-4 px-4 text-center w-24">Huruf</th>
-                                    <th class="py-4 px-4 text-center w-24">Bobot</th>
+                                    <th class="py-4 px-4 text-center w-24">SKOR</th>
+                                    <th class="py-4 px-4 text-center w-24">GRADE</th>
+                                    <th class="py-4 px-4 text-center w-24">BOBOT</th>
                                     <th class="py-4 px-4 text-right w-24"></th>
                                 </tr>
                             </thead>
