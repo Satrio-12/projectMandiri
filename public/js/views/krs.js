@@ -179,6 +179,23 @@ window.KrsView = {
                 window.app.showToast('Draf KRS masih kosong', 'error');
                 return;
             }
+            
+            // Validasi limit SKS
+            const krsPlan = window.appStore.data.krsPlan || [];
+            const semesters = window.appStore.data.semesters || [];
+            let limit = 24;
+            if (semesters.length > 0) {
+                const lastSem = semesters[semesters.length - 1];
+                const lastIps = window.AcademicLogic.calculateIPS(lastSem.courses);
+                limit = window.AcademicLogic.getJatahSKS(lastIps);
+            }
+            const totalSksTaken = krsPlan.reduce((sum, c) => sum + parseInt(c.sks), 0);
+            
+            if (totalSksTaken > limit) {
+                window.app.showToast(`Gagal Finalisasi: Total SKS (${totalSksTaken}) melebihi jatah maksimum (${limit} SKS)!`, 'error');
+                return;
+            }
+
             if(confirm("Sah-kan draf KRS ini menjadi Semester Aktif? Matkul akan dipindah ke KRS Tersimpan.")) {
                 if (window.appStore.commitKrsToFixed()) {
                     window.app.showToast('KRS berhasil di-finalisasi!');
