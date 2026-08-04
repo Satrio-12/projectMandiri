@@ -37,9 +37,14 @@ export default async function handler(request, response) {
             }
         } 
         else if (request.method === 'POST') {
-            const { data } = request.body;
+            let body = request.body;
+            if (typeof body === 'string') {
+                try { body = JSON.parse(body); } catch(e) {}
+            }
+            const data = body ? body.data : null;
+            
             console.log(`[API] Memulai POST, data ada? ${!!data}`);
-            if (!data) return response.status(400).json({ success: false, message: 'No data' });
+            if (!data) return response.status(400).json({ success: false, message: 'No data or invalid JSON body' });
 
             console.log("[API] Mengirim native fetch PUT ke Vercel Blob...");
             
