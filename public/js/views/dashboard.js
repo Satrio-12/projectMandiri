@@ -28,11 +28,11 @@ window.DashboardView = {
         <div class="grid grid-cols-12 gap-gutter">
             
             <!-- KPI Card: GPA (IPK) -->
-            <div class="col-span-12 md:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative overflow-hidden group">
+            <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative overflow-hidden group">
                 <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <span class="material-symbols-outlined text-[80px]" data-icon="grade">grade</span>
+                    <span class="material-symbols-outlined text-[80px]" data-icon="school">school</span>
                 </div>
-                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2">Indeks Prestasi Kumulatif</p>
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2">IPK Total</p>
                 <div class="flex items-baseline gap-2">
                     <h4 class="font-headline-xl text-[48px] text-primary" id="dash-ipk">0.00</h4>
                 </div>
@@ -41,9 +41,23 @@ window.DashboardView = {
                 </div>
             </div>
 
+            <!-- KPI Card: IPS (Semester Terakhir) -->
+            <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <span class="material-symbols-outlined text-[80px]" data-icon="show_chart">show_chart</span>
+                </div>
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2">IPS Semester <span id="dash-ips-sem-num"></span></p>
+                <div class="flex items-baseline gap-2">
+                    <h4 class="font-headline-xl text-[48px] text-primary" id="dash-ips">0.00</h4>
+                </div>
+                <div class="mt-4 flex gap-2" id="dash-ips-badges">
+                    <!-- Badges populated by js -->
+                </div>
+            </div>
+
             <!-- KPI Card: SKS Next Sem -->
-            <div class="col-span-12 md:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
-                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2">Jatah SKS Semester Depan</p>
+            <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative">
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2">Jatah SKS Depan</p>
                 <div class="flex items-center justify-between">
                     <div>
                         <h4 class="font-headline-xl text-[48px] text-tertiary" id="dash-jatah-sks">24</h4>
@@ -59,10 +73,10 @@ window.DashboardView = {
             </div>
 
             <!-- KPI Card: SKS Progress (Wide) -->
-            <div class="col-span-12 md:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
+            <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col justify-between">
                 <div class="flex justify-between items-start mb-4">
-                    <p class="font-label-md text-label-md text-secondary uppercase tracking-widest">Progres Kelulusan (SKS)</p>
-                    <span class="font-label-md text-label-md text-primary font-bold" id="dash-sks-text">0 / 144 SKS</span>
+                    <p class="font-label-md text-label-md text-secondary uppercase tracking-widest">Progres SKS Lulus</p>
+                    <span class="font-label-md text-label-md text-primary font-bold" id="dash-sks-text">0 / 144</span>
                 </div>
                 <div class="relative h-6 bg-surface-container-highest rounded-full overflow-hidden mb-4">
                     <div id="dash-sks-bar" class="absolute top-0 left-0 h-full bg-primary transition-all duration-1000" style="width: 0%"></div>
@@ -141,10 +155,31 @@ window.DashboardView = {
         }
         document.getElementById('dash-ipk-badges').innerHTML = badgeHtml;
 
-        // Jatah SKS (Based on last semester IPS)
+        // IPS (Semester Terakhir yang memiliki matkul)
         let lastIPS = 0;
+        const activeSemesters = data.semesters.filter(s => s.courses && s.courses.length > 0);
+        let ipsBadgeHtml = '';
+        if (activeSemesters.length > 0) {
+            const lastSem = activeSemesters[activeSemesters.length - 1];
+            // Karena ini IPS, mungkin bisa pakai semua course di semester itu tanpa memandang isRetaken (tergantung aturan kampus, tapi asumsi standar: IPS dihitung per semester)
+            lastIPS = window.AcademicLogic.calculateIPS(lastSem.courses);
+            document.getElementById('dash-ips-sem-num').innerText = activeSemesters.length;
+        } else {
+            document.getElementById('dash-ips-sem-num').innerText = '-';
+        }
+        document.getElementById('dash-ips').innerText = lastIPS.toFixed(2);
+        
+        if (lastIPS >= 3.5) {
+            ipsBadgeHtml = '<span class="px-2 py-1 bg-success-green/10 text-success-green text-[10px] font-bold rounded uppercase">Excellent</span>';
+        } else if (lastIPS >= 3.0) {
+            ipsBadgeHtml = '<span class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">Good</span>';
+        }
+        document.getElementById('dash-ips-badges').innerHTML = ipsBadgeHtml;
+
+        // Jatah SKS (Based on last semester IPS)
         if (data.semesters.length > 0) {
             const lastSem = data.semesters[data.semesters.length - 1];
+            // Update lastIPS using the absolute last semester (even if empty, though IPS might be 0)
             lastIPS = window.AcademicLogic.calculateIPS(lastSem.courses);
         }
         const jatahSks = window.AcademicLogic.getJatahSKS(lastIPS);

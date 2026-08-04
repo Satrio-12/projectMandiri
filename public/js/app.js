@@ -10,6 +10,7 @@ class App {
             'dashboard': window.DashboardView,
             'calculator': window.CalculatorView,
             'semester': window.SemesterView,
+            'transcript': window.TranscriptView,
             'tasks': window.TasksView,
             'krs': window.KrsView
         };
