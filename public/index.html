@@ -105,7 +105,7 @@
 </head>
 <body class="text-on-surface bg-surface min-h-screen">
     <!-- SideNavBar Shell -->
-    <nav class="fixed left-0 top-0 h-full z-40 w-64 bg-surface-container-lowest border-r border-surface-border flex flex-col shadow-sm">
+    <nav id="sidebar" class="fixed left-0 top-0 h-full z-50 w-64 bg-surface-container-lowest border-r border-surface-border flex flex-col shadow-sm transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
         <div class="p-6">
             <h1 class="font-headline-md text-headline-md font-bold text-primary">Academic Control</h1>
             <p class="text-secondary font-label-md text-label-md mt-1">Personal System</p>
@@ -140,9 +140,17 @@
         </div>
     </nav>
     
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" onclick="window.app.toggleSidebar()" class="fixed inset-0 bg-inverse-surface/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
+    
     <!-- TopAppBar Shell -->
-    <header class="fixed top-0 right-0 left-64 h-16 flex items-center justify-between px-8 bg-surface/80 backdrop-blur-md border-b border-surface-border z-30">
-        <h2 id="topbar-title" class="font-headline-md text-headline-md font-bold text-primary">Dashboard Overview</h2>
+    <header class="fixed top-0 right-0 left-0 lg:left-64 h-16 flex items-center justify-between px-4 lg:px-8 bg-surface/80 backdrop-blur-md border-b border-surface-border z-30">
+        <div class="flex items-center gap-3 w-3/4">
+            <button onclick="window.app.toggleSidebar()" class="lg:hidden p-2 text-secondary hover:bg-surface-container-high rounded-full flex-shrink-0">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <h2 id="topbar-title" class="font-headline-md text-headline-md font-bold text-primary truncate">Dashboard Overview</h2>
+        </div>
         <div class="flex items-center gap-6">
             <div class="flex items-center gap-4">
                 <span id="sync-status" class="text-sm font-label-md text-text-muted hidden">Syncing...</span>
@@ -154,8 +162,8 @@
     </header>
 
     <!-- Main Content Canvas -->
-    <main class="pl-64 pt-16 min-h-screen">
-        <div id="app-content" class="p-8 max-w-[1440px] mx-auto pb-24">
+    <main class="lg:pl-64 pt-16 min-h-screen w-full overflow-x-hidden">
+        <div id="app-content" class="p-4 lg:p-8 max-w-[1440px] mx-auto pb-24">
             <!-- Views will be injected here -->
         </div>
     </main>

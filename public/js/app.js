@@ -24,6 +24,11 @@ class App {
                 e.preventDefault();
                 const view = e.currentTarget.getAttribute('data-view');
                 this.navigate(view);
+                
+                // Hide sidebar on mobile after clicking
+                if (window.innerWidth < 1024) {
+                    this.toggleSidebar();
+                }
             });
         });
 
@@ -97,6 +102,21 @@ class App {
         } catch (error) {
             console.error("View rendering error", error);
             container.innerHTML = `<div class="text-danger-red">Failed to load view.</div>`;
+        }
+    }
+
+    toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        
+        if (sidebar && overlay) {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
         }
     }
 
