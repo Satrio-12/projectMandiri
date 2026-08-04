@@ -334,6 +334,25 @@ window.KrsView = {
         const sks = document.getElementById('input-krs-sks').value;
 
         if (code && name) {
+            // Validasi limit SKS
+            const krsPlan = window.appStore.data.krsPlan || [];
+            const semesters = window.appStore.data.semesters || [];
+            
+            let limit = 24;
+            if (semesters.length > 0) {
+                const lastSem = semesters[semesters.length - 1];
+                const lastIps = window.AcademicLogic.calculateIPS(lastSem.courses);
+                limit = window.AcademicLogic.getJatahSKS(lastIps);
+            }
+            
+            const totalSksTaken = krsPlan.reduce((sum, c) => sum + parseInt(c.sks), 0);
+            const addedSks = parseInt(sks);
+            
+            if (totalSksTaken + addedSks > limit) {
+                window.app.showToast(`Gagal: Melebihi jatah maksimum ${limit} SKS!`, 'error');
+                return;
+            }
+
             window.appStore.addKrsCourse({ code, name, sks });
             window.KrsView.closeCourseModal();
             window.app.showToast('Mata kuliah ditambahkan ke draf KRS');
