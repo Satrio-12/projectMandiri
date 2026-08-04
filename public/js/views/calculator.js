@@ -218,9 +218,6 @@ window.CalculatorView = {
                 alert("Mohon isi nama semester");
             }
         };
-
-        window.CalculatorView.openDetail = (id) => this.openDetail(id);
-        window.CalculatorView.closeDetail = () => this.closeDetail();
     },
 
     unsubscribe: function() {
