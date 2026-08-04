@@ -72,6 +72,9 @@ window.KrsView = {
                             <span class="font-headline-md text-secondary">/</span>
                             <span class="font-headline-md text-secondary" id="krs-sks-limit">24</span>
                             <span class="text-secondary font-bold ml-1">SKS Terencana</span>
+                            <button onclick="window.appStore.addKrsExtraSks()" class="ml-2 text-primary hover:bg-primary/20 p-1 rounded transition-colors flex items-center justify-center" title="Tambah +1 SKS Khusus (Bantuan Dosen PA)">
+                                <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                            </button>
                         </div>
                         
                         <div class="h-4 bg-surface-container-highest rounded-full overflow-hidden mt-4">
@@ -189,6 +192,8 @@ window.KrsView = {
                 const lastIps = window.AcademicLogic.calculateIPS(lastSem.courses);
                 limit = window.AcademicLogic.getJatahSKS(lastIps);
             }
+            limit += (window.appStore.data.krsExtraSks || 0);
+            
             const totalSksTaken = krsPlan.reduce((sum, c) => sum + parseInt(c.sks), 0);
             
             if (totalSksTaken > limit) {
@@ -257,6 +262,7 @@ window.KrsView = {
             lastIps = window.AcademicLogic.calculateIPS(lastSem.courses);
             limit = window.AcademicLogic.getJatahSKS(lastIps);
         }
+        limit += (window.appStore.data.krsExtraSks || 0);
 
         const totalSksTaken = krsPlan.reduce((sum, c) => sum + parseInt(c.sks), 0);
         
@@ -361,6 +367,7 @@ window.KrsView = {
                 const lastIps = window.AcademicLogic.calculateIPS(lastSem.courses);
                 limit = window.AcademicLogic.getJatahSKS(lastIps);
             }
+            limit += (window.appStore.data.krsExtraSks || 0);
             
             const totalSksTaken = krsPlan.reduce((sum, c) => sum + parseInt(c.sks), 0);
             const addedSks = parseInt(sks);

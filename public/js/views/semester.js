@@ -128,9 +128,10 @@ window.SemesterView = {
                     const prevIps = window.AcademicLogic.calculateIPS(semesters[index - 1].courses);
                     currentSksLimit = window.AcademicLogic.getJatahSKS(prevIps);
                 }
+                currentSksLimit += (sem.extraSksLimit || 0);
 
                 // Calculate Jatah SKS DEPAN (based on this semester IPS)
-                const nextSksLimit = window.AcademicLogic.getJatahSKS(ips);
+                const nextSksLimit = window.AcademicLogic.getJatahSKS(ips) + (semesters[index + 1] ? (semesters[index + 1].extraSksLimit || 0) : (window.appStore.data.krsExtraSks || 0));
 
                 const currentSksTotal = sem.courses.reduce((sum, c) => sum + parseInt(c.sks), 0);
                 const isOverLimit = currentSksTotal > currentSksLimit;
@@ -206,8 +207,11 @@ window.SemesterView = {
                             <h4 class="font-headline-md text-headline-md text-on-surface font-bold min-w-[120px]">${sem.name}</h4>
                             
                             <!-- Current SKS Badge -->
-                            <div class="px-3 py-1 ${isOverLimit ? 'bg-danger-red/10 text-danger-red border-danger-red/20' : 'bg-primary/10 text-primary border-primary/20'} rounded-full text-[11px] font-bold border whitespace-nowrap">
-                                ${currentSksTotal} / ${currentSksLimit} SKS
+                            <div class="px-3 py-1 ${isOverLimit ? 'bg-danger-red/10 text-danger-red border-danger-red/20' : 'bg-primary/10 text-primary border-primary/20'} rounded-full text-[11px] font-bold border whitespace-nowrap flex items-center gap-1">
+                                <span>${currentSksTotal} / ${currentSksLimit} SKS</span>
+                                <button onclick="window.appStore.addSemesterExtraSks('${sem.id}')" class="text-primary hover:text-tertiary p-0.5 rounded-full transition-colors flex items-center justify-center" title="Tambah +1 Jatah SKS Khusus">
+                                    <span class="material-symbols-outlined text-[14px]">add_circle</span>
+                                </button>
                             </div>
                             
                             <!-- IPS Text -->

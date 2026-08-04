@@ -22,6 +22,7 @@ const DefaultData = {
     ],
     krsPlan: [], // { id, code, name, sks }
     krsFixed: [], // { id, code, name, sks, grade }
+    krsExtraSks: 0,
     tasks: [], // { id, title, course, deadline, status: 'pending'|'done' }
     lastSynced: null
 };
@@ -166,7 +167,21 @@ class Store {
 
     clearKrsPlan() {
         this.data.krsPlan = [];
+        this.data.krsExtraSks = 0;
         this.saveLocal();
+    }
+    
+    addKrsExtraSks() {
+        this.data.krsExtraSks = (this.data.krsExtraSks || 0) + 1;
+        this.saveLocal();
+    }
+
+    addSemesterExtraSks(semId) {
+        const sem = this.data.semesters.find(s => s.id === semId);
+        if (sem) {
+            sem.extraSksLimit = (sem.extraSksLimit || 0) + 1;
+            this.saveLocal();
+        }
     }
 
     commitKrsToFixed() {
@@ -225,7 +240,8 @@ class Store {
         const semester = {
             id: 'sem_' + Date.now(),
             name: semesterName || 'Semester Baru',
-            courses: []
+            courses: [],
+            extraSksLimit: this.data.krsExtraSks || 0
         };
         
         // Move courses
@@ -243,6 +259,7 @@ class Store {
         
         this.data.semesters.push(semester);
         this.data.krsFixed = [];
+        this.data.krsExtraSks = 0;
         this.saveLocal();
         return semester;
     }

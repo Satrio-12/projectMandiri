@@ -51,14 +51,10 @@ class AcademicLogic {
     static calculateIPS(courses) {
         if (!courses || courses.length === 0) return 0;
         
-        // Active courses only for IPS calculation
-        const activeCourses = courses.filter(c => !c.isRetaken);
-        if (activeCourses.length === 0) return 0;
-
         let totalMutu = 0;
         let totalSKS = 0;
 
-        activeCourses.forEach(course => {
+        courses.forEach(course => {
             const gradeInfo = this.getGradeInfoFromLetter(course.grade);
             const gpa = gradeInfo ? gradeInfo.gpa : 0;
             totalMutu += (gpa * course.sks);
