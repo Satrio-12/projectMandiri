@@ -1,6 +1,6 @@
 window.DashboardView = {
     title: 'Dashboard Overview',
-    dashboardChart: null,
+    dashboardCharts: [],
     
     render: function() {
         return `
@@ -85,16 +85,32 @@ window.DashboardView = {
                 </div>
             </div>
 
-            <!-- Mini IPK Trend Chart -->
-            <div class="col-span-12 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
+            <!-- Mini Charts (IPK, IPS, SKS) -->
+            <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
                 <div class="flex justify-between items-center mb-4">
-                    <h5 class="font-headline-md text-headline-md text-text-main">Tren IPK Kumulatif</h5>
-                    <button onclick="window.app.navigate('statistics')" class="text-primary hover:underline text-label-md font-label-md flex items-center gap-1">
-                        Lihat Semua Statistik <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-                    </button>
+                    <h5 class="font-headline-md text-headline-md text-text-main">Tren IPK</h5>
+                    <button onclick="window.app.navigate('statistics')" class="text-primary hover:underline text-label-md font-label-md">Detail</button>
                 </div>
-                <div class="h-48 w-full relative">
+                <div class="h-40 w-full relative">
                     <canvas id="dash-chart-ipk"></canvas>
+                </div>
+            </div>
+
+            <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
+                <div class="flex justify-between items-center mb-4">
+                    <h5 class="font-headline-md text-headline-md text-text-main">Tren IPS</h5>
+                </div>
+                <div class="h-40 w-full relative">
+                    <canvas id="dash-chart-ips"></canvas>
+                </div>
+            </div>
+
+            <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
+                <div class="flex justify-between items-center mb-4">
+                    <h5 class="font-headline-md text-headline-md text-text-main">Beban SKS</h5>
+                </div>
+                <div class="h-40 w-full relative">
+                    <canvas id="dash-chart-sks"></canvas>
                 </div>
             </div>
 
@@ -136,9 +152,9 @@ window.DashboardView = {
         if (this.listener) {
             window.appStore.listeners = window.appStore.listeners.filter(l => l !== this.listener);
         }
-        if (this.dashboardChart) {
-            this.dashboardChart.destroy();
-            this.dashboardChart = null;
+        if (this.dashboardCharts) {
+            this.dashboardCharts.forEach(c => c.destroy());
+            this.dashboardCharts = [];
         }
     },
 
@@ -263,60 +279,92 @@ window.DashboardView = {
             `).join('');
         }
 
-        // Render Chart
-        if (this.dashboardChart) {
-            this.dashboardChart.destroy();
-            this.dashboardChart = null;
+        // Render Charts
+        if (this.dashboardCharts) {
+            this.dashboardCharts.forEach(c => c.destroy());
         }
+        this.dashboardCharts = [];
         
         const ctxIpk = document.getElementById('dash-chart-ipk');
+        const ctxIps = document.getElementById('dash-chart-ips');
+        const ctxSks = document.getElementById('dash-chart-sks');
+        
         if (ctxIpk && data.semesters && data.semesters.length > 0) {
             const labels = [];
             const ipkData = [];
+            const ipsData = [];
+            const sksData = [];
             
             for (let i = 0; i < data.semesters.length; i++) {
-                labels.push(data.semesters[i].name || `Sem ${i+1}`);
+                const sem = data.semesters[i];
+                labels.push(sem.name || `Sem ${i+1}`);
+                
+                // IPK
                 const historicalSlice = data.semesters.slice(0, i + 1);
-                const cumulativeInfo = window.AcademicLogic.calculateIPKAndSKS(historicalSlice);
-                ipkData.push(cumulativeInfo.ipk);
+                ipkData.push(window.AcademicLogic.calculateIPKAndSKS(historicalSlice).ipk);
+                
+                // IPS
+                ipsData.push(window.AcademicLogic.calculateIPS(sem.courses));
+                
+                // SKS
+                let sks = 0;
+                if(sem.courses) sem.courses.forEach(c => sks += c.sks);
+                sksData.push(sks);
             }
 
-            this.dashboardChart = new Chart(ctxIpk.getContext('2d'), {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { min: 0, max: 4.0, ticks: { stepSize: 1.0 } }
+                },
+                plugins: { legend: { display: false } }
+            };
+
+            this.dashboardCharts.push(new Chart(ctxIpk.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
                         label: 'IPK',
                         data: ipkData,
-                        borderColor: '#004370', // primary
-                        backgroundColor: 'rgba(0, 67, 112, 0.1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: '#004370',
-                        pointRadius: 4,
-                        fill: true,
-                        tension: 0.3
+                        borderColor: '#004370', backgroundColor: 'rgba(0, 67, 112, 0.1)',
+                        borderWidth: 2, pointRadius: 3, fill: true, tension: 0.3
+                    }]
+                },
+                options: chartOptions
+            }));
+            
+            this.dashboardCharts.push(new Chart(ctxIps.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'IPS',
+                        data: ipsData,
+                        backgroundColor: '#004370', borderRadius: 4
+                    }]
+                },
+                options: chartOptions
+            }));
+            
+            this.dashboardCharts.push(new Chart(ctxSks.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'SKS',
+                        data: sksData,
+                        backgroundColor: '#10B981', borderRadius: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            min: 0,
-                            max: 4.0,
-                            ticks: { stepSize: 0.5 }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) { return ' IPK: ' + context.parsed.y.toFixed(2); }
-                            }
-                        }
-                    }
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 5 } } },
+                    plugins: { legend: { display: false } }
                 }
-            });
+            }));
         }
         } catch (err) {
             document.getElementById('dash-welcome').innerText = 'ERROR: ' + err.message;
