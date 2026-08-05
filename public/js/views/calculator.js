@@ -464,6 +464,12 @@ window.CalculatorView = {
             circle.style.strokeDashoffset = offset;
             document.getElementById('result-num').innerText = total.toFixed(1);
             
+            if (tugasDone && utsDone && uasDone) {
+                document.getElementById('result-label').innerText = "Nilai Akhir Definitif";
+            } else {
+                document.getElementById('result-label').innerText = "Prediksi Nilai Akhir";
+            }
+            
             const gradeInfo = window.AcademicLogic.getGradeInfoFromScore(total);
             
             if (gradeInfo) {
