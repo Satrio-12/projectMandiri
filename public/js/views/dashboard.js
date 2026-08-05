@@ -224,11 +224,6 @@ window.DashboardView = {
         document.getElementById('dash-ips-badges').innerHTML = ipsBadgeHtml;
 
         // Jatah SKS (Based on last semester IPS)
-        if (data.semesters.length > 0) {
-            const lastSem = data.semesters[data.semesters.length - 1];
-            // Update lastIPS using the absolute last semester (even if empty, though IPS might be 0)
-            lastIPS = window.AcademicLogic.calculateIPS(lastSem.courses);
-        }
         const jatahSks = window.AcademicLogic.getJatahSKS(lastIPS);
         document.getElementById('dash-jatah-sks').innerText = data.semesters.length > 0 ? jatahSks : 24; // Default to 24 if no sem
 

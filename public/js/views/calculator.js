@@ -377,8 +377,24 @@ window.CalculatorView = {
                     };
                 });
                 
-                const ips = window.AcademicLogic.calculateIPS(accumulatedKrsFixed);
-                const tempSemesters = [...(window.appStore.data.semesters || []), { courses: accumulatedKrsFixed }];
+                // Fetch already sent courses to include in the current active semester calculation
+                let activeSemCourses = [];
+                let otherSemesters = window.appStore.data.semesters || [];
+                
+                if (window.appStore.data.activeKrsSemesterName) {
+                    const activeSem = otherSemesters.find(s => s.name === window.appStore.data.activeKrsSemesterName);
+                    if (activeSem && activeSem.courses) {
+                        activeSemCourses = activeSem.courses;
+                    }
+                    // Filter out the active semester from otherSemesters because we'll combine it manually
+                    otherSemesters = otherSemesters.filter(s => s.name !== window.appStore.data.activeKrsSemesterName);
+                }
+
+                const allActiveCourses = [...activeSemCourses, ...accumulatedKrsFixed];
+                const ips = window.AcademicLogic.calculateIPS(allActiveCourses);
+                
+                // Add the combined active semester to the historical array for IPK calculation
+                const tempSemesters = [...otherSemesters, { courses: allActiveCourses }];
                 const ipkData = window.AcademicLogic.calculateIPKAndSKS(tempSemesters);
                 const jatahSks = window.AcademicLogic.getJatahSKS(ips);
 
