@@ -114,14 +114,6 @@ window.DashboardView = {
                 </div>
             </div>
 
-            <!-- Grade Distribution (Sebaran Nilai) -->
-            <div class="col-span-12 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
-                <h5 class="font-headline-md text-headline-md text-text-main mb-4">Sebaran Nilai (Keseluruhan)</h5>
-                <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-3" id="dash-grade-distribution">
-                    <!-- Distribution injected by JS -->
-                </div>
-            </div>
-
             <!-- Upcoming Tasks -->
             <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col">
                 <div class="flex justify-between items-center mb-4">
@@ -133,13 +125,21 @@ window.DashboardView = {
                 </div>
             </div>
 
+            <!-- Grade Distribution (Sebaran Nilai) -->
+            <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col">
+                <h5 class="font-headline-md text-headline-md text-text-main mb-4">Sebaran Nilai</h5>
+                <div class="grid grid-cols-4 gap-2" id="dash-grade-distribution">
+                    <!-- Distribution injected by JS -->
+                </div>
+            </div>
+
             <!-- Courses to Repeat (Mata Kuliah Diulang) -->
-            <div class="col-span-12 lg:col-span-8 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
+            <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col">
                 <div class="flex items-center gap-2 mb-6">
                     <span class="material-symbols-outlined text-danger-red" data-icon="warning">warning</span>
-                    <h5 class="font-headline-md text-headline-md text-text-main">Mata Kuliah yang Perlu Diulang</h5>
+                    <h5 class="font-headline-md text-headline-md text-text-main">Matkul Diulang</h5>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="dash-retake">
+                <div class="grid grid-cols-1 gap-4 overflow-y-auto max-h-[220px] custom-scrollbar pr-2" id="dash-retake">
                     <!-- Retakes injected by js -->
                 </div>
             </div>
@@ -243,7 +243,7 @@ window.DashboardView = {
         document.getElementById('dash-sks-pct').innerText = `${pct}% Terpenuhi (Lulus)`;
         
         // Grade Distribution
-        const gradeCounts = { 'A':0, 'A-':0, 'B+':0, 'B':0, 'B-':0, 'C+':0, 'C':0, 'D':0, 'E':0 };
+        const gradeCounts = { 'A':0, 'A-':0, 'B+':0, 'B':0, 'B-':0, 'C+':0, 'C':0 };
         data.semesters.forEach(sem => {
             if (sem.courses) {
                 sem.courses.forEach(crs => {
@@ -256,7 +256,7 @@ window.DashboardView = {
 
         const distContainer = document.getElementById('dash-grade-distribution');
         if (distContainer) {
-            const grades = ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'D', 'E'];
+            const grades = ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C'];
             distContainer.innerHTML = grades.map(g => {
                 const count = gradeCounts[g];
                 let colorClass = 'bg-surface-container text-secondary';
@@ -264,13 +264,12 @@ window.DashboardView = {
                     if (g.startsWith('A')) colorClass = 'bg-success-green text-white border-transparent';
                     else if (g.startsWith('B')) colorClass = 'bg-primary text-white border-transparent';
                     else if (g.startsWith('C')) colorClass = 'bg-tertiary text-on-tertiary border-transparent';
-                    else colorClass = 'bg-danger-red text-white border-transparent';
                 }
                 
                 return `
-                    <div class="flex flex-col items-center justify-center p-3 rounded-lg border border-surface-border ${colorClass} transition-all">
-                        <span class="font-headline-lg font-bold">${count}</span>
-                        <span class="font-label-sm text-[10px] uppercase opacity-90 mt-1">Nilai ${g}</span>
+                    <div class="flex flex-col items-center justify-center py-2 rounded-lg border border-surface-border ${colorClass} transition-all">
+                        <span class="font-headline-md font-bold">${count}</span>
+                        <span class="font-label-sm text-[10px] uppercase opacity-90">${g}</span>
                     </div>
                 `;
             }).join('');
