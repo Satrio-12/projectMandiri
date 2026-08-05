@@ -371,24 +371,53 @@ window.CalculatorView = {
             this.elResultLabel.innerText = "Target Rata-rata Tersisa";
         }
         
+        if (mode === 'reverse') {
+            // Save draft values
+            this.draftTugas = this.elNumTugas.value;
+            this.draftUts = this.elNumUts.value;
+            this.draftUas = this.elNumUas.value;
+        } else {
+            // Restore draft values
+            if (this.draftTugas !== undefined) {
+                this.elNumTugas.value = this.draftTugas;
+                this.elInputTugas.value = this.draftTugas;
+            }
+            if (this.draftUts !== undefined) {
+                this.elNumUts.value = this.draftUts;
+                this.elInputUts.value = this.draftUts;
+            }
+            if (this.draftUas !== undefined) {
+                this.elNumUas.value = this.draftUas;
+                this.elInputUas.value = this.draftUas;
+            }
+        }
+
         ['tugas', 'uts', 'uas'].forEach(key => {
             const chk = document.getElementById('check-' + key);
             const card = document.getElementById('card-' + key);
+            const num = document.getElementById('num-' + key);
+            const range = document.getElementById('input-' + key);
             
             if (mode === 'reverse') {
+                num.disabled = true;
+                range.disabled = true;
                 if (!chk.checked) {
-                    // Hide unchecked items in target mode
-                    card.classList.add('hidden');
+                    // Show but highlight as target
+                    card.classList.remove('hidden', 'opacity-70', 'bg-surface-container');
+                    card.classList.add('border-primary', 'bg-primary/5');
+                    card.style.pointerEvents = 'none';
                 } else {
-                    // Show but make read-only
-                    card.classList.remove('hidden');
+                    // Show locked items dimmed
+                    card.classList.remove('hidden', 'border-primary', 'bg-primary/5');
                     card.style.pointerEvents = 'none';
                     card.classList.add('opacity-70', 'bg-surface-container');
                 }
             } else {
                 // Forward mode: show all, enable all
-                card.classList.remove('hidden', 'opacity-70', 'bg-surface-container');
+                card.classList.remove('hidden', 'opacity-70', 'bg-surface-container', 'border-primary', 'bg-primary/5');
                 card.style.pointerEvents = 'auto';
+                num.disabled = false;
+                range.disabled = false;
             }
         });
         
@@ -483,9 +512,21 @@ window.CalculatorView = {
                 statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">flag</span><span class="font-label-md text-label-md uppercase tracking-wider">Mungkin Dicapai</span>`;
                 
                 let needed = [];
-                if (!tugasDone) needed.push("Tugas");
-                if (!utsDone) needed.push("UTS");
-                if (!uasDone) needed.push("UAS");
+                if (!tugasDone) {
+                    needed.push("Tugas");
+                    this.elNumTugas.value = displayScore;
+                    this.elInputTugas.value = displayScore;
+                }
+                if (!utsDone) {
+                    needed.push("UTS");
+                    this.elNumUts.value = displayScore;
+                    this.elInputUts.value = displayScore;
+                }
+                if (!uasDone) {
+                    needed.push("UAS");
+                    this.elNumUas.value = displayScore;
+                    this.elInputUas.value = displayScore;
+                }
                 breakdownText = `Butuh masing-masing ${displayScore} di ${needed.join(" dan ")}`;
             }
             
