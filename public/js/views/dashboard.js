@@ -1,5 +1,6 @@
 window.DashboardView = {
     title: 'Dashboard Overview',
+    dashboardChart: null,
     
     render: function() {
         return `
@@ -84,6 +85,19 @@ window.DashboardView = {
                 </div>
             </div>
 
+            <!-- Mini IPK Trend Chart -->
+            <div class="col-span-12 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
+                <div class="flex justify-between items-center mb-4">
+                    <h5 class="font-headline-md text-headline-md text-text-main">Tren IPK Kumulatif</h5>
+                    <button onclick="window.app.navigate('statistics')" class="text-primary hover:underline text-label-md font-label-md flex items-center gap-1">
+                        Lihat Semua Statistik <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    </button>
+                </div>
+                <div class="h-48 w-full relative">
+                    <canvas id="dash-chart-ipk"></canvas>
+                </div>
+            </div>
+
             <!-- Upcoming Tasks -->
             <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col">
                 <div class="flex justify-between items-center mb-4">
@@ -121,6 +135,10 @@ window.DashboardView = {
     unsubscribe: function() {
         if (this.listener) {
             window.appStore.listeners = window.appStore.listeners.filter(l => l !== this.listener);
+        }
+        if (this.dashboardChart) {
+            this.dashboardChart.destroy();
+            this.dashboardChart = null;
         }
     },
 
@@ -243,6 +261,62 @@ window.DashboardView = {
                     </div>
                 </div>
             `).join('');
+        }
+
+        // Render Chart
+        if (this.dashboardChart) {
+            this.dashboardChart.destroy();
+            this.dashboardChart = null;
+        }
+        
+        const ctxIpk = document.getElementById('dash-chart-ipk');
+        if (ctxIpk && data.semesters && data.semesters.length > 0) {
+            const labels = [];
+            const ipkData = [];
+            
+            for (let i = 0; i < data.semesters.length; i++) {
+                labels.push(data.semesters[i].name || \`Sem \${i+1}\`);
+                const historicalSlice = data.semesters.slice(0, i + 1);
+                const cumulativeInfo = window.AcademicLogic.calculateIPKAndSKS(historicalSlice);
+                ipkData.push(cumulativeInfo.ipk);
+            }
+
+            this.dashboardChart = new Chart(ctxIpk.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'IPK',
+                        data: ipkData,
+                        borderColor: '#004370', // primary
+                        backgroundColor: 'rgba(0, 67, 112, 0.1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#004370',
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 4.0,
+                            ticks: { stepSize: 0.5 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return ' IPK: ' + context.parsed.y.toFixed(2); }
+                            }
+                        }
+                    }
+                }
+            });
         }
         } catch (err) {
             document.getElementById('dash-welcome').innerText = 'ERROR: ' + err.message;
