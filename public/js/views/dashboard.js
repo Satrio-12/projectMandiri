@@ -114,6 +114,14 @@ window.DashboardView = {
                 </div>
             </div>
 
+            <!-- Grade Distribution (Sebaran Nilai) -->
+            <div class="col-span-12 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
+                <h5 class="font-headline-md text-headline-md text-text-main mb-4">Sebaran Nilai (Keseluruhan)</h5>
+                <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-3" id="dash-grade-distribution">
+                    <!-- Distribution injected by JS -->
+                </div>
+            </div>
+
             <!-- Upcoming Tasks -->
             <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col">
                 <div class="flex justify-between items-center mb-4">
@@ -233,6 +241,40 @@ window.DashboardView = {
         document.getElementById('dash-sks-text').innerText = `${stats.totalSKSPassed} / ${target} SKS`;
         document.getElementById('dash-sks-bar').style.width = `${pct}%`;
         document.getElementById('dash-sks-pct').innerText = `${pct}% Terpenuhi (Lulus)`;
+        
+        // Grade Distribution
+        const gradeCounts = { 'A':0, 'A-':0, 'B+':0, 'B':0, 'B-':0, 'C+':0, 'C':0, 'D':0, 'E':0 };
+        data.semesters.forEach(sem => {
+            if (sem.courses) {
+                sem.courses.forEach(crs => {
+                    if (crs.grade && gradeCounts[crs.grade] !== undefined) {
+                        gradeCounts[crs.grade]++;
+                    }
+                });
+            }
+        });
+
+        const distContainer = document.getElementById('dash-grade-distribution');
+        if (distContainer) {
+            const grades = ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'D', 'E'];
+            distContainer.innerHTML = grades.map(g => {
+                const count = gradeCounts[g];
+                let colorClass = 'bg-surface-container text-secondary';
+                if (count > 0) {
+                    if (g.startsWith('A')) colorClass = 'bg-success-green text-white border-transparent';
+                    else if (g.startsWith('B')) colorClass = 'bg-primary text-white border-transparent';
+                    else if (g.startsWith('C')) colorClass = 'bg-tertiary text-on-tertiary border-transparent';
+                    else colorClass = 'bg-danger-red text-white border-transparent';
+                }
+                
+                return `
+                    <div class="flex flex-col items-center justify-center p-3 rounded-lg border border-surface-border ${colorClass} transition-all">
+                        <span class="font-headline-lg font-bold">${count}</span>
+                        <span class="font-label-sm text-[10px] uppercase opacity-90 mt-1">Nilai ${g}</span>
+                    </div>
+                `;
+            }).join('');
+        }
 
         // Upcoming Tasks (Next 5 pending)
         const pendingTasks = data.tasks.filter(t => t.status === 'pending')
