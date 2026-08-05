@@ -183,6 +183,20 @@ window.CalculatorView = {
             </div>
         </div>
 
+        <!-- Modal: Konfirmasi Kirim Satu Matkul -->
+        <div id="modal-confirm-push" class="fixed inset-0 z-[100] hidden bg-inverse-surface/50 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300 opacity-0 pointer-events-none">
+            <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-sm p-6 mx-4 transform scale-95 transition-transform duration-300">
+                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-success-green/10 text-success-green mb-4 mx-auto">
+                    <span class="material-symbols-outlined text-2xl">send</span>
+                </div>
+                <h3 class="font-headline-md text-on-surface text-center mb-2">Kirim Secara Permanen?</h3>
+                <p class="text-secondary text-sm text-center mb-6">Mata kuliah ini akan dipindahkan ke riwayat Semester Aktif dan tidak bisa dikembalikan ke mode draf lagi.</p>
+                
+                <div class="flex gap-3">
+                    <button onclick="window.CalculatorView.closeConfirmPush()" class="flex-1 py-2 text-secondary font-label-md bg-surface-container hover:bg-surface-container-high rounded-xl transition-colors">Batal</button>
+                    <button onclick="window.CalculatorView.executeConfirmPush()" class="flex-1 py-2 bg-success-green text-white font-label-md rounded-xl hover:opacity-90 transition-opacity shadow-sm">Ya, Kirim</button>
+                </div>
+            </div>
         </div>
         `;
     },
@@ -295,9 +309,33 @@ window.CalculatorView = {
         };
 
         window.CalculatorView.pushSingleToActive = (courseId) => {
-            if (confirm("Kirim nilai mata kuliah ini secara permanen ke Semester Aktif?")) {
-                const success = window.appStore.moveSingleCourseToSemester(courseId, 'active');
+            this.courseToPush = courseId;
+            const modal = document.getElementById('modal-confirm-push');
+            modal.classList.remove('hidden');
+            // Allow display: block to render before triggering opacity transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modal.querySelector('.bg-surface-container-lowest').classList.remove('scale-95');
+                modal.querySelector('.bg-surface-container-lowest').classList.add('scale-100');
+            }, 10);
+        };
+
+        window.CalculatorView.closeConfirmPush = () => {
+            this.courseToPush = null;
+            const modal = document.getElementById('modal-confirm-push');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('.bg-surface-container-lowest').classList.remove('scale-100');
+            modal.querySelector('.bg-surface-container-lowest').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        };
+
+        window.CalculatorView.executeConfirmPush = () => {
+            if (this.courseToPush) {
+                const success = window.appStore.moveSingleCourseToSemester(this.courseToPush, 'active');
                 if (success) {
+                    this.closeConfirmPush();
                     window.app.showToast('Matkul berhasil dikirim ke Manajemen Semester!');
                     this.updateView();
                 } else {
