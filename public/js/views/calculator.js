@@ -148,10 +148,11 @@ window.CalculatorView = {
                                 </div>
                                 
                                 <!-- Status Badge -->
-                                <div id="status-badge" class="bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8">
+                                <div id="status-badge" class="bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-4">
                                     <span class="material-symbols-outlined text-sm">check_circle</span>
                                     <span class="font-label-md text-label-md uppercase tracking-wider">Status: Lulus</span>
                                 </div>
+                                <div id="target-breakdown" class="text-primary font-bold text-center px-4"></div>
                             </div>
                         </div>
                     </div>
@@ -433,13 +434,14 @@ window.CalculatorView = {
 
                 const statusBadge = document.getElementById('status-badge');
                 if (gradeInfo.gpa >= 2.0) { // C and above
-                    statusBadge.className = "bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
+                    statusBadge.className = "bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-4";
                     statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">check_circle</span><span class="font-label-md text-label-md uppercase tracking-wider">Status: Lulus</span>`;
                 } else {
-                    statusBadge.className = "bg-danger-red/10 text-danger-red border border-danger-red/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
+                    statusBadge.className = "bg-danger-red/10 text-danger-red border border-danger-red/20 px-6 py-2 rounded-full flex items-center gap-2 mb-4";
                     statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">error</span><span class="font-label-md text-label-md uppercase tracking-wider">Status: Tidak Lulus</span>`;
                 }
             }
+            document.getElementById('target-breakdown').innerText = "";
         } else {
             const target = window.AcademicLogic.calculateDynamicTarget({tugas, uts, uas}, {tugasDone, utsDone, uasDone}, this.currentTarget);
             
@@ -461,24 +463,33 @@ window.CalculatorView = {
             }
 
             const statusBadge = document.getElementById('status-badge');
+            let breakdownText = "";
             if (target.unlockedWeight === 0) {
                 if (requiredAvg === 0) {
-                    statusBadge.className = "bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
+                    statusBadge.className = "bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-4";
                     statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">auto_awesome</span><span class="font-label-md text-label-md uppercase tracking-wider">Sudah Tercapai!</span>`;
                 } else {
-                    statusBadge.className = "bg-danger-red/10 text-danger-red border border-danger-red/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
+                    statusBadge.className = "bg-danger-red/10 text-danger-red border border-danger-red/20 px-6 py-2 rounded-full flex items-center gap-2 mb-4";
                     statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">error</span><span class="font-label-md text-label-md uppercase tracking-wider">Gagal Tercapai</span>`;
                 }
             } else if (requiredAvg > 100) {
-                statusBadge.className = "bg-danger-red/10 text-danger-red border border-danger-red/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
+                statusBadge.className = "bg-danger-red/10 text-danger-red border border-danger-red/20 px-6 py-2 rounded-full flex items-center gap-2 mb-4";
                 statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">warning</span><span class="font-label-md text-label-md uppercase tracking-wider">Target Mustahil</span>`;
             } else if (requiredAvg <= 0) {
-                statusBadge.className = "bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
+                statusBadge.className = "bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-4";
                 statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">auto_awesome</span><span class="font-label-md text-label-md uppercase tracking-wider">Sudah Aman</span>`;
             } else {
-                statusBadge.className = "bg-primary/10 text-primary border border-primary/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
+                statusBadge.className = "bg-primary/10 text-primary border border-primary/20 px-6 py-2 rounded-full flex items-center gap-2 mb-4";
                 statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">flag</span><span class="font-label-md text-label-md uppercase tracking-wider">Mungkin Dicapai</span>`;
+                
+                let needed = [];
+                if (!tugasDone) needed.push("Tugas");
+                if (!utsDone) needed.push("UTS");
+                if (!uasDone) needed.push("UAS");
+                breakdownText = `Butuh masing-masing ${displayScore} di ${needed.join(" dan ")}`;
             }
+            
+            document.getElementById('target-breakdown').innerText = breakdownText;
         }
         
         if (saveDraft && this.selectedCourseId) {
