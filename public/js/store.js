@@ -295,7 +295,10 @@ class Store {
         };
 
         if (semesterId === 'active') {
-            const targetName = this.data.activeKrsSemesterName || this._getNextEmptySemesterName();
+            if (!this.data.activeKrsSemesterName) {
+                this.data.activeKrsSemesterName = this._getNextEmptySemesterName();
+            }
+            const targetName = this.data.activeKrsSemesterName;
             let sem = this.data.semesters.find(s => s.name === targetName);
             if (!sem) {
                 sem = {
