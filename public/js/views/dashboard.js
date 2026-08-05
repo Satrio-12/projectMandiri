@@ -173,8 +173,17 @@ window.DashboardView = {
         }
 
         // Calculate current semester based on completed semesters (those with courses)
-        const completedSemesters = data.semesters.filter(s => s.courses && s.courses.length > 0).length;
-        const currentSem = completedSemesters + 1;
+        const populatedSemesters = data.semesters.filter(s => s.courses && s.courses.length > 0);
+        let currentSem = 1;
+        if (populatedSemesters.length > 0) {
+            const lastSemName = populatedSemesters[populatedSemesters.length - 1].name;
+            const match = lastSemName.match(/\d+/);
+            if (match) {
+                currentSem = parseInt(match[0]) + 1;
+            } else {
+                currentSem = populatedSemesters.length + 1;
+            }
+        }
         document.getElementById('dash-current-sem').innerText = `Semester ${currentSem}`;
 
         const stats = window.AcademicLogic.calculateIPKAndSKS(data.semesters);

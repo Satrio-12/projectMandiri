@@ -184,11 +184,19 @@ class Store {
         }
     }
 
+    _getNextEmptySemesterName() {
+        const firstEmptySem = this.data.semesters.find(s => !s.courses || s.courses.length === 0);
+        if (firstEmptySem) {
+            return firstEmptySem.name;
+        }
+        return 'Semester ' + (this.data.semesters.length + 1);
+    }
+
     commitKrsToFixed() {
         if (this.data.krsPlan.length === 0) return false;
         
         if (!this.data.activeKrsSemesterName) {
-            this.data.activeKrsSemesterName = 'Semester ' + (this.data.semesters.length + 1);
+            this.data.activeKrsSemesterName = this._getNextEmptySemesterName();
         }
 
         // Move courses from draft to fixed
@@ -287,7 +295,7 @@ class Store {
         };
 
         if (semesterId === 'active') {
-            const targetName = this.data.activeKrsSemesterName || ('Semester ' + (this.data.semesters.length + 1));
+            const targetName = this.data.activeKrsSemesterName || this._getNextEmptySemesterName();
             let sem = this.data.semesters.find(s => s.name === targetName);
             if (!sem) {
                 sem = {
