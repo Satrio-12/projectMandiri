@@ -268,8 +268,8 @@ window.DashboardView = {
                 
                 return `
                     <div class="flex flex-col items-center justify-center py-2 rounded-lg border border-surface-border ${colorClass} transition-all">
-                        <span class="font-headline-md font-bold">${count}</span>
-                        <span class="font-label-sm text-[10px] uppercase opacity-90">${g}</span>
+                        <span class="font-headline-md font-bold">${g}</span>
+                        <span class="font-label-sm text-[10px] uppercase opacity-90">${count} Matkul</span>
                     </div>
                 `;
             }).join('');
