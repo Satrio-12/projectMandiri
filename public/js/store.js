@@ -187,6 +187,10 @@ class Store {
     commitKrsToFixed() {
         if (this.data.krsPlan.length === 0) return false;
         
+        if (!this.data.activeKrsSemesterName) {
+            this.data.activeKrsSemesterName = 'Semester ' + (this.data.semesters.length + 1);
+        }
+
         // Move courses from draft to fixed
         this.data.krsPlan.forEach(crs => {
             const newCourse = {
@@ -238,13 +242,16 @@ class Store {
     moveFixedToSemester(semesterName) {
         if (this.data.krsFixed.length === 0) return null;
         
-        // Create new semester
-        const semester = {
-            id: 'sem_' + Date.now(),
-            name: semesterName || 'Semester Baru',
-            courses: [],
-            extraSksLimit: this.data.krsExtraSks || 0
-        };
+        let semester = this.data.semesters.find(s => s.name === semesterName);
+        if (!semester) {
+            semester = {
+                id: 'sem_' + Date.now(),
+                name: semesterName || 'Semester Baru',
+                courses: [],
+                extraSksLimit: this.data.krsExtraSks || 0
+            };
+            this.data.semesters.push(semester);
+        }
         
         // Move courses
         this.data.krsFixed.forEach(crs => {
@@ -259,9 +266,9 @@ class Store {
             this.recalculateRetakes(newCourse.code);
         });
         
-        this.data.semesters.push(semester);
         this.data.krsFixed = [];
         this.data.krsExtraSks = 0;
+        this.data.activeKrsSemesterName = null;
         this.saveLocal();
         return semester;
     }
@@ -279,7 +286,21 @@ class Store {
             grade: crs.grade || 'A'
         };
 
-        if (semesterId === 'new') {
+        if (semesterId === 'active') {
+            const targetName = this.data.activeKrsSemesterName || ('Semester ' + (this.data.semesters.length + 1));
+            let sem = this.data.semesters.find(s => s.name === targetName);
+            if (!sem) {
+                sem = {
+                    id: 'sem_' + Date.now(),
+                    name: targetName,
+                    courses: [],
+                    extraSksLimit: 0
+                };
+                this.data.semesters.push(sem);
+            }
+            if (!sem.courses) sem.courses = [];
+            sem.courses.push(newCourse);
+        } else if (semesterId === 'new') {
             const semester = {
                 id: 'sem_' + Date.now(),
                 name: 'Semester ' + (this.data.semesters.length + 1),
@@ -298,6 +319,9 @@ class Store {
         }
         
         this.data.krsFixed.splice(courseIndex, 1);
+        if (this.data.krsFixed.length === 0) {
+            this.data.activeKrsSemesterName = null;
+        }
         this.recalculateRetakes(newCourse.code);
         this.saveLocal();
         return true;
