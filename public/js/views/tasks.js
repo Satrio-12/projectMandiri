@@ -127,9 +127,9 @@ window.TasksView = {
         };
 
         window.TasksView.deleteTask = (id) => {
-            if(confirm("Hapus tugas ini?")) {
+            window.app.showConfirm("Hapus tugas ini?", (res) => { if(res) { 
                 window.appStore.deleteTask(id);
-            }
+             } }, {isDanger: true})
         };
     },
 
@@ -325,7 +325,7 @@ window.TasksView = {
             this.closeTaskModal();
             window.app.showToast('Tugas berhasil ditambahkan');
         } else {
-            alert("Semua field harus diisi");
+            window.app.showAlert("Semua field harus diisi");
         }
     }
 };

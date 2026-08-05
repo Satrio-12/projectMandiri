@@ -175,9 +175,9 @@ window.KrsView = {
         
         window.KrsView.clearKrs = () => {
             if(window.appStore.data.krsPlan.length === 0) return;
-            if(confirm("Anda yakin ingin menghapus semua draf KRS?")) {
+            window.app.showConfirm("Anda yakin ingin menghapus semua draf KRS?", (res) => { if(res) { 
                 window.appStore.clearKrsPlan();
-            }
+             } }, {isDanger: true})
         };
 
         window.KrsView.commitKrsToFixed = () => {
@@ -205,18 +205,18 @@ window.KrsView = {
                 return;
             }
 
-            if(confirm("Sah-kan draf KRS ini menjadi Semester Aktif? Matkul akan dipindah ke KRS Tersimpan.")) {
+            window.app.showConfirm("Sah-kan draf KRS ini menjadi Semester Aktif? Matkul akan dipindah ke KRS Tersimpan.", (res) => { if(res) { 
                 if (window.appStore.commitKrsToFixed()) {
                     window.app.showToast('KRS berhasil di-finalisasi!');
-                }
+                 } })
             }
         };
 
         window.KrsView.cancelFixedKrs = () => {
-            if(confirm("Kembalikan matkul dari KRS Tersimpan ke status Draf? (To-do list matkul ini mungkin terpengaruh)")) {
+            window.app.showConfirm("Kembalikan matkul dari KRS Tersimpan ke status Draf?", (res) => { if(res) { 
                 if (window.appStore.cancelFixedKrs()) {
                     window.app.showToast('KRS dikembalikan ke draf.');
-                }
+                 } }, {isDanger: true})
             }
         };
     },
@@ -385,7 +385,7 @@ window.KrsView = {
             window.KrsView.closeCourseModal();
             window.app.showToast('Mata kuliah ditambahkan ke draf KRS');
         } else {
-            alert("Kode dan Nama mata kuliah harus diisi");
+            window.app.showAlert("Kode dan Nama mata kuliah harus diisi");
         }
     },
 

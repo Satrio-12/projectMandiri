@@ -304,7 +304,7 @@ window.CalculatorView = {
                     window.app.navigate('semester'); // Go to semester view
                 }
             } else {
-                alert("Mohon isi nama semester");
+                window.app.showAlert("Mohon isi nama semester");
             }
         };
 
@@ -339,7 +339,7 @@ window.CalculatorView = {
                     window.app.showToast('Matkul berhasil dikirim ke Manajemen Semester!');
                     this.updateView();
                 } else {
-                    alert('Gagal memindahkan matkul.');
+                    window.app.showAlert('Gagal memindahkan matkul.');
                 }
             }
         };

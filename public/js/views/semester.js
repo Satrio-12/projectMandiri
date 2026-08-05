@@ -89,15 +89,15 @@ window.SemesterView = {
         window.appStore.subscribe(this.listener);
 
         window.SemesterView.deleteCourse = (semId, crsId) => {
-            if (confirm("Hapus mata kuliah ini?")) {
+            window.app.showConfirm("Hapus mata kuliah ini?", (res) => { if(res) { 
                 window.appStore.deleteCourse(semId, crsId);
-            }
+             } }, {isDanger: true})
         };
 
         window.SemesterView.deleteSemester = (semId) => {
-            if (confirm("Hapus semester beserta semua mata kuliah di dalamnya?")) {
+            window.app.showConfirm("Hapus semester beserta semua mata kuliah di dalamnya?", (res) => { if(res) { 
                 window.appStore.deleteSemester(semId);
-            }
+             } }, {isDanger: true})
         };
     },
 
@@ -408,7 +408,7 @@ window.SemesterView = {
             }
             window.SemesterView.closeCourseModal();
         } else {
-            alert("Kode, Nama, dan Nilai Akhir mata kuliah harus diisi dengan lengkap");
+            window.app.showAlert("Kode, Nama, dan Nilai Akhir mata kuliah harus diisi dengan lengkap");
         }
     }
 };

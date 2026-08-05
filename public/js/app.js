@@ -20,6 +20,8 @@ class App {
     }
 
     async init() {
+        this.createGlobalModals();
+        
         // Setup navigation
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
@@ -203,9 +205,123 @@ class App {
         container.appendChild(toast);
         
         setTimeout(() => {
-            toast.classList.add('hide');
+            toast.classList.add('opacity-0', 'translate-y-4');
             setTimeout(() => toast.remove(), 300);
         }, 3000);
+    }
+    
+    createGlobalModals() {
+        if (!document.getElementById('global-modal-container')) {
+            const container = document.createElement('div');
+            container.id = 'global-modal-container';
+            container.innerHTML = `
+                <!-- Global Confirm Modal -->
+                <div id="modal-global-confirm" class="fixed inset-0 z-[999] hidden bg-inverse-surface/50 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300 opacity-0 pointer-events-none">
+                    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-sm p-6 mx-4 transform scale-95 transition-transform duration-300">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4 mx-auto" id="global-confirm-icon-bg">
+                            <span class="material-symbols-outlined text-2xl" id="global-confirm-icon">help</span>
+                        </div>
+                        <h3 class="font-headline-md text-on-surface text-center mb-2" id="global-confirm-title">Konfirmasi</h3>
+                        <p class="text-secondary text-sm text-center mb-6" id="global-confirm-msg">Apakah Anda yakin?</p>
+                        
+                        <div class="flex gap-3">
+                            <button id="btn-global-confirm-cancel" class="flex-1 py-2 text-secondary font-label-md bg-surface-container hover:bg-surface-container-high rounded-xl transition-colors">Batal</button>
+                            <button id="btn-global-confirm-ok" class="flex-1 py-2 bg-primary text-white font-label-md rounded-xl hover:opacity-90 transition-opacity shadow-sm">Ya</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Global Alert Modal -->
+                <div id="modal-global-alert" class="fixed inset-0 z-[1000] hidden bg-inverse-surface/50 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300 opacity-0 pointer-events-none">
+                    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-sm p-6 mx-4 transform scale-95 transition-transform duration-300">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-danger-red/10 text-danger-red mb-4 mx-auto" id="global-alert-icon-bg">
+                            <span class="material-symbols-outlined text-2xl" id="global-alert-icon">info</span>
+                        </div>
+                        <h3 class="font-headline-md text-on-surface text-center mb-2" id="global-alert-title">Perhatian</h3>
+                        <p class="text-secondary text-sm text-center mb-6" id="global-alert-msg">Pesan peringatan.</p>
+                        
+                        <div class="flex justify-center">
+                            <button id="btn-global-alert-ok" class="w-full py-2 bg-primary text-white font-label-md rounded-xl hover:opacity-90 transition-opacity shadow-sm">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(container);
+        }
+    }
+
+    showConfirm(message, callback, options = {}) {
+        const modal = document.getElementById('modal-global-confirm');
+        document.getElementById('global-confirm-msg').innerText = message;
+        document.getElementById('global-confirm-title').innerText = options.title || 'Konfirmasi';
+        
+        const btnCancel = document.getElementById('btn-global-confirm-cancel');
+        const btnOk = document.getElementById('btn-global-confirm-ok');
+        
+        const newBtnCancel = btnCancel.cloneNode(true);
+        const newBtnOk = btnOk.cloneNode(true);
+        btnCancel.replaceWith(newBtnCancel);
+        btnOk.replaceWith(newBtnOk);
+        
+        if (options.isDanger) {
+            newBtnOk.className = "flex-1 py-2 bg-danger-red text-white font-label-md rounded-xl hover:opacity-90 transition-opacity shadow-sm";
+            document.getElementById('global-confirm-icon-bg').className = "flex items-center justify-center w-12 h-12 rounded-full bg-danger-red/10 text-danger-red mb-4 mx-auto";
+            document.getElementById('global-confirm-icon').innerText = 'warning';
+        } else {
+            newBtnOk.className = "flex-1 py-2 bg-primary text-white font-label-md rounded-xl hover:opacity-90 transition-opacity shadow-sm";
+            document.getElementById('global-confirm-icon-bg').className = "flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4 mx-auto";
+            document.getElementById('global-confirm-icon').innerText = 'help';
+        }
+
+        const closeModal = () => {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('.bg-surface-container-lowest').classList.remove('scale-100');
+            modal.querySelector('.bg-surface-container-lowest').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+
+        newBtnCancel.addEventListener('click', () => {
+            closeModal();
+            if(callback) callback(false);
+        });
+        
+        newBtnOk.addEventListener('click', () => {
+            closeModal();
+            if(callback) callback(true);
+        });
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('.bg-surface-container-lowest').classList.remove('scale-95');
+            modal.querySelector('.bg-surface-container-lowest').classList.add('scale-100');
+        }, 10);
+    }
+
+    showAlert(message, options = {}) {
+        const modal = document.getElementById('modal-global-alert');
+        document.getElementById('global-alert-msg').innerText = message;
+        document.getElementById('global-alert-title').innerText = options.title || 'Perhatian';
+        
+        const btnOk = document.getElementById('btn-global-alert-ok');
+        const newBtnOk = btnOk.cloneNode(true);
+        btnOk.replaceWith(newBtnOk);
+
+        const closeModal = () => {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('.bg-surface-container-lowest').classList.remove('scale-100');
+            modal.querySelector('.bg-surface-container-lowest').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+        
+        newBtnOk.addEventListener('click', closeModal);
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('.bg-surface-container-lowest').classList.remove('scale-95');
+            modal.querySelector('.bg-surface-container-lowest').classList.add('scale-100');
+        }, 10);
     }
 
     // Profile Methods
