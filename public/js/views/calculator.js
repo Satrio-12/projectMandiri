@@ -293,27 +293,30 @@ window.CalculatorView = {
             if(summaryPanel) {
                 summaryPanel.classList.remove('hidden');
                 
-                const ips = window.AcademicLogic.calculateIPS(krsFixed);
-                const tempSemesters = [...(window.appStore.data.semesters || []), { courses: krsFixed }];
+                // HANYA ambil kursus yang sudah KELUAR SEMUA (Nilai Akhir)
+                const finalizedCourses = krsFixed.filter(crs => crs.tugasDone && crs.utsDone && crs.uasDone);
+                
+                const ips = window.AcademicLogic.calculateIPS(finalizedCourses);
+                const tempSemesters = [...(window.appStore.data.semesters || []), { courses: finalizedCourses }];
                 const ipkData = window.AcademicLogic.calculateIPKAndSKS(tempSemesters);
-                const semesterSks = krsFixed.reduce((sum, crs) => sum + crs.sks, 0);
+                const jatahSks = window.AcademicLogic.getJatahSKS(ips);
 
                 summaryPanel.innerHTML = `
-                    <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
-                        <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1 text-center">Prediksi IPS</span>
+                    <div class="bg-primary/10 border border-primary/20 rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
+                        <span class="text-xs font-bold text-primary uppercase tracking-widest mb-1 text-center">IPS (Nilai Final)</span>
                         <span class="font-headline-lg text-primary">${ips.toFixed(2)}</span>
                     </div>
-                    <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
-                        <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1 text-center">Prediksi IPK Total</span>
-                        <span class="font-headline-lg text-primary">${ipkData.ipk.toFixed(2)}</span>
+                    <div class="bg-tertiary/10 border border-tertiary/20 rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
+                        <span class="text-xs font-bold text-tertiary uppercase tracking-widest mb-1 text-center">IPK Terkini</span>
+                        <span class="font-headline-lg text-tertiary">${ipkData.ipk.toFixed(2)}</span>
                     </div>
-                    <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
-                        <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1 text-center">SKS Lulus Keseluruhan</span>
-                        <span class="font-headline-lg text-primary">${ipkData.totalSKSPassed}</span>
+                    <div class="bg-success-green/10 border border-success-green/20 rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
+                        <span class="text-xs font-bold text-success-green uppercase tracking-widest mb-1 text-center">SKS Lulus Total</span>
+                        <span class="font-headline-lg text-success-green">${ipkData.totalSKSPassed}</span>
                     </div>
-                    <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
-                        <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1 text-center">Total SKS Semester Ini</span>
-                        <span class="font-headline-lg text-primary">${semesterSks}</span>
+                    <div class="bg-secondary/10 border border-secondary/20 rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
+                        <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1 text-center">Jatah SKS Depan</span>
+                        <span class="font-headline-lg text-secondary">${jatahSks}</span>
                     </div>
                 `;
             }
