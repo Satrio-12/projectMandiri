@@ -175,9 +175,11 @@ window.KrsView = {
         
         window.KrsView.clearKrs = () => {
             if(window.appStore.data.krsPlan.length === 0) return;
-            window.app.showConfirm("Anda yakin ingin menghapus semua draf KRS?", (res) => { if(res) { 
-                window.appStore.clearKrsPlan();
-             } }, {isDanger: true})
+            window.app.showConfirm("Anda yakin ingin menghapus semua draf KRS?", (res) => { 
+                if(res) { 
+                    window.appStore.clearKrsPlan();
+                } 
+            }, {isDanger: true});
         };
 
         window.KrsView.commitKrsToFixed = () => {
@@ -205,19 +207,23 @@ window.KrsView = {
                 return;
             }
 
-            window.app.showConfirm("Sah-kan draf KRS ini menjadi Semester Aktif? Matkul akan dipindah ke KRS Tersimpan.", (res) => { if(res) { 
-                if (window.appStore.commitKrsToFixed()) {
-                    window.app.showToast('KRS berhasil di-finalisasi!');
-                 } })
-            }
+            window.app.showConfirm("Sah-kan draf KRS ini menjadi Semester Aktif? Matkul akan dipindah ke KRS Tersimpan.", (res) => { 
+                if(res) { 
+                    if (window.appStore.commitKrsToFixed()) {
+                        window.app.showToast('KRS berhasil di-finalisasi!');
+                    }
+                } 
+            });
         };
 
         window.KrsView.cancelFixedKrs = () => {
-            window.app.showConfirm("Kembalikan matkul dari KRS Tersimpan ke status Draf?", (res) => { if(res) { 
-                if (window.appStore.cancelFixedKrs()) {
-                    window.app.showToast('KRS dikembalikan ke draf.');
-                 } }, {isDanger: true})
-            }
+            window.app.showConfirm("Kembalikan matkul dari KRS Tersimpan ke status Draf?", (res) => { 
+                if(res) { 
+                    if (window.appStore.cancelFixedKrs()) {
+                        window.app.showToast('KRS dikembalikan ke draf.');
+                    }
+                }
+            }, {isDanger: true});
         };
     },
 
