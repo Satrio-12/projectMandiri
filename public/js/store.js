@@ -263,12 +263,22 @@ class Store {
         
         // Move courses
         this.data.krsFixed.forEach(crs => {
+            let numericScore = 0;
+            if (crs.uts !== undefined && crs.tugas !== undefined && crs.uas !== undefined) {
+                numericScore = window.AcademicLogic.calculateFinalScore(crs.uts, crs.tugas, crs.uas);
+                numericScore = Math.round(numericScore * 100) / 100;
+            } else if (crs.grade) {
+                const gradeInfo = window.AcademicLogic.getGradeInfoFromLetter(crs.grade);
+                if (gradeInfo) numericScore = gradeInfo.min;
+            }
+
             const newCourse = {
                 id: 'crs_' + Math.random().toString(36).substring(2, 9),
                 code: crs.code,
                 name: crs.name,
                 sks: crs.sks,
-                grade: crs.grade || 'A' // Use drafted grade if exists
+                grade: crs.grade || 'A', // Use drafted grade if exists
+                score: numericScore
             };
             semester.courses.push(newCourse);
             this.recalculateRetakes(newCourse.code);
@@ -286,12 +296,23 @@ class Store {
         if (courseIndex === -1) return null;
         
         const crs = this.data.krsFixed[courseIndex];
+        
+        let numericScore = 0;
+        if (crs.uts !== undefined && crs.tugas !== undefined && crs.uas !== undefined) {
+            numericScore = window.AcademicLogic.calculateFinalScore(crs.uts, crs.tugas, crs.uas);
+            numericScore = Math.round(numericScore * 100) / 100;
+        } else if (crs.grade) {
+            const gradeInfo = window.AcademicLogic.getGradeInfoFromLetter(crs.grade);
+            if (gradeInfo) numericScore = gradeInfo.min;
+        }
+
         const newCourse = {
             id: 'crs_' + Math.random().toString(36).substring(2, 9),
             code: crs.code,
             name: crs.name,
             sks: crs.sks,
-            grade: crs.grade || 'A'
+            grade: crs.grade || 'A',
+            score: numericScore
         };
 
         if (semesterId === 'active') {
