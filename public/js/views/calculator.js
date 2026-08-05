@@ -27,6 +27,10 @@ window.CalculatorView = {
                     <button onclick="window.app.navigate('krs')" class="bg-primary text-white px-6 py-2 rounded-lg">Ke Halaman KRS</button>
                 </div>
 
+                <!-- Summary Panel -->
+                <div id="calc-summary-panel" class="hidden mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+                </div>
+
                 <div id="calc-course-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Injected -->
                 </div>
@@ -278,10 +282,41 @@ window.CalculatorView = {
             document.getElementById('calc-empty-state').classList.remove('hidden');
             document.getElementById('calc-course-list').classList.add('hidden');
             document.getElementById('btn-to-history').classList.add('hidden');
+            const summaryPanel = document.getElementById('calc-summary-panel');
+            if(summaryPanel) summaryPanel.classList.add('hidden');
         } else {
             document.getElementById('calc-empty-state').classList.add('hidden');
             document.getElementById('calc-course-list').classList.remove('hidden');
             document.getElementById('btn-to-history').classList.remove('hidden');
+            
+            const summaryPanel = document.getElementById('calc-summary-panel');
+            if(summaryPanel) {
+                summaryPanel.classList.remove('hidden');
+                
+                const ips = window.AcademicLogic.calculateIPS(krsFixed);
+                const tempSemesters = [...(window.appStore.data.semesters || []), { courses: krsFixed }];
+                const ipkData = window.AcademicLogic.calculateIPKAndSKS(tempSemesters);
+                const semesterSks = krsFixed.reduce((sum, crs) => sum + crs.sks, 0);
+
+                summaryPanel.innerHTML = `
+                    <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
+                        <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1 text-center">Prediksi IPS</span>
+                        <span class="font-headline-lg text-primary">${ips.toFixed(2)}</span>
+                    </div>
+                    <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
+                        <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1 text-center">Prediksi IPK Total</span>
+                        <span class="font-headline-lg text-primary">${ipkData.ipk.toFixed(2)}</span>
+                    </div>
+                    <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
+                        <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1 text-center">SKS Lulus Keseluruhan</span>
+                        <span class="font-headline-lg text-primary">${ipkData.totalSKSPassed}</span>
+                    </div>
+                    <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
+                        <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1 text-center">Total SKS Semester Ini</span>
+                        <span class="font-headline-lg text-primary">${semesterSks}</span>
+                    </div>
+                `;
+            }
             
             const listEl = document.getElementById('calc-course-list');
             listEl.innerHTML = krsFixed.map(crs => {
