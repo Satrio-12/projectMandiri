@@ -444,13 +444,13 @@ window.CalculatorView = {
             this.elReverse.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all text-secondary hover:bg-surface-container-low';
             this.elTargetContainer.classList.add('hidden');
             this.elResultLabel.innerText = "Prediksi Nilai Akhir";
-            checkAllContainer.classList.remove('hidden');
+            checkAllContainer.style.display = 'flex';
         } else {
             this.elReverse.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-surface-container-lowest text-primary shadow-sm';
             this.elForward.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all text-secondary hover:bg-surface-container-low';
             this.elTargetContainer.classList.remove('hidden');
             this.elResultLabel.innerText = "Target Rata-rata Tersisa";
-            checkAllContainer.classList.add('hidden');
+            checkAllContainer.style.display = 'none';
         }
         
         if (mode === 'reverse') {
