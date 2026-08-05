@@ -64,7 +64,7 @@ window.CalculatorView = {
                             
                             <div class="space-y-8" id="calculator-inputs">
                                 <!-- Tugas Card -->
-                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group">
+                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group" id="card-tugas">
                                     <div class="flex justify-between items-center mb-4">
                                         <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
                                             <input type="checkbox" id="check-tugas" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
@@ -80,7 +80,7 @@ window.CalculatorView = {
                                 </div>
 
                                 <!-- UTS Card -->
-                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group">
+                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group" id="card-uts">
                                     <div class="flex justify-between items-center mb-4">
                                         <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
                                             <input type="checkbox" id="check-uts" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
@@ -96,7 +96,7 @@ window.CalculatorView = {
                                 </div>
 
                                 <!-- UAS Card -->
-                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group" id="uas-container">
+                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group" id="card-uas">
                                     <div class="flex justify-between items-center mb-4">
                                         <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
                                             <input type="checkbox" id="check-uas" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
@@ -114,11 +114,14 @@ window.CalculatorView = {
                                 <!-- Target Grade Input -->
                                 <div class="space-y-3 hidden" id="target-container">
                                     <label class="font-label-md text-label-md text-on-surface-variant">Target Nilai Akhir (Huruf)</label>
-                                    <div class="grid grid-cols-4 gap-2" id="target-buttons">
-                                        <button class="target-btn py-2 border border-surface-border rounded-lg font-bold text-on-primary bg-primary" data-target="A">A</button>
-                                        <button class="target-btn py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="B+">B+</button>
-                                        <button class="target-btn py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="B">B</button>
-                                        <button class="target-btn py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="C+">C+</button>
+                                    <div class="flex flex-wrap gap-2" id="target-buttons">
+                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-on-primary bg-primary" data-target="A">A</button>
+                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="A-">A-</button>
+                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="B+">B+</button>
+                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="B">B</button>
+                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="B-">B-</button>
+                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="C+">C+</button>
+                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="C">C</button>
                                     </div>
                                 </div>
                             </div>
@@ -369,18 +372,22 @@ window.CalculatorView = {
         
         ['tugas', 'uts', 'uas'].forEach(key => {
             const chk = document.getElementById('check-' + key);
-            const num = document.getElementById('num-' + key);
-            const range = document.getElementById('input-' + key);
-            if (mode === 'reverse' && !chk.checked) {
-                num.disabled = true;
-                range.disabled = true;
-                num.classList.add('opacity-50', 'bg-surface-container');
-                range.classList.add('opacity-50');
+            const card = document.getElementById('card-' + key);
+            
+            if (mode === 'reverse') {
+                if (!chk.checked) {
+                    // Hide unchecked items in target mode
+                    card.classList.add('hidden');
+                } else {
+                    // Show but make read-only
+                    card.classList.remove('hidden');
+                    card.style.pointerEvents = 'none';
+                    card.classList.add('opacity-70', 'bg-surface-container');
+                }
             } else {
-                num.disabled = false;
-                range.disabled = false;
-                num.classList.remove('opacity-50', 'bg-surface-container');
-                range.classList.remove('opacity-50');
+                // Forward mode: show all, enable all
+                card.classList.remove('hidden', 'opacity-70', 'bg-surface-container');
+                card.style.pointerEvents = 'auto';
             }
         });
         
