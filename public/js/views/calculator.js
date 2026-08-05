@@ -437,16 +437,20 @@ window.CalculatorView = {
 
     setMode: function(mode) {
         this.currentMode = mode;
+        const checkAllContainer = document.getElementById('check-all').parentElement;
+        
         if (mode === 'forward') {
             this.elForward.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-surface-container-lowest text-primary shadow-sm';
             this.elReverse.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all text-secondary hover:bg-surface-container-low';
             this.elTargetContainer.classList.add('hidden');
             this.elResultLabel.innerText = "Prediksi Nilai Akhir";
+            checkAllContainer.classList.remove('hidden');
         } else {
             this.elReverse.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-surface-container-lowest text-primary shadow-sm';
             this.elForward.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all text-secondary hover:bg-surface-container-low';
             this.elTargetContainer.classList.remove('hidden');
             this.elResultLabel.innerText = "Target Rata-rata Tersisa";
+            checkAllContainer.classList.add('hidden');
         }
         
         if (mode === 'reverse') {
