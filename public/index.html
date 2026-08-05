@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -135,6 +136,10 @@
                 <span class="material-symbols-outlined" data-icon="task_alt">task_alt</span>
                 <span class="font-label-md text-label-md">To-do Tracker</span>
             </a>
+            <a data-view="statistics" class="nav-link flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-high transition-colors rounded-lg" href="#statistics">
+                <span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+                <span class="font-label-md text-label-md">Statistik</span>
+            </a>
         </div>
         <div class="p-4 border-t border-surface-border mb-4">
             <button onclick="window.app.openCloudSyncModal()" id="btn-cloud-sync" class="w-full flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-high transition-colors rounded-lg mb-1">
@@ -255,6 +260,7 @@
     <script src="js/views/calculator.js"></script>
     <script src="js/views/transcript.js"></script>
     <script src="js/views/tasks.js"></script>
+    <script src="js/views/statistics.js"></script>
     <script src="js/views/krs.js"></script>
     <script src="js/app.js"></script>
 </body>

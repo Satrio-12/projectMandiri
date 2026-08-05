@@ -12,7 +12,8 @@ class App {
             'semester': window.SemesterView,
             'transcript': window.TranscriptView,
             'tasks': window.TasksView,
-            'krs': window.KrsView
+            'krs': window.KrsView,
+            'statistics': window.StatisticsView
         };
         
         this.init();
