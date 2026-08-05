@@ -220,17 +220,19 @@ class Store {
         return true;
     }
 
-    updateFixedCourseScore(courseId, scoreData) {
-        const idx = this.data.krsFixed.findIndex(c => c.id === courseId);
-        if (idx !== -1) {
-            this.data.krsFixed[idx] = {
-                ...this.data.krsFixed[idx],
-                ...scoreData
-            };
+    updateFixedCourseScore(id, scoreData) {
+        if (!this.data.krsFixed) return;
+        const crs = this.data.krsFixed.find(c => c.id === id);
+        if (crs) {
+            crs.tugas = scoreData.tugas;
+            crs.uts = scoreData.uts;
+            crs.uas = scoreData.uas;
+            crs.grade = scoreData.grade;
+            if (scoreData.tugasDone !== undefined) crs.tugasDone = scoreData.tugasDone;
+            if (scoreData.utsDone !== undefined) crs.utsDone = scoreData.utsDone;
+            if (scoreData.uasDone !== undefined) crs.uasDone = scoreData.uasDone;
             this.saveLocal();
-            return true;
         }
-        return false;
     }
 
     moveFixedToSemester(semesterName) {

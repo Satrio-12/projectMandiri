@@ -37,15 +37,31 @@ class AcademicLogic {
         return (uts * Weights.uts) + (tugas * Weights.tugas) + (uas * Weights.uas);
     }
 
-    static calculateRequiredUAS(uts, tugas, targetLetter) {
+    static calculateDynamicTarget(scores, states, targetLetter) {
         const targetGrade = this.getGradeInfoFromLetter(targetLetter);
         if (!targetGrade) return null;
 
         const targetScore = targetGrade.min;
-        const currentScore = (uts * Weights.uts) + (tugas * Weights.tugas);
-        const requiredUas = (targetScore - currentScore) / Weights.uas;
+        let lockedScore = 0;
+        let unlockedWeight = 0;
 
-        return requiredUas;
+        if (states.tugasDone) lockedScore += scores.tugas * Weights.tugas;
+        else unlockedWeight += Weights.tugas;
+
+        if (states.utsDone) lockedScore += scores.uts * Weights.uts;
+        else unlockedWeight += Weights.uts;
+
+        if (states.uasDone) lockedScore += scores.uas * Weights.uas;
+        else unlockedWeight += Weights.uas;
+
+        if (unlockedWeight === 0) {
+            return { requiredScore: targetScore <= lockedScore ? 0 : 101, unlockedWeight: 0 };
+        }
+
+        const requiredTotalForUnlocked = targetScore - lockedScore;
+        const requiredAverage = requiredTotalForUnlocked / unlockedWeight;
+
+        return { requiredScore: requiredAverage, unlockedWeight };
     }
 
     static calculateIPS(courses) {

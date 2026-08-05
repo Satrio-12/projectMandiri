@@ -63,37 +63,52 @@ window.CalculatorView = {
                             </div>
                             
                             <div class="space-y-8" id="calculator-inputs">
-                                <!-- Tugas Slider -->
-                                <div class="space-y-3">
-                                    <div class="flex justify-between items-center">
-                                        <label class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
-                                            Tugas &amp; Kuis <span class="text-xs text-text-muted font-normal">(30%)</span>
+                                <!-- Tugas Card -->
+                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
+                                            <input type="checkbox" id="check-tugas" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
+                                            <span class="font-bold">Tugas & Kuis</span>
+                                            <span class="text-xs text-secondary bg-surface-container px-2 py-0.5 rounded-full font-bold">30%</span>
                                         </label>
-                                        <span class="font-headline-md text-headline-md text-primary" id="val-tugas">85</span>
+                                        <span class="text-xs font-bold text-success-green hidden" id="badge-tugas">KELUAR</span>
                                     </div>
-                                    <input id="input-tugas" max="100" min="0" type="range" value="85" class="w-full accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
+                                    <div class="flex items-center gap-4">
+                                        <input type="number" id="num-tugas" class="w-20 px-3 py-2 border border-outline-variant rounded-lg text-center font-bold text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none" min="0" max="100" value="85">
+                                        <input id="input-tugas" max="100" min="0" type="range" value="85" class="flex-1 accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
+                                    </div>
                                 </div>
-                                
-                                <!-- UTS Slider -->
-                                <div class="space-y-3">
-                                    <div class="flex justify-between items-center">
-                                        <label class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
-                                            UTS <span class="text-xs text-text-muted font-normal">(30%)</span>
+
+                                <!-- UTS Card -->
+                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
+                                            <input type="checkbox" id="check-uts" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
+                                            <span class="font-bold">UTS</span>
+                                            <span class="text-xs text-secondary bg-surface-container px-2 py-0.5 rounded-full font-bold">30%</span>
                                         </label>
-                                        <span class="font-headline-md text-headline-md text-primary" id="val-uts">78</span>
+                                        <span class="text-xs font-bold text-success-green hidden" id="badge-uts">KELUAR</span>
                                     </div>
-                                    <input id="input-uts" max="100" min="0" type="range" value="78" class="w-full accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
+                                    <div class="flex items-center gap-4">
+                                        <input type="number" id="num-uts" class="w-20 px-3 py-2 border border-outline-variant rounded-lg text-center font-bold text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none" min="0" max="100" value="78">
+                                        <input id="input-uts" max="100" min="0" type="range" value="78" class="flex-1 accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
+                                    </div>
                                 </div>
-                                
-                                <!-- UAS Slider -->
-                                <div class="space-y-3" id="uas-container">
-                                    <div class="flex justify-between items-center">
-                                        <label class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
-                                            UAS <span class="text-xs text-text-muted font-normal">(40%)</span>
+
+                                <!-- UAS Card -->
+                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group" id="uas-container">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
+                                            <input type="checkbox" id="check-uas" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
+                                            <span class="font-bold">UAS</span>
+                                            <span class="text-xs text-secondary bg-surface-container px-2 py-0.5 rounded-full font-bold">40%</span>
                                         </label>
-                                        <span class="font-headline-md text-headline-md text-primary" id="val-uas">82</span>
+                                        <span class="text-xs font-bold text-success-green hidden" id="badge-uas">KELUAR</span>
                                     </div>
-                                    <input id="input-uas" max="100" min="0" type="range" value="82" class="w-full accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
+                                    <div class="flex items-center gap-4">
+                                        <input type="number" id="num-uas" class="w-20 px-3 py-2 border border-outline-variant rounded-lg text-center font-bold text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none" min="0" max="100" value="82">
+                                        <input id="input-uas" max="100" min="0" type="range" value="82" class="flex-1 accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
+                                    </div>
                                 </div>
 
                                 <!-- Target Grade Input -->
@@ -177,13 +192,44 @@ window.CalculatorView = {
         this.elInputTugas = document.getElementById('input-tugas');
         this.elInputUts = document.getElementById('input-uts');
         this.elInputUas = document.getElementById('input-uas');
+        
+        this.elNumTugas = document.getElementById('num-tugas');
+        this.elNumUts = document.getElementById('num-uts');
+        this.elNumUas = document.getElementById('num-uas');
+        
+        this.elCheckTugas = document.getElementById('check-tugas');
+        this.elCheckUts = document.getElementById('check-uts');
+        this.elCheckUas = document.getElementById('check-uas');
 
         // Events
         this.elForward.addEventListener('click', () => this.setMode('forward'));
         this.elReverse.addEventListener('click', () => this.setMode('reverse'));
         
-        [this.elInputTugas, this.elInputUts, this.elInputUas].forEach(el => {
-            el.addEventListener('input', () => this.calculate(true)); // true means save
+        ['tugas', 'uts', 'uas'].forEach(key => {
+            const num = document.getElementById('num-' + key);
+            const range = document.getElementById('input-' + key);
+            const chk = document.getElementById('check-' + key);
+            
+            num.addEventListener('input', (e) => {
+                let val = parseFloat(e.target.value);
+                if (isNaN(val)) val = 0;
+                range.value = val;
+                this.calculate(true);
+            });
+            
+            range.addEventListener('input', (e) => {
+                num.value = e.target.value;
+                this.calculate(true);
+            });
+            
+            chk.addEventListener('change', () => {
+                const badge = document.getElementById('badge-' + key);
+                if (chk.checked) badge.classList.remove('hidden');
+                else badge.classList.add('hidden');
+                
+                this.setMode(this.currentMode);
+                this.calculate(true);
+            });
         });
 
         document.querySelectorAll('.target-btn').forEach(btn => {
@@ -280,6 +326,21 @@ window.CalculatorView = {
         this.elInputTugas.value = course.tugas || 80;
         this.elInputUts.value = course.uts || 80;
         this.elInputUas.value = course.uas || 80;
+        
+        this.elNumTugas.value = course.tugas || 80;
+        this.elNumUts.value = course.uts || 80;
+        this.elNumUas.value = course.uas || 80;
+        
+        this.elCheckTugas.checked = !!course.tugasDone;
+        this.elCheckUts.checked = !!course.utsDone;
+        this.elCheckUas.checked = !!course.uasDone;
+        
+        ['tugas', 'uts', 'uas'].forEach(key => {
+            const chk = document.getElementById('check-' + key);
+            const badge = document.getElementById('badge-' + key);
+            if (chk.checked) badge.classList.remove('hidden');
+            else badge.classList.add('hidden');
+        });
 
         this.setMode('forward');
         this.calculate(false); // don't save on load
@@ -297,16 +358,32 @@ window.CalculatorView = {
         if (mode === 'forward') {
             this.elForward.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-surface-container-lowest text-primary shadow-sm';
             this.elReverse.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all text-secondary hover:bg-surface-container-low';
-            this.elUasContainer.classList.remove('hidden');
             this.elTargetContainer.classList.add('hidden');
             this.elResultLabel.innerText = "Prediksi Nilai Akhir";
         } else {
             this.elReverse.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-surface-container-lowest text-primary shadow-sm';
             this.elForward.className = 'px-4 py-2 rounded-lg font-label-md text-label-md transition-all text-secondary hover:bg-surface-container-low';
-            this.elUasContainer.classList.add('hidden');
             this.elTargetContainer.classList.remove('hidden');
-            this.elResultLabel.innerText = "Target Skor UAS Minimal";
+            this.elResultLabel.innerText = "Target Rata-rata Tersisa";
         }
+        
+        ['tugas', 'uts', 'uas'].forEach(key => {
+            const chk = document.getElementById('check-' + key);
+            const num = document.getElementById('num-' + key);
+            const range = document.getElementById('input-' + key);
+            if (mode === 'reverse' && !chk.checked) {
+                num.disabled = true;
+                range.disabled = true;
+                num.classList.add('opacity-50', 'bg-surface-container');
+                range.classList.add('opacity-50');
+            } else {
+                num.disabled = false;
+                range.disabled = false;
+                num.classList.remove('opacity-50', 'bg-surface-container');
+                range.classList.remove('opacity-50');
+            }
+        });
+        
         this.calculate(false);
     },
 
@@ -322,13 +399,13 @@ window.CalculatorView = {
     },
 
     calculate: function(saveDraft = false) {
-        const tugas = parseInt(this.elInputTugas.value);
-        const uts = parseInt(this.elInputUts.value);
-        const uas = parseInt(this.elInputUas.value);
+        const tugas = parseFloat(this.elNumTugas.value) || 0;
+        const uts = parseFloat(this.elNumUts.value) || 0;
+        const uas = parseFloat(this.elNumUas.value) || 0;
 
-        document.getElementById('val-tugas').innerText = tugas;
-        document.getElementById('val-uts').innerText = uts;
-        document.getElementById('val-uas').innerText = uas;
+        const tugasDone = this.elCheckTugas.checked;
+        const utsDone = this.elCheckUts.checked;
+        const uasDone = this.elCheckUas.checked;
 
         const circle = document.getElementById('progress-circle');
         const radius = 110;
@@ -355,38 +432,61 @@ window.CalculatorView = {
                     statusBadge.className = "bg-danger-red/10 text-danger-red border border-danger-red/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
                     statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">error</span><span class="font-label-md text-label-md uppercase tracking-wider">Status: Tidak Lulus</span>`;
                 }
-
-                if (saveDraft && this.selectedCourseId) {
-                    window.appStore.updateFixedCourseScore(this.selectedCourseId, {
-                        tugas: tugas,
-                        uts: uts,
-                        uas: uas,
-                        grade: gradeInfo.letter
-                    });
-                }
             }
         } else {
-            const requiredUas = window.AcademicLogic.calculateRequiredUAS(uts, tugas, this.currentTarget);
+            const target = window.AcademicLogic.calculateDynamicTarget({tugas, uts, uas}, {tugasDone, utsDone, uasDone}, this.currentTarget);
             
-            const displayUas = Math.max(0, Math.min(100, requiredUas)).toFixed(1);
-            const percentage = Math.max(0, Math.min(100, requiredUas)) / 100;
+            if (!target) return;
+            const requiredAvg = target.requiredScore;
+            
+            const displayScore = Math.max(0, Math.min(100, requiredAvg)).toFixed(1);
+            const percentage = Math.max(0, Math.min(100, requiredAvg)) / 100;
             const offset = circumference - (percentage * circumference);
 
             circle.style.strokeDashoffset = offset;
-            document.getElementById('result-num').innerText = displayUas;
-            document.getElementById('result-letter').innerText = "Skor UAS";
+            
+            if (target.unlockedWeight === 0) {
+                document.getElementById('result-num').innerText = "-";
+                document.getElementById('result-letter').innerText = "Semua Terkunci";
+            } else {
+                document.getElementById('result-num').innerText = displayScore;
+                document.getElementById('result-letter').innerText = "Target Skor";
+            }
 
             const statusBadge = document.getElementById('status-badge');
-            if (requiredUas > 100) {
+            if (target.unlockedWeight === 0) {
+                if (requiredAvg === 0) {
+                    statusBadge.className = "bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
+                    statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">auto_awesome</span><span class="font-label-md text-label-md uppercase tracking-wider">Sudah Tercapai!</span>`;
+                } else {
+                    statusBadge.className = "bg-danger-red/10 text-danger-red border border-danger-red/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
+                    statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">error</span><span class="font-label-md text-label-md uppercase tracking-wider">Gagal Tercapai</span>`;
+                }
+            } else if (requiredAvg > 100) {
                 statusBadge.className = "bg-danger-red/10 text-danger-red border border-danger-red/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
                 statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">warning</span><span class="font-label-md text-label-md uppercase tracking-wider">Target Mustahil</span>`;
-            } else if (requiredUas <= 0) {
+            } else if (requiredAvg <= 0) {
                 statusBadge.className = "bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
-                statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">auto_awesome</span><span class="font-label-md text-label-md uppercase tracking-wider">Sudah Tercapai</span>`;
+                statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">auto_awesome</span><span class="font-label-md text-label-md uppercase tracking-wider">Sudah Aman</span>`;
             } else {
                 statusBadge.className = "bg-primary/10 text-primary border border-primary/20 px-6 py-2 rounded-full flex items-center gap-2 mb-8";
                 statusBadge.innerHTML = `<span class="material-symbols-outlined text-sm">flag</span><span class="font-label-md text-label-md uppercase tracking-wider">Mungkin Dicapai</span>`;
             }
+        }
+        
+        if (saveDraft && this.selectedCourseId) {
+            const total = window.AcademicLogic.calculateFinalScore(uts, tugas, uas);
+            const gradeInfo = window.AcademicLogic.getGradeInfoFromScore(total);
+            
+            window.appStore.updateFixedCourseScore(this.selectedCourseId, {
+                tugas: tugas,
+                uts: uts,
+                uas: uas,
+                tugasDone: tugasDone,
+                utsDone: utsDone,
+                uasDone: uasDone,
+                grade: gradeInfo ? gradeInfo.letter : 'E'
+            });
         }
     }
 };
