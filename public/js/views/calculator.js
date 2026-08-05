@@ -53,106 +53,103 @@ window.CalculatorView = {
                     </div>
                 </div>
 
-                <div class="grid grid-cols-12 gap-gutter">
-                    <!-- Left Panel: Inputs -->
-                    <div class="col-span-12 lg:col-span-5 space-y-gutter">
-                        <div class="bg-surface-container-lowest rounded-xl border border-surface-border p-md shadow-sm">
-                            <div class="flex items-center justify-between mb-6">
-                                <h4 class="font-headline-md text-headline-md text-primary">Komponen Nilai</h4>
-                                <span class="material-symbols-outlined text-secondary">tune</span>
-                            </div>
-                            
-                            <div class="space-y-8" id="calculator-inputs">
-                                <!-- Tugas Card -->
-                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group" id="card-tugas">
-                                    <div class="flex justify-between items-center mb-4">
-                                        <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
-                                            <input type="checkbox" id="check-tugas" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
-                                            <span class="font-bold">Tugas & Kuis</span>
-                                            <span class="text-xs text-secondary bg-surface-container px-2 py-0.5 rounded-full font-bold">30%</span>
-                                        </label>
-                                        <span class="text-xs font-bold text-success-green hidden" id="badge-tugas">KELUAR</span>
-                                    </div>
-                                    <div class="flex items-center gap-4">
-                                        <input type="number" id="num-tugas" class="w-20 px-3 py-2 border border-outline-variant rounded-lg text-center font-bold text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none" min="0" max="100" value="85">
-                                        <input id="input-tugas" max="100" min="0" type="range" value="85" class="flex-1 accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
-                                    </div>
-                                </div>
-
-                                <!-- UTS Card -->
-                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group" id="card-uts">
-                                    <div class="flex justify-between items-center mb-4">
-                                        <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
-                                            <input type="checkbox" id="check-uts" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
-                                            <span class="font-bold">UTS</span>
-                                            <span class="text-xs text-secondary bg-surface-container px-2 py-0.5 rounded-full font-bold">30%</span>
-                                        </label>
-                                        <span class="text-xs font-bold text-success-green hidden" id="badge-uts">KELUAR</span>
-                                    </div>
-                                    <div class="flex items-center gap-4">
-                                        <input type="number" id="num-uts" class="w-20 px-3 py-2 border border-outline-variant rounded-lg text-center font-bold text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none" min="0" max="100" value="78">
-                                        <input id="input-uts" max="100" min="0" type="range" value="78" class="flex-1 accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
-                                    </div>
-                                </div>
-
-                                <!-- UAS Card -->
-                                <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low hover:bg-surface-container-lowest transition-colors group" id="card-uas">
-                                    <div class="flex justify-between items-center mb-4">
-                                        <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
-                                            <input type="checkbox" id="check-uas" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
-                                            <span class="font-bold">UAS</span>
-                                            <span class="text-xs text-secondary bg-surface-container px-2 py-0.5 rounded-full font-bold">40%</span>
-                                        </label>
-                                        <span class="text-xs font-bold text-success-green hidden" id="badge-uas">KELUAR</span>
-                                    </div>
-                                    <div class="flex items-center gap-4">
-                                        <input type="number" id="num-uas" class="w-20 px-3 py-2 border border-outline-variant rounded-lg text-center font-bold text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none" min="0" max="100" value="82">
-                                        <input id="input-uas" max="100" min="0" type="range" value="82" class="flex-1 accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
-                                    </div>
-                                </div>
-
-                                <!-- Target Grade Input -->
-                                <div class="space-y-3 hidden" id="target-container">
-                                    <label class="font-label-md text-label-md text-on-surface-variant">Target Nilai Akhir (Huruf)</label>
-                                    <div class="flex flex-wrap gap-2" id="target-buttons">
-                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-on-primary bg-primary" data-target="A">A</button>
-                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="A-">A-</button>
-                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="B+">B+</button>
-                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="B">B</button>
-                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="B-">B-</button>
-                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="C+">C+</button>
-                                        <button class="target-btn px-4 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10" data-target="C">C</button>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="flex flex-col gap-6 max-w-2xl mx-auto w-full">
+                    
+                    <!-- Target Grade Input (Top in Target Mode) -->
+                    <div class="space-y-4 hidden bg-surface-container-lowest rounded-xl border border-surface-border p-6 shadow-sm" id="target-container">
+                        <label class="font-headline-sm text-headline-sm text-primary block text-center mb-2">Target Nilai Akhir (Huruf)</label>
+                        <div class="flex flex-wrap justify-center gap-3" id="target-buttons">
+                            <button class="target-btn px-6 py-2 border border-surface-border rounded-lg font-bold text-on-primary bg-primary shadow-sm" data-target="A">A</button>
+                            <button class="target-btn px-6 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10 shadow-sm" data-target="A-">A-</button>
+                            <button class="target-btn px-6 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10 shadow-sm" data-target="B+">B+</button>
+                            <button class="target-btn px-6 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10 shadow-sm" data-target="B">B</button>
+                            <button class="target-btn px-6 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10 shadow-sm" data-target="B-">B-</button>
+                            <button class="target-btn px-6 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10 shadow-sm" data-target="C+">C+</button>
+                            <button class="target-btn px-6 py-2 border border-surface-border rounded-lg font-bold text-primary hover:bg-primary-container/10 shadow-sm" data-target="C">C</button>
                         </div>
                     </div>
 
-                    <!-- Right Panel: Results Visualization -->
-                    <div class="col-span-12 lg:col-span-7">
-                        <div class="bg-surface-container-lowest rounded-xl border border-surface-border overflow-hidden shadow-md flex flex-col h-full relative">
-                            <div class="p-xl relative z-10 flex flex-col items-center justify-center text-center flex-1">
-                                <p class="font-label-md text-label-md text-text-muted mb-4 uppercase tracking-widest" id="result-label">Prediksi Nilai Akhir</p>
-                                
-                                <!-- Large Circular Display -->
-                                <div class="relative w-64 h-64 flex items-center justify-center mb-8">
-                                    <svg class="w-full h-full transform -rotate-90">
-                                        <circle class="text-surface-container" cx="128" cy="128" fill="transparent" r="110" stroke="currentColor" stroke-width="12"></circle>
-                                        <circle class="text-primary transition-all duration-500 ease-out" cx="128" cy="128" fill="transparent" id="progress-circle" r="110" stroke="currentColor" stroke-dasharray="691" stroke-dashoffset="138" stroke-width="12"></circle>
-                                    </svg>
-                                    <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                        <span class="font-headline-xl text-headline-xl text-primary" id="result-num" style="font-size: 64px; line-height: 1;">81.5</span>
-                                        <div class="h-px w-12 bg-outline-variant my-2"></div>
-                                        <span class="font-headline-lg text-headline-lg text-secondary" id="result-letter">A</span>
-                                    </div>
+                    <!-- Diagram Panel (Middle) -->
+                    <div class="bg-surface-container-lowest rounded-xl border border-surface-border overflow-hidden shadow-sm flex flex-col relative py-8 px-6">
+                        <div class="relative z-10 flex flex-col items-center justify-center text-center">
+                            <p class="font-label-md text-label-md text-text-muted mb-6 uppercase tracking-widest" id="result-label">Prediksi Nilai Akhir</p>
+                            
+                            <!-- Large Circular Display -->
+                            <div class="relative w-56 h-56 flex items-center justify-center mb-8">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle class="text-surface-container" cx="112" cy="112" fill="transparent" r="96" stroke="currentColor" stroke-width="12"></circle>
+                                    <circle class="text-primary transition-all duration-500 ease-out" cx="112" cy="112" fill="transparent" id="progress-circle" r="96" stroke="currentColor" stroke-dasharray="603" stroke-dashoffset="120" stroke-width="12"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span class="font-headline-xl text-headline-xl text-primary" id="result-num" style="font-size: 56px; line-height: 1;">81.5</span>
+                                    <div class="h-px w-12 bg-outline-variant my-2"></div>
+                                    <span class="font-headline-lg text-headline-lg text-secondary" id="result-letter">A</span>
                                 </div>
-                                
-                                <!-- Status Badge -->
-                                <div id="status-badge" class="bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-4">
-                                    <span class="material-symbols-outlined text-sm">check_circle</span>
-                                    <span class="font-label-md text-label-md uppercase tracking-wider">Status: Lulus</span>
+                            </div>
+                            
+                            <!-- Status Badge -->
+                            <div id="status-badge" class="bg-success-green/10 text-success-green border border-success-green/20 px-6 py-2 rounded-full flex items-center gap-2 mb-4">
+                                <span class="material-symbols-outlined text-sm">check_circle</span>
+                                <span class="font-label-md text-label-md uppercase tracking-wider">Status: Lulus</span>
+                            </div>
+                            <div id="target-breakdown" class="text-primary font-bold text-center px-4"></div>
+                        </div>
+                    </div>
+
+                    <!-- Cards Panel (Bottom) -->
+                    <div class="bg-surface-container-lowest rounded-xl border border-surface-border p-6 shadow-sm">
+                        <div class="flex items-center justify-between mb-6">
+                            <h4 class="font-headline-md text-headline-md text-primary">Komponen Nilai</h4>
+                            <span class="material-symbols-outlined text-secondary">tune</span>
+                        </div>
+                        
+                        <div class="space-y-4" id="calculator-inputs">
+                            <!-- Tugas Card -->
+                            <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low transition-colors group" id="card-tugas">
+                                <div class="flex justify-between items-center mb-4">
+                                    <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
+                                        <input type="checkbox" id="check-tugas" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
+                                        <span class="font-bold">Tugas & Kuis</span>
+                                        <span class="text-xs text-secondary bg-surface-container px-2 py-0.5 rounded-full font-bold">30%</span>
+                                    </label>
+                                    <span class="text-xs font-bold text-success-green hidden" id="badge-tugas">KELUAR</span>
                                 </div>
-                                <div id="target-breakdown" class="text-primary font-bold text-center px-4"></div>
+                                <div class="flex items-center gap-4">
+                                    <input type="number" id="num-tugas" class="w-20 px-3 py-2 border border-outline-variant rounded-lg text-center font-bold text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none" min="0" max="100" value="85">
+                                    <input id="input-tugas" max="100" min="0" type="range" value="85" class="flex-1 accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
+                                </div>
+                            </div>
+
+                            <!-- UTS Card -->
+                            <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low transition-colors group" id="card-uts">
+                                <div class="flex justify-between items-center mb-4">
+                                    <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
+                                        <input type="checkbox" id="check-uts" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
+                                        <span class="font-bold">UTS</span>
+                                        <span class="text-xs text-secondary bg-surface-container px-2 py-0.5 rounded-full font-bold">30%</span>
+                                    </label>
+                                    <span class="text-xs font-bold text-success-green hidden" id="badge-uts">KELUAR</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <input type="number" id="num-uts" class="w-20 px-3 py-2 border border-outline-variant rounded-lg text-center font-bold text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none" min="0" max="100" value="78">
+                                    <input id="input-uts" max="100" min="0" type="range" value="78" class="flex-1 accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
+                                </div>
+                            </div>
+
+                            <!-- UAS Card -->
+                            <div class="p-4 border border-surface-border rounded-xl bg-surface-container-low transition-colors group" id="card-uas">
+                                <div class="flex justify-between items-center mb-4">
+                                    <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors">
+                                        <input type="checkbox" id="check-uas" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
+                                        <span class="font-bold">UAS</span>
+                                        <span class="text-xs text-secondary bg-surface-container px-2 py-0.5 rounded-full font-bold">40%</span>
+                                    </label>
+                                    <span class="text-xs font-bold text-success-green hidden" id="badge-uas">KELUAR</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <input type="number" id="num-uas" class="w-20 px-3 py-2 border border-outline-variant rounded-lg text-center font-bold text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none" min="0" max="100" value="82">
+                                    <input id="input-uas" max="100" min="0" type="range" value="82" class="flex-1 accent-primary h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -401,16 +398,24 @@ window.CalculatorView = {
             if (mode === 'reverse') {
                 num.disabled = true;
                 range.disabled = true;
+                chk.disabled = true;
+                
                 if (!chk.checked) {
                     // Show but highlight as target
                     card.classList.remove('hidden', 'opacity-70', 'bg-surface-container');
                     card.classList.add('border-primary', 'bg-primary/5');
                     card.style.pointerEvents = 'none';
+                    
+                    chk.classList.add('hidden'); // hide checkbox
+                    range.classList.add('hidden'); // hide slider
                 } else {
                     // Show locked items dimmed
                     card.classList.remove('hidden', 'border-primary', 'bg-primary/5');
                     card.style.pointerEvents = 'none';
                     card.classList.add('opacity-70', 'bg-surface-container');
+                    
+                    chk.classList.remove('hidden');
+                    range.classList.remove('hidden');
                 }
             } else {
                 // Forward mode: show all, enable all
@@ -418,6 +423,9 @@ window.CalculatorView = {
                 card.style.pointerEvents = 'auto';
                 num.disabled = false;
                 range.disabled = false;
+                chk.disabled = false;
+                chk.classList.remove('hidden');
+                range.classList.remove('hidden');
             }
         });
         
@@ -445,7 +453,7 @@ window.CalculatorView = {
         const uasDone = this.elCheckUas.checked;
 
         const circle = document.getElementById('progress-circle');
-        const radius = 110;
+        const radius = 96;
         const circumference = 2 * Math.PI * radius;
 
         if (this.currentMode === 'forward') {
