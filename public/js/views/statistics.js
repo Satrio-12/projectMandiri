@@ -109,7 +109,7 @@ window.StatisticsView = {
         // We have to calculate IPK cumulatively for each semester
         for (let i = 0; i < semesters.length; i++) {
             const sem = semesters[i];
-            labels.push(sem.name || \`Semester \${i+1}\`);
+            labels.push(sem.name || `Semester ${i+1}`);
             
             // Calculate IPS for this semester specifically
             const ips = window.AcademicLogic.calculateIPS(sem.courses);

@@ -275,7 +275,7 @@ window.DashboardView = {
             const ipkData = [];
             
             for (let i = 0; i < data.semesters.length; i++) {
-                labels.push(data.semesters[i].name || \`Sem \${i+1}\`);
+                labels.push(data.semesters[i].name || `Sem ${i+1}`);
                 const historicalSlice = data.semesters.slice(0, i + 1);
                 const cumulativeInfo = window.AcademicLogic.calculateIPKAndSKS(historicalSlice);
                 ipkData.push(cumulativeInfo.ipk);
