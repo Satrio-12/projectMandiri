@@ -104,7 +104,10 @@ window.CalculatorView = {
                     <div class="bg-surface-container-lowest rounded-xl border border-surface-border p-6 shadow-sm">
                         <div class="flex items-center justify-between mb-6">
                             <h4 class="font-headline-md text-headline-md text-primary">Komponen Nilai</h4>
-                            <span class="material-symbols-outlined text-secondary">tune</span>
+                            <label class="flex items-center gap-2 cursor-pointer group-hover:text-primary transition-colors text-sm border border-outline-variant rounded-full px-3 py-1">
+                                <input type="checkbox" id="check-all" class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary focus:ring-2">
+                                <span class="font-bold text-secondary text-xs uppercase tracking-wider">Pilih Semua</span>
+                            </label>
                         </div>
                         
                         <div class="space-y-4" id="calculator-inputs">
@@ -205,10 +208,27 @@ window.CalculatorView = {
         this.elCheckTugas = document.getElementById('check-tugas');
         this.elCheckUts = document.getElementById('check-uts');
         this.elCheckUas = document.getElementById('check-uas');
+        this.elCheckAll = document.getElementById('check-all');
 
         // Events
         this.elForward.addEventListener('click', () => this.setMode('forward'));
         this.elReverse.addEventListener('click', () => this.setMode('reverse'));
+        
+        this.elCheckAll.addEventListener('change', (e) => {
+            const isChecked = e.target.checked;
+            this.elCheckTugas.checked = isChecked;
+            this.elCheckUts.checked = isChecked;
+            this.elCheckUas.checked = isChecked;
+            
+            ['tugas', 'uts', 'uas'].forEach(key => {
+                const badge = document.getElementById('badge-' + key);
+                if (isChecked) badge.classList.remove('hidden');
+                else badge.classList.add('hidden');
+            });
+            
+            this.setMode(this.currentMode);
+            this.calculate(true);
+        });
         
         ['tugas', 'uts', 'uas'].forEach(key => {
             const num = document.getElementById('num-' + key);
@@ -232,6 +252,8 @@ window.CalculatorView = {
                 if (chk.checked) badge.classList.remove('hidden');
                 else badge.classList.add('hidden');
                 
+                this.elCheckAll.checked = (this.elCheckTugas.checked && this.elCheckUts.checked && this.elCheckUas.checked);
+
                 this.setMode(this.currentMode);
                 this.calculate(true);
             });
@@ -293,11 +315,18 @@ window.CalculatorView = {
             if(summaryPanel) {
                 summaryPanel.classList.remove('hidden');
                 
-                // HANYA ambil kursus yang sudah KELUAR SEMUA (Nilai Akhir)
-                const finalizedCourses = krsFixed.filter(crs => crs.tugasDone && crs.utsDone && crs.uasDone);
+                // Sesuai permintaan pengguna: IPS/IPK dihitung membagi TOTAL SKS semester ini.
+                // Jika nilai belum keluar, dianggap menyumbang 0 mutu (diberi nilai 'E').
+                const accumulatedKrsFixed = krsFixed.map(crs => {
+                    const isFinalized = crs.tugasDone && crs.utsDone && crs.uasDone;
+                    return {
+                        ...crs,
+                        grade: isFinalized ? crs.grade : 'E'
+                    };
+                });
                 
-                const ips = window.AcademicLogic.calculateIPS(finalizedCourses);
-                const tempSemesters = [...(window.appStore.data.semesters || []), { courses: finalizedCourses }];
+                const ips = window.AcademicLogic.calculateIPS(accumulatedKrsFixed);
+                const tempSemesters = [...(window.appStore.data.semesters || []), { courses: accumulatedKrsFixed }];
                 const ipkData = window.AcademicLogic.calculateIPKAndSKS(tempSemesters);
                 const jatahSks = window.AcademicLogic.getJatahSKS(ips);
 
@@ -386,6 +415,7 @@ window.CalculatorView = {
         this.elCheckTugas.checked = !!course.tugasDone;
         this.elCheckUts.checked = !!course.utsDone;
         this.elCheckUas.checked = !!course.uasDone;
+        this.elCheckAll.checked = (this.elCheckTugas.checked && this.elCheckUts.checked && this.elCheckUas.checked);
         
         ['tugas', 'uts', 'uas'].forEach(key => {
             const chk = document.getElementById('check-' + key);
