@@ -182,6 +182,27 @@ window.CalculatorView = {
                 </div>
             </div>
         </div>
+
+        <!-- Modal: Pindahkan Satu Matkul ke Riwayat Semester -->
+        <div id="modal-move-single" class="fixed inset-0 z-[100] hidden bg-inverse-surface/50 backdrop-blur-sm flex items-center justify-center">
+            <div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-md p-6 mx-4">
+                <div class="flex items-center gap-3 text-success-green mb-2">
+                    <span class="material-symbols-outlined text-3xl">task_alt</span>
+                    <h3 class="font-headline-md text-on-surface">Kirim ke Semester</h3>
+                </div>
+                <p class="text-secondary text-sm mb-6">Pilih semester tujuan untuk menyimpan nilai akhir mata kuliah ini secara permanen.</p>
+                
+                <label class="block text-sm mb-1 text-secondary font-bold">Pilih Semester Tujuan</label>
+                <select id="select-move-single" class="w-full border-outline-variant rounded-lg p-2 mb-6 focus:ring-success-green focus:border-success-green">
+                    <!-- Populated by JS -->
+                </select>
+
+                <div class="flex justify-end gap-2">
+                    <button onclick="window.CalculatorView.closeSingleModal()" class="px-4 py-2 text-secondary hover:bg-surface-container-high rounded-lg transition-colors">Batal</button>
+                    <button onclick="window.CalculatorView.confirmMoveSingle()" class="px-4 py-2 bg-success-green text-white rounded-lg hover:opacity-90 transition-opacity">Kirim Nilai</button>
+                </div>
+            </div>
+        </div>
         `;
     },
 
@@ -291,6 +312,45 @@ window.CalculatorView = {
                 alert("Mohon isi nama semester");
             }
         };
+
+        window.CalculatorView.openSingleModal = (courseId) => {
+            this.singleCourseToMove = courseId;
+            const selectEl = document.getElementById('select-move-single');
+            const semesters = window.appStore.data.semesters || [];
+            
+            let html = '<option value="new">+ Buat Semester Baru</option>';
+            semesters.forEach(s => {
+                html += `<option value="${s.id}">${s.name}</option>`;
+            });
+            selectEl.innerHTML = html;
+            
+            if (semesters.length > 0) {
+                selectEl.value = semesters[semesters.length - 1].id;
+            }
+            
+            document.getElementById('modal-move-single').classList.remove('hidden');
+        };
+
+        window.CalculatorView.closeSingleModal = () => {
+            this.singleCourseToMove = null;
+            document.getElementById('modal-move-single').classList.add('hidden');
+        };
+
+        window.CalculatorView.confirmMoveSingle = () => {
+            const courseId = this.singleCourseToMove;
+            const semesterId = document.getElementById('select-move-single').value;
+            
+            if (courseId && semesterId) {
+                const success = window.appStore.moveSingleCourseToSemester(courseId, semesterId);
+                if (success) {
+                    this.closeSingleModal();
+                    window.app.showToast('Matkul berhasil dikirim ke Manajemen Semester!');
+                    this.updateView();
+                } else {
+                    alert('Gagal memindahkan matkul.');
+                }
+            }
+        };
     },
 
     unsubscribe: function() {
@@ -366,24 +426,38 @@ window.CalculatorView = {
                     ? `<span class="flex items-center gap-1 text-success-green font-bold"><span class="material-symbols-outlined text-[16px]">check_circle</span> Nilai Akhir: ${numericScore}</span>`
                     : `<span class="flex items-center gap-1 text-secondary"><span class="material-symbols-outlined text-[16px]">tune</span> Draf: ${numericScore}</span>`;
 
-                return `
-                <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span class="text-xs font-bold text-secondary tracking-widest uppercase mb-1 block">${crs.code}</span>
-                            <h4 class="font-headline-md text-on-surface">${crs.name}</h4>
-                        </div>
-                        <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
-                            ${draftGrade}
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4 text-sm mb-6">
-                        <span class="flex items-center gap-1 text-secondary"><span class="material-symbols-outlined text-[16px]">menu_book</span> ${crs.sks} SKS</span>
-                        ${statusHtml}
-                    </div>
-                    <button onclick="window.CalculatorView.openDetail('${crs.id}')" class="w-full py-2 bg-surface-container-high text-primary hover:bg-surface-container-highest rounded-lg transition-colors font-label-md border border-outline-variant">
+                const btnActionHtml = isAllLocked
+                    ? `
+                    <div class="flex gap-2">
+                        <button onclick="window.CalculatorView.openDetail('${crs.id}')" class="flex-1 py-2 bg-surface-container-high text-primary hover:bg-surface-container-highest rounded-lg transition-colors font-label-md border border-outline-variant">
+                            Ubah
+                        </button>
+                        <button onclick="window.CalculatorView.openSingleModal('${crs.id}')" class="flex-1 py-2 bg-success-green text-white hover:bg-success-green/90 rounded-lg transition-colors font-label-md flex items-center justify-center gap-1">
+                            <span class="material-symbols-outlined text-sm">send</span> Kirim
+                        </button>
+                    </div>`
+                    : `<button onclick="window.CalculatorView.openDetail('${crs.id}')" class="w-full py-2 bg-surface-container-high text-primary hover:bg-surface-container-highest rounded-lg transition-colors font-label-md border border-outline-variant">
                         Simulasi Nilai
-                    </button>
+                    </button>`;
+
+                return `
+                <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-xs font-bold text-secondary tracking-widest uppercase mb-1 block">${crs.code}</span>
+                                <h4 class="font-headline-md text-on-surface">${crs.name}</h4>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
+                                ${draftGrade}
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 text-sm mb-6">
+                            <span class="flex items-center gap-1 text-secondary"><span class="material-symbols-outlined text-[16px]">menu_book</span> ${crs.sks} SKS</span>
+                            ${statusHtml}
+                        </div>
+                    </div>
+                    ${btnActionHtml}
                 </div>
                 `;
             }).join('');

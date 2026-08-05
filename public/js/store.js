@@ -266,6 +266,43 @@ class Store {
         return semester;
     }
 
+    moveSingleCourseToSemester(courseId, semesterId) {
+        const courseIndex = this.data.krsFixed.findIndex(c => c.id === courseId);
+        if (courseIndex === -1) return null;
+        
+        const crs = this.data.krsFixed[courseIndex];
+        const newCourse = {
+            id: 'crs_' + Math.random().toString(36).substring(2, 9),
+            code: crs.code,
+            name: crs.name,
+            sks: crs.sks,
+            grade: crs.grade || 'A'
+        };
+
+        if (semesterId === 'new') {
+            const semester = {
+                id: 'sem_' + Date.now(),
+                name: 'Semester ' + (this.data.semesters.length + 1),
+                courses: [newCourse],
+                extraSksLimit: 0
+            };
+            this.data.semesters.push(semester);
+        } else {
+            const sem = this.data.semesters.find(s => s.id === semesterId);
+            if (sem) {
+                if (!sem.courses) sem.courses = [];
+                sem.courses.push(newCourse);
+            } else {
+                return null;
+            }
+        }
+        
+        this.data.krsFixed.splice(courseIndex, 1);
+        this.recalculateRetakes(newCourse.code);
+        this.saveLocal();
+        return true;
+    }
+
     // -- Tasks --
     
     addTask(task) {
