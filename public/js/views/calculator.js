@@ -286,6 +286,19 @@ window.CalculatorView = {
             const listEl = document.getElementById('calc-course-list');
             listEl.innerHTML = krsFixed.map(crs => {
                 const draftGrade = crs.grade || 'A';
+                
+                // Calculate numeric score
+                const tugas = parseFloat(crs.tugas) || 80;
+                const uts = parseFloat(crs.uts) || 80;
+                const uas = parseFloat(crs.uas) || 80;
+                const numericScore = window.AcademicLogic.calculateFinalScore(uts, tugas, uas).toFixed(1);
+                
+                const isAllLocked = crs.tugasDone && crs.utsDone && crs.uasDone;
+                
+                const statusHtml = isAllLocked 
+                    ? `<span class="flex items-center gap-1 text-success-green font-bold"><span class="material-symbols-outlined text-[16px]">check_circle</span> Nilai Akhir: ${numericScore}</span>`
+                    : `<span class="flex items-center gap-1 text-secondary"><span class="material-symbols-outlined text-[16px]">tune</span> Draf: ${numericScore}</span>`;
+
                 return `
                 <div class="bg-surface-container-lowest border border-surface-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
                     <div class="flex justify-between items-start mb-4">
@@ -297,9 +310,9 @@ window.CalculatorView = {
                             ${draftGrade}
                         </div>
                     </div>
-                    <div class="flex items-center gap-4 text-sm text-secondary mb-6">
-                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">menu_book</span> ${crs.sks} SKS</span>
-                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">tune</span> Draf Nilai</span>
+                    <div class="flex items-center gap-4 text-sm mb-6">
+                        <span class="flex items-center gap-1 text-secondary"><span class="material-symbols-outlined text-[16px]">menu_book</span> ${crs.sks} SKS</span>
+                        ${statusHtml}
                     </div>
                     <button onclick="window.CalculatorView.openDetail('${crs.id}')" class="w-full py-2 bg-surface-container-high text-primary hover:bg-surface-container-highest rounded-lg transition-colors font-label-md border border-outline-variant">
                         Simulasi Nilai
