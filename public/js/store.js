@@ -212,6 +212,9 @@ class Store {
                 code: crs.code,
                 name: crs.name,
                 sks: crs.sks,
+                day: crs.day,
+                timeStart: crs.timeStart,
+                timeEnd: crs.timeEnd,
                 grade: 'A' // Temp grade
             };
             this.data.krsFixed.push(newCourse);
@@ -230,7 +233,10 @@ class Store {
                 id: 'krs_' + Math.random().toString(36).substring(2, 9),
                 code: crs.code,
                 name: crs.name,
-                sks: crs.sks
+                sks: crs.sks,
+                day: crs.day,
+                timeStart: crs.timeStart,
+                timeEnd: crs.timeEnd
             });
         });
         this.data.krsFixed = [];
