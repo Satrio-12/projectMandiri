@@ -141,6 +141,52 @@ window.TargetIpkView = {
             return 'Aman (Minimal C)';
         };
 
+        const getDetailedBreakdown = (ips, remainingSks) => {
+            if (ips > 4.00) return null;
+            if (ips <= 2.00) return `Cukup ambil campuran nilai C dan D/E, Anda sudah aman!`;
+            
+            const grades = [
+                { letter: 'A', gpa: 4.00 },
+                { letter: 'A-', gpa: 3.67 },
+                { letter: 'B+', gpa: 3.33 },
+                { letter: 'B', gpa: 3.00 },
+                { letter: 'B-', gpa: 2.67 },
+                { letter: 'C+', gpa: 2.33 },
+                { letter: 'C', gpa: 2.00 }
+            ];
+
+            let G1, G2;
+            for (let i = 0; i < grades.length - 1; i++) {
+                if (ips <= grades[i].gpa && ips > grades[i+1].gpa) {
+                    G1 = grades[i];
+                    G2 = grades[i+1];
+                    break;
+                }
+            }
+            
+            if (!G1) {
+                if (ips === 4.00) return `Sempurna! Anda wajib mendapat nilai A di seluruh ${remainingSks} SKS tersisa.`;
+                return `Sistem tidak dapat memproyeksikan.`;
+            }
+
+            const M = ips * remainingSks;
+            let x = Math.ceil((M - remainingSks * G2.gpa) / (G1.gpa - G2.gpa));
+            if (x < 0) x = 0;
+            if (x > remainingSks) x = remainingSks;
+            
+            let y = remainingSks - x;
+            
+            if (x === remainingSks || y === 0) return `Anda wajib mendapat nilai <span class="font-bold">${G1.letter}</span> di seluruh ${remainingSks} SKS tersisa.`;
+            if (y === remainingSks || x === 0) return `Anda wajib mendapat nilai <span class="font-bold">${G2.letter}</span> di seluruh ${remainingSks} SKS tersisa.`;
+
+            return `Sisa SKS kelulusan Anda adalah ${remainingSks} SKS. Secara realistis, Anda minimal harus mendapatkan rincian nilai berikut di masa depan:<br/>
+<ul class="list-disc list-inside mt-3 mb-2 text-left bg-surface-container/30 rounded-xl p-4 border border-surface-border inline-block min-w-[250px]">
+  <li class="mb-1"><span class="font-bold text-primary text-base">${x} SKS</span> harus bernilai <span class="font-bold text-base text-primary">${G1.letter}</span></li>
+  <li><span class="font-bold text-secondary text-base">${y} SKS</span> boleh bernilai <span class="font-bold text-base text-secondary">${G2.letter}</span></li>
+</ul><br/>
+<span class="text-xs text-outline font-italic">(Target ini dihitung berdasarkan batas nilai paling optimal)</span>`;
+        };
+
         const calculateTarget = () => {
             const targetIpk = parseFloat(newTargetInput.value);
             const targetTotalSks = 144;
@@ -176,16 +222,16 @@ window.TargetIpkView = {
             
             if (requiredAverageIps > 4.00) {
                 resEl.innerText = "Mustahil";
-                msgEl.innerText = `Untuk mencapai IPK ${targetIpk.toFixed(2)} pada sisa ${remainingSks} SKS, Anda butuh rata-rata nilai di atas A. Sayangnya batas maksimal adalah A (4.00). Target ini secara matematis tidak bisa dicapai.`;
+                msgEl.innerHTML = `Untuk mencapai IPK ${targetIpk.toFixed(2)} pada sisa ${remainingSks} SKS, Anda butuh rata-rata nilai di atas A. Sayangnya batas maksimal adalah A (4.00). Target ini secara matematis tidak bisa dicapai.`;
                 msgEl.className = "text-sm mt-4 text-danger-red font-bold max-w-lg mx-auto z-10";
             } else if (requiredAverageIps <= 0) {
                 resEl.innerText = "Aman";
-                msgEl.innerText = `Luar biasa! Walaupun Anda mendapat nilai D/E di sisa ${remainingSks} SKS, Anda akan tetap lulus dengan IPK minimal ${targetIpk.toFixed(2)}.`;
+                msgEl.innerHTML = `Luar biasa! Walaupun Anda mendapat nilai D/E di sisa ${remainingSks} SKS, Anda akan tetap lulus dengan IPK minimal ${targetIpk.toFixed(2)}.`;
                 msgEl.className = "text-sm mt-4 text-success-green font-bold max-w-lg mx-auto z-10";
             } else {
                 resEl.innerText = getLetterText(requiredAverageIps);
-                msgEl.innerText = `Sisa SKS kelulusan: ${remainingSks} SKS. Anda wajib mendominasi nilai "${getLetterText(requiredAverageIps)}" (Rata-rata IPS minimal: ${requiredAverageIps.toFixed(2)}) di setiap sisa semester untuk lulus dengan IPK ${targetIpk.toFixed(2)}.`;
-                msgEl.className = "text-sm mt-4 text-primary font-bold max-w-lg mx-auto z-10";
+                msgEl.innerHTML = getDetailedBreakdown(requiredAverageIps, remainingSks);
+                msgEl.className = "text-sm mt-4 text-secondary max-w-lg mx-auto z-10";
             }
         };
 
