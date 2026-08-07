@@ -121,10 +121,26 @@
                 <span class="material-symbols-outlined">auto_stories</span>
                 Manajemen Semester
             </a>
-            <a data-view="krs" class="nav-link flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low hover:text-primary rounded-lg font-bold transition-all duration-200" href="#krs">
-                <span class="material-symbols-outlined">edit_document</span>
-                KRS
-            </a>
+            <!-- KRS Dropdown -->
+            <div class="relative">
+                <button onclick="document.getElementById('krs-submenu').classList.toggle('hidden'); document.getElementById('krs-chevron').classList.toggle('rotate-180')" class="w-full flex items-center justify-between px-4 py-3 text-secondary hover:bg-surface-container-low hover:text-primary rounded-lg font-bold transition-all duration-200">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined" data-icon="edit_document">edit_document</span>
+                        <span class="font-label-md text-label-md">Manajemen KRS</span>
+                    </div>
+                    <span class="material-symbols-outlined text-sm transition-transform duration-200" id="krs-chevron">expand_more</span>
+                </button>
+                <div id="krs-submenu" class="hidden flex-col pl-11 pr-4 py-1 gap-1">
+                    <a data-view="krs-draft" class="nav-link flex items-center gap-2 py-2 text-secondary hover:text-primary font-bold text-sm transition-colors rounded" href="#krs-draft">
+                        <div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+                        Draf KRS
+                    </a>
+                    <a data-view="krs-fixed" class="nav-link flex items-center gap-2 py-2 text-secondary hover:text-primary font-bold text-sm transition-colors rounded" href="#krs-fixed">
+                        <div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+                        KRS Fix
+                    </a>
+                </div>
+            </div>
             
             <!-- Kalkulator Dropdown -->
             <div class="relative">
@@ -151,10 +167,26 @@
                 <span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
                 <span class="font-label-md text-label-md">Transkrip Nilai</span>
             </a>
-            <a data-view="tasks" class="nav-link flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-high transition-colors rounded-lg" href="#tasks">
-                <span class="material-symbols-outlined" data-icon="task_alt">task_alt</span>
-                <span class="font-label-md text-label-md">To-do Tracker</span>
-            </a>
+            <!-- Perkuliahan Dropdown -->
+            <div class="relative">
+                <button onclick="document.getElementById('perkuliahan-submenu').classList.toggle('hidden'); document.getElementById('perkuliahan-chevron').classList.toggle('rotate-180')" class="w-full flex items-center justify-between px-4 py-3 text-secondary hover:bg-surface-container-low hover:text-primary rounded-lg font-bold transition-all duration-200">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined" data-icon="school">school</span>
+                        <span class="font-label-md text-label-md">Perkuliahan</span>
+                    </div>
+                    <span class="material-symbols-outlined text-sm transition-transform duration-200" id="perkuliahan-chevron">expand_more</span>
+                </button>
+                <div id="perkuliahan-submenu" class="hidden flex-col pl-11 pr-4 py-1 gap-1">
+                    <a data-view="timetable" class="nav-link flex items-center gap-2 py-2 text-secondary hover:text-primary font-bold text-sm transition-colors rounded" href="#timetable">
+                        <div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+                        Jadwal Mingguan
+                    </a>
+                    <a data-view="tasks" class="nav-link flex items-center gap-2 py-2 text-secondary hover:text-primary font-bold text-sm transition-colors rounded" href="#tasks">
+                        <div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+                        To-do Tracker
+                    </a>
+                </div>
+            </div>
             <a data-view="statistics" class="nav-link flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-high transition-colors rounded-lg" href="#statistics">
                 <span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
                 <span class="font-label-md text-label-md">Statistik</span>
@@ -287,7 +319,9 @@
     <script src="js/views/transcript.js"></script>
     <script src="js/views/tasks.js"></script>
     <script src="js/views/statistics.js"></script>
-    <script src="js/views/krs.js"></script>
+    <script src="js/views/krs-draft.js"></script>
+    <script src="js/views/krs-fixed.js"></script>
+    <script src="js/views/timetable.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

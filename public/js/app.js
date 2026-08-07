@@ -13,7 +13,9 @@ class App {
             'semester': window.SemesterView,
             'transcript': window.TranscriptView,
             'tasks': window.TasksView,
-            'krs': window.KrsView,
+            'krs-draft': window.KrsDraftView,
+            'krs-fixed': window.KrsFixedView,
+            'timetable': window.TimetableView,
             'statistics': window.StatisticsView
         };
         

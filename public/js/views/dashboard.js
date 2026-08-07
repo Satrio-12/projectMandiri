@@ -114,8 +114,22 @@ window.DashboardView = {
                 </div>
             </div>
 
+            <!-- Jadwal Hari Ini -->
+            <div class="col-span-12 lg:col-span-6 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col mb-4 lg:mb-0">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary" data-icon="today">today</span>
+                        <h5 class="font-headline-md text-headline-md text-text-main">Jadwal Kuliah Hari Ini</h5>
+                    </div>
+                    <button onclick="window.app.navigate('timetable')" class="text-primary hover:underline text-label-md font-label-md">Lihat Semua</button>
+                </div>
+                <div class="space-y-3 overflow-y-auto max-h-[220px] custom-scrollbar pr-2" id="dash-today-schedule">
+                    <!-- Schedule injected by js -->
+                </div>
+            </div>
+
             <!-- Upcoming Tasks -->
-            <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col">
+            <div class="col-span-12 lg:col-span-6 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col mb-4 lg:mb-0">
                 <div class="flex justify-between items-center mb-4">
                     <h5 class="font-headline-md text-headline-md text-text-main">Tugas Mendatang</h5>
                     <button onclick="window.app.navigate('tasks')" class="text-primary hover:underline text-label-md font-label-md">Lihat Semua</button>
@@ -126,7 +140,7 @@ window.DashboardView = {
             </div>
 
             <!-- Grade Distribution (Sebaran Nilai) -->
-            <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col">
+            <div class="col-span-12 lg:col-span-6 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col mb-4 lg:mb-0">
                 <h5 class="font-headline-md text-headline-md text-text-main mb-4">Sebaran Nilai</h5>
                 <div class="grid grid-cols-4 gap-2" id="dash-grade-distribution">
                     <!-- Distribution injected by JS -->
@@ -134,7 +148,7 @@ window.DashboardView = {
             </div>
 
             <!-- Courses to Repeat (Mata Kuliah Diulang) -->
-            <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col">
+            <div class="col-span-12 lg:col-span-6 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col">
                 <div class="flex items-center gap-2 mb-6">
                     <span class="material-symbols-outlined text-danger-red" data-icon="warning">warning</span>
                     <h5 class="font-headline-md text-headline-md text-text-main">Matkul Diulang</h5>
@@ -273,6 +287,34 @@ window.DashboardView = {
                     </div>
                 `;
             }).join('');
+        }
+
+        // Jadwal Hari Ini
+        const todayContainer = document.getElementById('dash-today-schedule');
+        if (todayContainer) {
+            const todayIndex = new Date().getDay();
+            const daysMap = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const currentDay = daysMap[todayIndex];
+            
+            const krsFixed = window.appStore.data.krsFixed || [];
+            const todayCourses = krsFixed.filter(c => c.day === currentDay).sort((a,b) => a.timeStart.localeCompare(b.timeStart));
+            
+            if (todayCourses.length === 0) {
+                todayContainer.innerHTML = `<div class="text-text-muted text-sm italic p-4 text-center border border-dashed border-outline-variant rounded-lg mt-2">Tidak ada jadwal kuliah hari ini (${currentDay}).</div>`;
+            } else {
+                todayContainer.innerHTML = todayCourses.map(c => `
+                    <div class="p-3 bg-surface-container-low rounded-lg border-l-4 border-primary flex items-center justify-between shadow-sm">
+                        <div>
+                            <h6 class="font-bold text-body-sm text-primary">${c.name}</h6>
+                            <p class="text-[12px] text-text-muted">${c.code} • ${c.sks} SKS</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-body-sm">${c.timeStart}</span>
+                            <p class="text-[10px] text-outline">s.d ${c.timeEnd}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
         }
 
         // Upcoming Tasks (Next 5 pending)
