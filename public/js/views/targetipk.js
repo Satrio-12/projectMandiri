@@ -90,27 +90,24 @@ window.TargetIpkView = {
             otherSemesters = otherSemesters.filter(s => s.name !== window.appStore.data.activeKrsSemesterName);
         }
 
-        // Calculate current total SKS and Mutu
-        let totalCurrentSks = 0;
+        const allActiveCourses = [...activeSemCourses, ...accumulatedKrsFixed];
+        
+        // Build mock semesters list to use centralized AcademicLogic (matches Dashboard)
+        const mockSemesters = [...otherSemesters];
+        if (allActiveCourses.length > 0) {
+            mockSemesters.push({
+                name: window.appStore.data.activeKrsSemesterName || 'Current Active',
+                courses: allActiveCourses
+            });
+        }
+        
+        const ipkData = window.AcademicLogic.calculateIPKAndSKS(mockSemesters);
+        let totalCurrentSks = ipkData.totalSKSPassed;
         let totalCurrentMutu = 0;
         
-        // From completely historical semesters
-        otherSemesters.forEach(sem => {
-            sem.courses.forEach(crs => {
-                const gradeInfo = window.AcademicLogic.getGradeInfoFromLetter(crs.grade);
-                if (gradeInfo) {
-                    totalCurrentSks += parseInt(crs.sks);
-                    totalCurrentMutu += (gradeInfo.gpa * parseInt(crs.sks));
-                }
-            });
-        });
-        
-        // From active semester
-        const allActiveCourses = [...activeSemCourses, ...accumulatedKrsFixed];
-        allActiveCourses.forEach(crs => {
+        ipkData.latestCourses.forEach(crs => {
             const gradeInfo = window.AcademicLogic.getGradeInfoFromLetter(crs.grade);
-            if (gradeInfo) {
-                totalCurrentSks += parseInt(crs.sks);
+            if (gradeInfo && gradeInfo.gpa >= 2.00) {
                 totalCurrentMutu += (gradeInfo.gpa * parseInt(crs.sks));
             }
         });
