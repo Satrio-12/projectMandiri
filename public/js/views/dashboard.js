@@ -74,9 +74,9 @@ window.DashboardView = {
             </div>
 
             <!-- KPI Card: SKS Progress (Wide) -->
-            <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col justify-between">
+            <div onclick="window.app.navigate('transcript')" class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col justify-between cursor-pointer hover:border-primary/50 hover:shadow-md transition-all group">
                 <div class="flex justify-between items-start mb-4">
-                    <p class="font-label-md text-label-md text-secondary uppercase tracking-widest">Progres SKS Lulus</p>
+                    <p class="font-label-md text-label-md text-secondary uppercase tracking-widest flex items-center gap-1 group-hover:text-primary transition-colors">Progres SKS Lulus <span class="material-symbols-outlined text-[14px]">open_in_new</span></p>
                     <span class="font-label-md text-label-md text-primary font-bold" id="dash-sks-text">0 / 144</span>
                 </div>
                 <div class="relative h-6 bg-surface-container-highest rounded-full overflow-hidden mb-4">
