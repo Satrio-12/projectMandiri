@@ -75,8 +75,8 @@ window.KrsView = {
                                 <span class="text-secondary font-bold ml-1">SKS Terencana</span>
                             </div>
                             
-                            <button onclick="window.appStore.addKrsExtraSks()" class="ml-auto px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all flex items-center gap-1 ${window.appStore.data.krsExtraSks ? 'bg-surface-container text-secondary border-outline-variant hover:bg-surface-container-high' : 'bg-primary text-white border-primary shadow-sm hover:bg-primary-container'}" title="Klik untuk mengaktifkan/mematikan kuota tambahan dari Dosen PA">
-                                ${window.appStore.data.krsExtraSks ? '<span class="material-symbols-outlined text-[14px]">check_circle</span> Bantuan +1 SKS Aktif' : '<span class="material-symbols-outlined text-[14px]">add_circle</span> Bantuan +1 SKS Khusus'}
+                            <button id="krs-extra-sks-btn" onclick="window.appStore.addKrsExtraSks()" class="ml-auto px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all flex items-center gap-1" title="Klik untuk mengaktifkan/mematikan kuota tambahan dari Dosen PA">
+                                <!-- updated by JS -->
                             </button>
                         </div>
                         
@@ -282,6 +282,18 @@ window.KrsView = {
         
         const bar = document.getElementById('krs-sks-bar');
         const warning = document.getElementById('krs-sks-warning');
+        
+        // Update the extra SKS button dynamically
+        const extraBtn = document.getElementById('krs-extra-sks-btn');
+        if (extraBtn) {
+            if (window.appStore.data.krsExtraSks) {
+                extraBtn.className = 'ml-auto px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all flex items-center gap-1 bg-surface-container text-secondary border-outline-variant hover:bg-surface-container-high';
+                extraBtn.innerHTML = '<span class="material-symbols-outlined text-[14px]">check_circle</span> Bantuan +1 SKS Aktif';
+            } else {
+                extraBtn.className = 'ml-auto px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all flex items-center gap-1 bg-primary text-white border-primary shadow-sm hover:bg-primary-container';
+                extraBtn.innerHTML = '<span class="material-symbols-outlined text-[14px]">add_circle</span> Bantuan +1 SKS Khusus';
+            }
+        }
         
         let pct = (totalSksTaken / limit) * 100;
         if (pct > 100) pct = 100;
