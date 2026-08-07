@@ -17,59 +17,59 @@
             theme: {
                 extend: {
                     "colors": {
-                        "secondary": "#505f76",
-                        "inverse-on-surface": "#eff1f3",
-                        "surface-container-highest": "#e0e3e5",
-                        "on-primary-fixed-variant": "#00497a",
-                        "tertiary": "#004565",
-                        "on-error": "#ffffff",
-                        "warning-amber": "#F59E0B",
-                        "surface-tint": "#12629d",
-                        "surface": "#f7f9fb",
-                        "primary": "#004370",
-                        "background": "#f7f9fb",
-                        "surface-dim": "#d8dadc",
-                        "outline": "#717781",
-                        "surface-variant": "#e0e3e5",
-                        "inverse-surface": "#2d3133",
-                        "tertiary-fixed-dim": "#89ceff",
-                        "on-surface-variant": "#414750",
-                        "success-green": "#10B981",
-                        "on-surface": "#191c1e",
-                        "surface-container": "#eceef0",
-                        "surface-container-lowest": "#ffffff",
-                        "secondary-fixed-dim": "#b7c8e1",
-                        "on-secondary-fixed-variant": "#38485d",
-                        "on-primary-container": "#abd2ff",
-                        "on-secondary-container": "#54647a",
-                        "secondary-fixed": "#d3e4fe",
-                        "primary-fixed": "#d0e4ff",
-                        "on-error-container": "#93000a",
-                        "on-tertiary": "#ffffff",
-                        "on-secondary": "#ffffff",
-                        "error-container": "#ffdad6",
-                        "error": "#ba1a1a",
-                        "outline-variant": "#c1c7d1",
-                        "on-primary-fixed": "#001d35",
-                        "primary-container": "#005b96",
-                        "surface-container-high": "#e6e8ea",
-                        "primary-fixed-dim": "#9ccaff",
-                        "text-muted": "#64748B",
-                        "surface-container-low": "#f2f4f6",
-                        "inverse-primary": "#9ccaff",
-                        "on-tertiary-fixed": "#001e2f",
-                        "on-primary": "#ffffff",
-                        "on-secondary-fixed": "#0b1c30",
-                        "secondary-container": "#d0e1fb",
-                        "on-tertiary-container": "#9dd5ff",
-                        "tertiary-fixed": "#c9e6ff",
-                        "text-main": "#1E293B",
-                        "on-background": "#191c1e",
-                        "surface-border": "#E2E8F0",
-                        "on-tertiary-fixed-variant": "#004c6e",
-                        "danger-red": "#EF4444",
-                        "tertiary-container": "#005e87",
-                        "surface-bright": "#f7f9fb"
+                        "secondary": "var(--color-secondary)",
+                        "inverse-on-surface": "var(--color-inverse-on-surface)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+                        "tertiary": "var(--color-tertiary)",
+                        "on-error": "var(--color-on-error)",
+                        "warning-amber": "var(--color-warning-amber)",
+                        "surface-tint": "var(--color-surface-tint)",
+                        "surface": "var(--color-surface)",
+                        "primary": "var(--color-primary)",
+                        "background": "var(--color-background)",
+                        "surface-dim": "var(--color-surface-dim)",
+                        "outline": "var(--color-outline)",
+                        "surface-variant": "var(--color-surface-variant)",
+                        "inverse-surface": "var(--color-inverse-surface)",
+                        "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "success-green": "var(--color-success-green)",
+                        "on-surface": "var(--color-on-surface)",
+                        "surface-container": "var(--color-surface-container)",
+                        "surface-container-lowest": "var(--color-surface-container-lowest)",
+                        "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+                        "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "on-secondary-container": "var(--color-on-secondary-container)",
+                        "secondary-fixed": "var(--color-secondary-fixed)",
+                        "primary-fixed": "var(--color-primary-fixed)",
+                        "on-error-container": "var(--color-on-error-container)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "on-secondary": "var(--color-on-secondary)",
+                        "error-container": "var(--color-error-container)",
+                        "error": "var(--color-error)",
+                        "outline-variant": "var(--color-outline-variant)",
+                        "on-primary-fixed": "var(--color-on-primary-fixed)",
+                        "primary-container": "var(--color-primary-container)",
+                        "surface-container-high": "var(--color-surface-container-high)",
+                        "primary-fixed-dim": "var(--color-primary-fixed-dim)",
+                        "text-muted": "var(--color-text-muted)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "inverse-primary": "var(--color-inverse-primary)",
+                        "on-tertiary-fixed": "var(--color-on-tertiary-fixed)",
+                        "on-primary": "var(--color-on-primary)",
+                        "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+                        "secondary-container": "var(--color-secondary-container)",
+                        "on-tertiary-container": "var(--color-on-tertiary-container)",
+                        "tertiary-fixed": "var(--color-tertiary-fixed)",
+                        "text-main": "var(--color-text-main)",
+                        "on-background": "var(--color-on-background)",
+                        "surface-border": "var(--color-surface-border)",
+                        "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+                        "danger-red": "var(--color-danger-red)",
+                        "tertiary-container": "var(--color-tertiary-container)",
+                        "surface-bright": "var(--color-surface-bright)"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -103,6 +103,7 @@
         }
     </script>
     <link href="css/style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/theme.css"/>
 </head>
 <body class="text-on-surface bg-surface min-h-screen">
     <!-- SideNavBar Shell -->
@@ -160,6 +161,12 @@
             </a>
         </div>
         <div class="p-4 border-t border-surface-border mb-4">
+            <button onclick="window.app.toggleTheme()" id="btn-theme-toggle" class="w-full flex items-center justify-between px-4 py-3 text-secondary hover:bg-surface-container-high transition-colors rounded-lg mb-1">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined" id="theme-icon" data-icon="dark_mode">dark_mode</span>
+                    <span class="font-label-md text-label-md" id="theme-text">Mode Gelap</span>
+                </div>
+            </button>
             <button onclick="window.app.openCloudSyncModal()" id="btn-cloud-sync" class="w-full flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-high transition-colors rounded-lg mb-1">
                 <span class="material-symbols-outlined" data-icon="cloud_sync">cloud_sync</span>
                 <span class="font-label-md text-label-md">Cloud Sync</span>

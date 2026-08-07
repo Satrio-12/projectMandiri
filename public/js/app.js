@@ -22,6 +22,7 @@ class App {
 
     async init() {
         this.createGlobalModals();
+        this.loadTheme();
         
         // Setup navigation
         document.querySelectorAll('.nav-link').forEach(link => {

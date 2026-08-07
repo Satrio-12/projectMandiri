@@ -119,6 +119,7 @@ window.KrsView = {
                                 <tr class="border-b border-surface-border text-secondary font-label-md uppercase tracking-wider text-[11px] bg-surface-container-low/50">
                                     <th class="py-4 px-6 w-32">Kode</th>
                                     <th class="py-4 px-6">Nama Mata Kuliah</th>
+                                    <th class="py-4 px-6 w-40">Jadwal</th>
                                     <th class="py-4 px-6 text-center w-24">SKS</th>
                                     <th class="py-4 px-6 text-right w-24">Aksi</th>
                                 </tr>
@@ -138,6 +139,16 @@ window.KrsView = {
                         </button>
                     </div>
                 </div>
+                </div>
+                
+                <!-- Jadwal Visual Grid -->
+                <div class="bg-surface-container-lowest border border-surface-border rounded-2xl shadow-sm p-6 overflow-hidden mt-6">
+                    <h4 class="font-headline-md text-headline-md text-on-surface mb-4">Visualisasi Jadwal Mingguan</h4>
+                    <div id="krs-timetable-container" class="overflow-x-auto pb-2 relative min-h-[200px]">
+                        <!-- Injected by JS -->
+                        <div class="text-center text-secondary py-8 text-sm italic">Isi hari dan jam saat tambah matkul untuk melihat jadwal visual.</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -153,7 +164,30 @@ window.KrsView = {
                 <input type="text" id="input-krs-name" onkeydown="if(event.key==='Enter') window.KrsView.saveCourse()" class="w-full border-outline-variant rounded-lg p-2 mb-3 focus:ring-primary focus:border-primary" placeholder="Misal: Kalkulus I"/>
                 
                 <label class="block text-sm mb-1 text-secondary">SKS</label>
-                <input type="number" id="input-krs-sks" onkeydown="if(event.key==='Enter') window.KrsView.saveCourse()" class="w-full border-outline-variant rounded-lg p-2 mb-6 focus:ring-primary focus:border-primary" min="1" max="6" value="3"/>
+                <input type="number" id="input-krs-sks" onkeydown="if(event.key==='Enter') window.KrsView.saveCourse()" class="w-full border-outline-variant rounded-lg p-2 mb-4 focus:ring-primary focus:border-primary" min="1" max="6" value="3"/>
+                
+                <h4 class="font-label-md text-primary border-t border-surface-border pt-3 mb-2">Jadwal Kuliah (Opsional)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                    <div>
+                        <label class="block text-xs mb-1 text-secondary">Hari</label>
+                        <select id="input-krs-day" class="w-full border-outline-variant rounded-lg p-2 focus:ring-primary focus:border-primary">
+                            <option value="">- Pilih Hari -</option>
+                            <option value="Senin">Senin</option>
+                            <option value="Selasa">Selasa</option>
+                            <option value="Rabu">Rabu</option>
+                            <option value="Kamis">Kamis</option>
+                            <option value="Jumat">Jumat</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs mb-1 text-secondary">Mulai</label>
+                        <input type="time" id="input-krs-start" class="w-full border-outline-variant rounded-lg p-2 focus:ring-primary focus:border-primary"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs mb-1 text-secondary">Selesai</label>
+                        <input type="time" id="input-krs-end" class="w-full border-outline-variant rounded-lg p-2 focus:ring-primary focus:border-primary"/>
+                    </div>
+                </div>
 
                 <div class="flex justify-end gap-2">
                     <button onclick="window.KrsView.closeCourseModal()" class="px-4 py-2 text-secondary hover:bg-surface-container-high rounded-lg transition-colors">Batal</button>
@@ -321,10 +355,13 @@ window.KrsView = {
             emptyEl.classList.add('hidden');
             tableEl.classList.remove('hidden');
             
-            listEl.innerHTML = krsPlan.map(crs => `
+            listEl.innerHTML = krsPlan.map(crs => {
+                const scheduleText = crs.day && crs.timeStart && crs.timeEnd ? `${crs.day}, ${crs.timeStart}-${crs.timeEnd}` : '<span class="italic text-outline">Belum diatur</span>';
+                return `
                 <tr class="border-b border-surface-border/50 hover:bg-surface-container-low transition-colors">
                     <td class="py-4 px-6 font-bold text-secondary opacity-70">${crs.code}</td>
                     <td class="py-4 px-6 font-bold text-on-surface">${crs.name}</td>
+                    <td class="py-4 px-6 text-sm text-secondary">${scheduleText}</td>
                     <td class="py-4 px-6 text-center font-bold text-secondary">${crs.sks}</td>
                     <td class="py-4 px-6 text-right">
                         <button onclick="window.KrsView.deleteCourse('${crs.id}')" class="text-outline hover:text-danger-red hover:bg-error-container p-2 rounded-lg transition-colors">
@@ -332,8 +369,67 @@ window.KrsView = {
                         </button>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
         }
+        
+        // Render Timetable Grid
+        this.renderTimetable(krsPlan);
+    },
+    
+    renderTimetable: function(krsPlan) {
+        const container = document.getElementById('krs-timetable-container');
+        if (!container) return;
+        
+        const coursesWithSchedule = krsPlan.filter(c => c.day && c.timeStart && c.timeEnd);
+        if (coursesWithSchedule.length === 0) {
+            container.innerHTML = '<div class="text-center text-secondary py-8 text-sm italic">Isi hari dan jam saat tambah matkul untuk melihat jadwal visual.</div>';
+            return;
+        }
+        
+        const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+        let gridHTML = '<div class="grid grid-cols-5 gap-4 min-w-[700px]">';
+        
+        days.forEach(day => {
+            const dayCourses = coursesWithSchedule.filter(c => c.day === day).sort((a,b) => a.timeStart.localeCompare(b.timeStart));
+            
+            // Overlap check
+            dayCourses.forEach((c, i) => {
+                c.isOverlap = false;
+                if (i > 0) {
+                    const prev = dayCourses[i-1];
+                    if (c.timeStart < prev.timeEnd) {
+                        c.isOverlap = true;
+                        prev.isOverlap = true;
+                    }
+                }
+            });
+            
+            gridHTML += `<div class="flex flex-col gap-2">
+                <div class="text-center font-bold text-sm text-primary mb-3 pb-2 border-b border-surface-border">${day}</div>`;
+                
+            if (dayCourses.length === 0) {
+                gridHTML += `<div class="text-center text-xs text-outline italic py-4">Kosong</div>`;
+            } else {
+                dayCourses.forEach(c => {
+                    const bgClass = c.isOverlap ? 'bg-danger-red/10 border-danger-red/30' : 'bg-primary/5 border-primary/20';
+                    const textClass = c.isOverlap ? 'text-danger-red' : 'text-primary';
+                    const icon = c.isOverlap ? 'warning' : 'schedule';
+                    const warningHTML = c.isOverlap ? `<div class="text-[10px] text-danger-red font-bold mt-1 uppercase flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">error</span> Jadwal Bentrok</div>` : '';
+                    
+                    gridHTML += `
+                        <div class="${bgClass} border p-3 rounded-lg flex flex-col gap-1 relative shadow-sm">
+                            <span class="font-bold text-on-surface text-sm leading-tight">${c.name}</span>
+                            <span class="text-xs ${textClass} flex items-center gap-1 font-semibold opacity-90"><span class="material-symbols-outlined text-[12px]">${icon}</span> ${c.timeStart} - ${c.timeEnd}</span>
+                            ${warningHTML}
+                        </div>
+                    `;
+                });
+            }
+            gridHTML += `</div>`;
+        });
+        
+        gridHTML += '</div>';
+        container.innerHTML = gridHTML;
     },
 
     // Course Modal
@@ -341,6 +437,9 @@ window.KrsView = {
         document.getElementById('input-krs-code').value = '';
         document.getElementById('input-krs-name').value = '';
         document.getElementById('input-krs-sks').value = '3';
+        document.getElementById('input-krs-day').value = '';
+        document.getElementById('input-krs-start').value = '';
+        document.getElementById('input-krs-end').value = '';
         document.getElementById('modal-krs-course').classList.remove('hidden');
     },
     
@@ -377,6 +476,9 @@ window.KrsView = {
         const code = document.getElementById('input-krs-code').value.trim();
         const name = document.getElementById('input-krs-name').value.trim();
         const sks = document.getElementById('input-krs-sks').value;
+        const day = document.getElementById('input-krs-day').value;
+        const timeStart = document.getElementById('input-krs-start').value;
+        const timeEnd = document.getElementById('input-krs-end').value;
 
         if (code && name) {
             // Validasi limit SKS
@@ -399,13 +501,13 @@ window.KrsView = {
                 return;
             }
 
-            window.appStore.addKrsCourse({ code, name, sks });
+            window.appStore.addKrsCourse({ code, name, sks, day, timeStart, timeEnd });
             window.KrsView.closeCourseModal();
             window.app.showToast('Mata kuliah ditambahkan ke draf KRS');
         } else {
             window.app.showAlert("Kode dan Nama mata kuliah harus diisi");
         }
-    },
+    }
 
         // History Modal logic removed
 };
