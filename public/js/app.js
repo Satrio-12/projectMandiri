@@ -358,6 +358,39 @@ class App {
         this.closeProfileModal();
         this.showToast('Profil berhasil disimpan!', 'success');
     }
+
+    loadTheme() {
+        const theme = localStorage.getItem('acs_theme') || 'light';
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+        }
+        this.updateThemeButton(theme);
+    }
+    
+    toggleTheme() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const newTheme = isDark ? 'light' : 'dark';
+        localStorage.setItem('acs_theme', newTheme);
+        this.loadTheme();
+    }
+    
+    updateThemeButton(theme) {
+        const icon = document.getElementById('theme-icon');
+        const text = document.getElementById('theme-text');
+        if (!icon || !text) return;
+        
+        if (theme === 'dark') {
+            icon.innerText = 'light_mode';
+            text.innerText = 'Mode Terang';
+        } else {
+            icon.innerText = 'dark_mode';
+            text.innerText = 'Mode Gelap';
+        }
+    }
 }
 
 // Initialize when DOM is ready
