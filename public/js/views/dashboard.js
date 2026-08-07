@@ -29,11 +29,11 @@ window.DashboardView = {
         <div class="grid grid-cols-12 gap-gutter">
             
             <!-- KPI Card: GPA (IPK) -->
-            <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <div onclick="window.app.navigate('transcript')" class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative overflow-hidden group cursor-pointer hover:border-primary/50 hover:shadow-md transition-all">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all">
                     <span class="material-symbols-outlined text-[80px]" data-icon="school">school</span>
                 </div>
-                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2">IPK Total</p>
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2 flex items-center gap-1 group-hover:text-primary transition-colors">IPK Total <span class="material-symbols-outlined text-[14px]">open_in_new</span></p>
                 <div class="flex items-baseline gap-2">
                     <h4 class="font-headline-xl text-[48px] text-primary" id="dash-ipk">0.00</h4>
                 </div>
@@ -74,7 +74,7 @@ window.DashboardView = {
             </div>
 
             <!-- KPI Card: SKS Progress (Wide) -->
-            <div onclick="window.app.navigate('transcript')" class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col justify-between cursor-pointer hover:border-primary/50 hover:shadow-md transition-all group">
+            <div onclick="window.app.navigate('semester')" class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border flex flex-col justify-between cursor-pointer hover:border-primary/50 hover:shadow-md transition-all group">
                 <div class="flex justify-between items-start mb-4">
                     <p class="font-label-md text-label-md text-secondary uppercase tracking-widest flex items-center gap-1 group-hover:text-primary transition-colors">Progres SKS Lulus <span class="material-symbols-outlined text-[14px]">open_in_new</span></p>
                     <span class="font-label-md text-label-md text-primary font-bold" id="dash-sks-text">0 / 144</span>
