@@ -67,6 +67,10 @@ class Store {
         this.listeners.push(listener);
     }
 
+    unsubscribe(listener) {
+        this.listeners = this.listeners.filter(l => l !== listener);
+    }
+
     notifyListeners() {
         this.listeners.forEach(listener => listener(this.data));
     }
