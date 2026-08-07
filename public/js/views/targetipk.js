@@ -12,25 +12,32 @@ window.TargetIpkView = {
 
             <!-- Target IPK Simulator Panel -->
             <div id="target-ipk-main-panel" class="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-surface-border mb-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div>
-                        <label class="block text-sm font-bold text-secondary uppercase mb-2">Target IPK Akhir (Lulus)</label>
+                        <label class="block text-sm font-bold text-secondary uppercase mb-2">Target IPK Akhir</label>
                         <input type="number" id="input-target-ipk-main" class="w-full bg-surface-container border border-surface-border rounded-2xl p-5 text-2xl font-bold text-primary focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all" placeholder="Contoh: 3.50" step="0.01" min="0" max="4.00">
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-secondary uppercase mb-2">Total SKS Diperoleh</label>
+                        <label class="block text-sm font-bold text-secondary uppercase mb-2">IPK Saat Ini</label>
+                        <div class="w-full bg-surface-container-low border border-surface-border rounded-2xl p-5 flex items-center justify-between transition-all opacity-80 cursor-not-allowed">
+                            <span id="display-ipk-sekarang" class="text-2xl font-bold text-secondary">-</span>
+                            <span class="material-symbols-outlined text-secondary">trending_up</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-secondary uppercase mb-2">Total SKS</label>
                         <div class="w-full bg-surface-container-low border border-surface-border rounded-2xl p-5 flex items-center justify-between transition-all opacity-80 cursor-not-allowed">
                             <span id="display-sks-lulus" class="text-2xl font-bold text-secondary">-</span>
-                            <span class="text-sm font-bold text-secondary">/ 144 SKS</span>
+                            <span class="text-sm font-bold text-secondary">/ 144</span>
                         </div>
                     </div>
                 </div>
                 
                 <div class="bg-primary/5 rounded-2xl p-6 border border-primary/20 flex flex-col items-center justify-center min-h-[160px] text-center relative overflow-hidden">
                     <span class="material-symbols-outlined text-primary/10 text-9xl absolute -right-4 -bottom-4 pointer-events-none" data-icon="track_changes">track_changes</span>
-                    <span class="text-sm font-bold text-primary uppercase tracking-widest mb-2 z-10">Target Rata-Rata IPS (Di Sisa SKS)</span>
-                    <span id="target-ips-result-main" class="font-display-lg text-6xl text-primary font-bold z-10">-</span>
-                    <p id="target-ipk-msg-main" class="text-sm text-secondary mt-4 max-w-lg mx-auto z-10">Masukkan target IPK untuk melihat batas minimal rata-rata IPS yang harus Anda capai di sisa studi Anda.</p>
+                    <span class="text-sm font-bold text-primary uppercase tracking-widest mb-2 z-10">Target Nilai Huruf (Di Sisa SKS)</span>
+                    <span id="target-ips-result-main" class="font-display-lg text-4xl md:text-5xl text-primary font-bold z-10 my-2">-</span>
+                    <p id="target-ipk-msg-main" class="text-sm text-secondary mt-4 max-w-lg mx-auto z-10">Masukkan target IPK untuk melihat kombinasi nilai huruf yang harus Anda capai di sisa studi Anda.</p>
                 </div>
             </div>
 
@@ -62,7 +69,8 @@ window.TargetIpkView = {
     updateView: function() {
         const targetInput = document.getElementById('input-target-ipk-main');
         const displaySksLulus = document.getElementById('display-sks-lulus');
-        if (!targetInput || !displaySksLulus) return;
+        const displayIpkSekarang = document.getElementById('display-ipk-sekarang');
+        if (!targetInput || !displaySksLulus || !displayIpkSekarang) return;
         
         // Clone to remove old listeners
         const newTargetInput = targetInput.cloneNode(true);
@@ -113,6 +121,25 @@ window.TargetIpkView = {
         });
 
         displaySksLulus.innerText = totalCurrentSks;
+        displayIpkSekarang.innerText = ipkData.ipk.toFixed(2);
+        
+        const getLetterText = (ips) => {
+            if (ips > 4.00) return 'Mustahil';
+            if (ips >= 3.90) return 'Full A';
+            if (ips >= 3.67) return 'Kombinasi A & A-';
+            if (ips >= 3.50) return 'Full A-';
+            if (ips >= 3.33) return 'Kombinasi A- & B+';
+            if (ips >= 3.10) return 'Full B+';
+            if (ips >= 3.00) return 'Kombinasi B+ & B';
+            if (ips >= 2.80) return 'Full B';
+            if (ips >= 2.67) return 'Kombinasi B & B-';
+            if (ips >= 2.50) return 'Full B-';
+            if (ips >= 2.33) return 'Kombinasi B- & C+';
+            if (ips >= 2.10) return 'Full C+';
+            if (ips >= 2.00) return 'Kombinasi C+ & C';
+            if (ips > 1.00) return 'Mayoritas C';
+            return 'Aman (Minimal C)';
+        };
 
         const calculateTarget = () => {
             const targetIpk = parseFloat(newTargetInput.value);
@@ -143,21 +170,21 @@ window.TargetIpkView = {
                 return;
             }
             
-            const targetTotalMutu = targetIpk * targetTotalSks;
-            const requiredMutu = targetTotalMutu - totalCurrentMutu;
+            const requiredTotalMutu = targetIpk * targetTotalSks;
+            const requiredMutu = requiredTotalMutu - totalCurrentMutu;
             const requiredAverageIps = requiredMutu / remainingSks;
             
             if (requiredAverageIps > 4.00) {
                 resEl.innerText = "Mustahil";
-                msgEl.innerText = `Untuk mencapai IPK ${targetIpk.toFixed(2)} pada sisa ${remainingSks} SKS, Anda butuh rata-rata IPS ${requiredAverageIps.toFixed(2)}. Sayangnya batas maksimal IPS adalah 4.00. Target ini secara matematis tidak bisa dicapai.`;
+                msgEl.innerText = `Untuk mencapai IPK ${targetIpk.toFixed(2)} pada sisa ${remainingSks} SKS, Anda butuh rata-rata nilai di atas A. Sayangnya batas maksimal adalah A (4.00). Target ini secara matematis tidak bisa dicapai.`;
                 msgEl.className = "text-sm mt-4 text-danger-red font-bold max-w-lg mx-auto z-10";
             } else if (requiredAverageIps <= 0) {
-                resEl.innerText = "0.00";
-                msgEl.innerText = `Luar biasa! Walaupun Anda selalu mendapat nilai terendah (E/IPS 0.00) di sisa ${remainingSks} SKS, Anda akan tetap lulus dengan IPK minimal ${targetIpk.toFixed(2)}.`;
+                resEl.innerText = "Aman";
+                msgEl.innerText = `Luar biasa! Walaupun Anda mendapat nilai D/E di sisa ${remainingSks} SKS, Anda akan tetap lulus dengan IPK minimal ${targetIpk.toFixed(2)}.`;
                 msgEl.className = "text-sm mt-4 text-success-green font-bold max-w-lg mx-auto z-10";
             } else {
-                resEl.innerText = requiredAverageIps.toFixed(2);
-                msgEl.innerText = `Sisa SKS kelulusan: ${remainingSks} SKS. Anda wajib memperoleh rata-rata IPS minimal ${requiredAverageIps.toFixed(2)} di setiap sisa semester untuk lulus dengan IPK ${targetIpk.toFixed(2)}.`;
+                resEl.innerText = getLetterText(requiredAverageIps);
+                msgEl.innerText = `Sisa SKS kelulusan: ${remainingSks} SKS. Anda wajib mendominasi nilai "${getLetterText(requiredAverageIps)}" (Rata-rata IPS minimal: ${requiredAverageIps.toFixed(2)}) di setiap sisa semester untuk lulus dengan IPK ${targetIpk.toFixed(2)}.`;
                 msgEl.className = "text-sm mt-4 text-primary font-bold max-w-lg mx-auto z-10";
             }
         };
