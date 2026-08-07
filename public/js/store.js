@@ -164,6 +164,12 @@ class Store {
         this.saveLocal();
     }
 
+    addKrsExtraSks() {
+        this.data.krsExtraSks = this.data.krsExtraSks ? 0 : 1;
+        this.saveLocal();
+        this.notify();
+    }
+
     deleteKrsCourse(id) {
         this.data.krsPlan = this.data.krsPlan.filter(c => c.id !== id);
         this.saveLocal();

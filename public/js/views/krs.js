@@ -74,6 +74,10 @@ window.KrsView = {
                                 <span class="font-headline-md text-secondary" id="krs-sks-limit">24</span>
                                 <span class="text-secondary font-bold ml-1">SKS Terencana</span>
                             </div>
+                            
+                            <button onclick="window.appStore.addKrsExtraSks()" class="ml-auto px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all flex items-center gap-1 ${window.appStore.data.krsExtraSks ? 'bg-danger-red text-white border-danger-red shadow-md' : 'bg-surface-container text-secondary border-outline-variant hover:border-primary/50'}" title="Klik untuk mengaktifkan/mematikan kuota tambahan dari Dosen PA">
+                                ${window.appStore.data.krsExtraSks ? '<span class="material-symbols-outlined text-[14px]">warning</span> Bantuan +1 SKS Aktif' : '<span class="material-symbols-outlined text-[14px]">add_circle</span> Bantuan +1 SKS Khusus'}
+                            </button>
                         </div>
                         
                         <div class="h-4 bg-surface-container-highest rounded-full overflow-hidden mt-4">
@@ -194,6 +198,7 @@ window.KrsView = {
                 const lastIps = window.AcademicLogic.getLastValidIps(semesters);
                 limit = window.AcademicLogic.getJatahSKS(lastIps);
             }
+            limit += (window.appStore.data.krsExtraSks || 0);
             
             const totalSksTaken = krsPlan.reduce((sum, c) => sum + parseInt(c.sks), 0);
             
@@ -267,6 +272,7 @@ window.KrsView = {
             lastIps = window.AcademicLogic.getLastValidIps(semesters);
             limit = window.AcademicLogic.getJatahSKS(lastIps);
         }
+        limit += (window.appStore.data.krsExtraSks || 0);
 
         const totalSksTaken = krsPlan.reduce((sum, c) => sum + parseInt(c.sks), 0);
         
