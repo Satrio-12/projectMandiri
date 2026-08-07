@@ -75,8 +75,8 @@ window.KrsView = {
                                 <span class="text-secondary font-bold ml-1">SKS Terencana</span>
                             </div>
                             
-                            <button onclick="window.appStore.addKrsExtraSks()" class="ml-auto px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all flex items-center gap-1 ${window.appStore.data.krsExtraSks ? 'bg-danger-red text-white border-danger-red shadow-md' : 'bg-surface-container text-secondary border-outline-variant hover:border-primary/50'}" title="Klik untuk mengaktifkan/mematikan kuota tambahan dari Dosen PA">
-                                ${window.appStore.data.krsExtraSks ? '<span class="material-symbols-outlined text-[14px]">warning</span> Bantuan +1 SKS Aktif' : '<span class="material-symbols-outlined text-[14px]">add_circle</span> Bantuan +1 SKS Khusus'}
+                            <button onclick="window.appStore.addKrsExtraSks()" class="ml-auto px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all flex items-center gap-1 ${window.appStore.data.krsExtraSks ? 'bg-surface-container text-secondary border-outline-variant hover:bg-surface-container-high' : 'bg-primary text-white border-primary shadow-sm hover:bg-primary-container'}" title="Klik untuk mengaktifkan/mematikan kuota tambahan dari Dosen PA">
+                                ${window.appStore.data.krsExtraSks ? '<span class="material-symbols-outlined text-[14px]">check_circle</span> Bantuan +1 SKS Aktif' : '<span class="material-symbols-outlined text-[14px]">add_circle</span> Bantuan +1 SKS Khusus'}
                             </button>
                         </div>
                         
