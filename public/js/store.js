@@ -175,10 +175,6 @@ class Store {
         this.saveLocal();
     }
     
-    addKrsExtraSks() {
-        this.data.krsExtraSks = this.data.krsExtraSks ? 0 : 1;
-        this.saveLocal();
-    }
 
     addSemesterExtraSks(semId) {
         const sem = this.data.semesters.find(s => s.id === semId);
