@@ -18,8 +18,11 @@ window.TargetIpkView = {
                         <input type="number" id="input-target-ipk-main" class="w-full bg-surface-container border border-surface-border rounded-2xl p-5 text-2xl font-bold text-primary focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all" placeholder="Contoh: 3.50" step="0.01" min="0" max="4.00">
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-secondary uppercase mb-2">Total SKS Syarat Kelulusan</label>
-                        <input type="number" id="input-target-sks-main" class="w-full bg-surface-container border border-surface-border rounded-2xl p-5 text-2xl font-bold text-secondary focus:outline-none focus:ring-4 focus:ring-secondary/20 transition-all" placeholder="Contoh: 144" value="144" min="1" max="200">
+                        <label class="block text-sm font-bold text-secondary uppercase mb-2">Total SKS Diperoleh</label>
+                        <div class="w-full bg-surface-container-low border border-surface-border rounded-2xl p-5 flex items-center justify-between transition-all opacity-80 cursor-not-allowed">
+                            <span id="display-sks-lulus" class="text-2xl font-bold text-secondary">-</span>
+                            <span class="text-sm font-bold text-secondary">/ 144 SKS</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -58,15 +61,12 @@ window.TargetIpkView = {
     
     updateView: function() {
         const targetInput = document.getElementById('input-target-ipk-main');
-        const targetSksInput = document.getElementById('input-target-sks-main');
-        if (!targetInput || !targetSksInput) return;
+        const displaySksLulus = document.getElementById('display-sks-lulus');
+        if (!targetInput || !displaySksLulus) return;
         
         // Clone to remove old listeners
         const newTargetInput = targetInput.cloneNode(true);
         targetInput.replaceWith(newTargetInput);
-        
-        const newTargetSksInput = targetSksInput.cloneNode(true);
-        targetSksInput.replaceWith(newTargetSksInput);
         
         // State parsing for Active Semester (from KRS Fixed Drafts)
         const krsFixed = window.appStore.data.krsFixed || [];
@@ -115,16 +115,18 @@ window.TargetIpkView = {
             }
         });
 
+        displaySksLulus.innerText = totalCurrentSks;
+
         const calculateTarget = () => {
             const targetIpk = parseFloat(newTargetInput.value);
-            const targetTotalSks = parseInt(newTargetSksInput.value);
+            const targetTotalSks = 144;
             
             const resEl = document.getElementById('target-ips-result-main');
             const msgEl = document.getElementById('target-ipk-msg-main');
             
-            if(isNaN(targetIpk) || targetIpk <= 0 || targetIpk > 4 || isNaN(targetTotalSks) || targetTotalSks <= 0) {
+            if(isNaN(targetIpk) || targetIpk <= 0 || targetIpk > 4) {
                 resEl.innerText = '-';
-                msgEl.innerText = "Masukkan Target IPK dan Total SKS Kelulusan untuk melihat batas minimal rata-rata IPS yang harus Anda capai.";
+                msgEl.innerText = "Masukkan Target IPK kelulusan untuk melihat batas minimal rata-rata IPS yang harus Anda capai.";
                 msgEl.className = "text-sm text-secondary mt-4 max-w-lg mx-auto z-10";
                 return;
             }
@@ -164,12 +166,9 @@ window.TargetIpkView = {
         };
 
         newTargetInput.addEventListener('input', calculateTarget);
-        newTargetSksInput.addEventListener('input', calculateTarget);
         
-        // Trigger calculation if there's an existing value
-        if (newTargetInput.value && newTargetSksInput.value) {
-            calculateTarget();
-        }
+        // Trigger calculation immediately
+        calculateTarget();
     },
 
     unsubscribe: function() {
