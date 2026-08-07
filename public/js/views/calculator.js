@@ -31,32 +31,6 @@ window.CalculatorView = {
                 <div id="calc-summary-panel" class="hidden mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
                 </div>
 
-                <!-- Target IPK Simulator -->
-                <div id="calc-target-ipk-panel" class="hidden mb-8 bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-surface-border">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                        <div>
-                            <h4 class="font-headline-md text-primary flex items-center gap-2">
-                                <span class="material-symbols-outlined">track_changes</span> 
-                                Simulasi Target IPK
-                            </h4>
-                            <p class="text-secondary text-sm">Hitung batas minimal IPS yang harus diraih semester ini untuk mencapai target IPK kelulusan Anda.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-col md:flex-row items-center gap-4">
-                        <div class="flex-1 w-full">
-                            <label class="block text-xs font-bold text-secondary uppercase mb-1">Target IPK Akhir</label>
-                            <input type="number" id="input-target-ipk" class="w-full bg-surface-container border border-surface-border rounded-xl p-3 font-bold text-primary focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="Contoh: 3.50" step="0.01" min="0" max="4.00">
-                        </div>
-                        <div class="hidden md:block text-outline font-bold mt-5">=</div>
-                        <div class="flex-1 w-full bg-primary/10 rounded-xl p-3 border border-primary/20 flex flex-col items-center justify-center min-h-[68px]">
-                            <span class="text-xs font-bold text-primary uppercase mb-1">Target IPS Semester Ini</span>
-                            <span id="target-ips-result" class="font-headline-md text-primary font-bold">-</span>
-                        </div>
-                    </div>
-                    <p id="target-ipk-msg" class="text-xs text-secondary mt-3 hidden"></p>
-                </div>
-
                 <div id="calc-course-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Injected -->
                 </div>
@@ -442,73 +416,6 @@ window.CalculatorView = {
                         <span class="font-headline-lg text-secondary">${jatahSks}</span>
                     </div>
                 `;
-                
-                // --- Target IPK Simulator Logic ---
-                const targetPanel = document.getElementById('calc-target-ipk-panel');
-                if (targetPanel) {
-                    targetPanel.classList.remove('hidden');
-                    const targetInput = document.getElementById('input-target-ipk');
-                    
-                    // Remove old listener if exists
-                    const newTargetInput = targetInput.cloneNode(true);
-                    targetInput.replaceWith(newTargetInput);
-                    
-                    newTargetInput.addEventListener('input', () => {
-                        const targetIpk = parseFloat(newTargetInput.value);
-                        const resEl = document.getElementById('target-ips-result');
-                        const msgEl = document.getElementById('target-ipk-msg');
-                        
-                        if(isNaN(targetIpk) || targetIpk <= 0 || targetIpk > 4) {
-                            resEl.innerText = '-';
-                            msgEl.classList.add('hidden');
-                            return;
-                        }
-
-                        // Get all completely historical semesters (excluding the active one if any)
-                        let pastSks = 0;
-                        let pastMutu = 0;
-                        
-                        window.appStore.data.semesters.forEach(sem => {
-                            if (sem.name === window.appStore.data.activeKrsSemesterName) return; 
-                            
-                            sem.courses.forEach(crs => {
-                                const gradeInfo = window.AcademicLogic.getGradeInfoFromLetter(crs.grade);
-                                if (gradeInfo) {
-                                    pastSks += parseInt(crs.sks);
-                                    pastMutu += (gradeInfo.gpa * parseInt(crs.sks));
-                                }
-                            });
-                        });
-                        
-                        const activeSemSks = allActiveCourses.reduce((sum, c) => sum + parseInt(c.sks), 0);
-                        
-                        if (activeSemSks === 0) {
-                            resEl.innerText = '-';
-                            msgEl.innerText = "Anda belum merencanakan KRS semester ini.";
-                            msgEl.className = "text-xs mt-3 text-secondary";
-                            return;
-                        }
-                        
-                        const targetTotalMutu = targetIpk * (pastSks + activeSemSks);
-                        const requiredMutu = targetTotalMutu - pastMutu;
-                        const requiredIps = requiredMutu / activeSemSks;
-                        
-                        msgEl.classList.remove('hidden');
-                        if (requiredIps > 4.00) {
-                            resEl.innerText = "Mustahil";
-                            msgEl.innerText = `Target IPS yang dibutuhkan (${requiredIps.toFixed(2)}) melebihi batas maksimal 4.00.`;
-                            msgEl.className = "text-xs mt-3 text-danger-red";
-                        } else if (requiredIps <= 0) {
-                            resEl.innerText = "0.00";
-                            msgEl.innerText = `Anda sudah aman! Bahkan dengan IPS 0.00 Anda tetap mencapai target IPK tersebut.`;
-                            msgEl.className = "text-xs mt-3 text-success-green";
-                        } else {
-                            resEl.innerText = requiredIps.toFixed(2);
-                            msgEl.innerText = `Anda harus meraih minimal IPS ${requiredIps.toFixed(2)} pada semester ini (total ${activeSemSks} SKS).`;
-                            msgEl.className = "text-xs mt-3 text-primary";
-                        }
-                    });
-                }
             }
             
             const listEl = document.getElementById('calc-course-list');

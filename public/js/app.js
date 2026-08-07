@@ -9,6 +9,7 @@ class App {
         this.views = {
             'dashboard': window.DashboardView,
             'calculator': window.CalculatorView,
+            'targetipk': window.TargetIpkView,
             'semester': window.SemesterView,
             'transcript': window.TranscriptView,
             'tasks': window.TasksView,
