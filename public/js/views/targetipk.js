@@ -47,10 +47,10 @@ window.TargetIpkView = {
                     Bagaimana ini dihitung?
                 </h4>
                 <p class="text-secondary text-sm leading-relaxed mb-3">
-                    Sistem akan mengambil seluruh total <span class="font-bold">SKS Riwayat</span> Anda dan menambahkannya dengan <span class="font-bold">SKS Semester Aktif</span> (yang sedang Anda simulasikan di menu Kalkulator Matkul).
+                    Sistem akan mengambil seluruh total <span class="font-bold">SKS Riwayat</span> Anda dari Dashboard.
                 </p>
                 <p class="text-secondary text-sm leading-relaxed">
-                    Sisa SKS menuju kelulusan akan dihitung berdasarkan (Total SKS Syarat - SKS Riwayat - SKS Aktif). Nilai yang muncul adalah <span class="font-bold font-italic">rincian kombinasi nilai huruf</span> yang wajib Anda dapatkan pada sisa SKS tersebut!
+                    Sisa SKS menuju kelulusan akan dihitung berdasarkan (Total SKS Syarat - SKS Riwayat). Nilai yang muncul adalah <span class="font-bold font-italic">rincian kombinasi nilai huruf</span> yang wajib Anda dapatkan pada sisa SKS tersebut!
                 </p>
             </div>
             
@@ -76,40 +76,8 @@ window.TargetIpkView = {
         const newTargetInput = targetInput.cloneNode(true);
         targetInput.replaceWith(newTargetInput);
         
-        // State parsing for Active Semester (from KRS Fixed Drafts)
-        const krsFixed = window.appStore.data.krsFixed || [];
-        const accumulatedKrsFixed = krsFixed.map(crs => {
-            const isFinalized = crs.tugasDone && crs.utsDone && crs.uasDone;
-            return {
-                ...crs,
-                grade: isFinalized ? crs.grade : 'E'
-            };
-        });
-        
-        let activeSemCourses = [];
-        let otherSemesters = window.appStore.data.semesters || [];
-        
-        if (window.appStore.data.activeKrsSemesterName) {
-            const activeSem = otherSemesters.find(s => s.name === window.appStore.data.activeKrsSemesterName);
-            if (activeSem && activeSem.courses) {
-                activeSemCourses = activeSem.courses;
-            }
-            // Filter out the active semester from otherSemesters because we'll combine it manually
-            otherSemesters = otherSemesters.filter(s => s.name !== window.appStore.data.activeKrsSemesterName);
-        }
-
-        const allActiveCourses = [...activeSemCourses, ...accumulatedKrsFixed];
-        
-        // Build mock semesters list to use centralized AcademicLogic (matches Dashboard)
-        const mockSemesters = [...otherSemesters];
-        if (allActiveCourses.length > 0) {
-            mockSemesters.push({
-                name: window.appStore.data.activeKrsSemesterName || 'Current Active',
-                courses: allActiveCourses
-            });
-        }
-        
-        const ipkData = window.AcademicLogic.calculateIPKAndSKS(mockSemesters);
+        // Use pure historical semesters from Dashboard
+        const ipkData = window.AcademicLogic.calculateIPKAndSKS(window.appStore.data.semesters);
         let totalCurrentSks = ipkData.totalSKSPassed;
         let totalCurrentMutu = 0;
         
