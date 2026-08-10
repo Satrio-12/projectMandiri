@@ -69,7 +69,7 @@ window.DashboardView = {
                     </div>
                 </div>
                 <div class="mt-6">
-                    <button onclick="window.app.navigate('krs')" class="w-full py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors shadow-sm">Rencanakan KRS</button>
+                    <button onclick="window.app.navigate('krs-draft')" class="w-full py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors shadow-sm">Rencanakan KRS</button>
                 </div>
             </div>
 

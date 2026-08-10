@@ -16,7 +16,8 @@ class App {
             'krs-draft': window.KrsDraftView,
             'krs-fixed': window.KrsFixedView,
             'timetable': window.TimetableView,
-            'statistics': window.StatisticsView
+            'statistics': window.StatisticsView,
+            'khs': window.KhsView
         };
         
         this.init();

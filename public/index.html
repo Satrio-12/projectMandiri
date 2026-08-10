@@ -117,10 +117,24 @@
                 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                 <span class="font-label-md text-label-md">Dashboard</span>
             </a>
-            <a data-view="semester" class="nav-link flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low hover:text-primary rounded-lg font-bold transition-all duration-200" href="#semester">
-                <span class="material-symbols-outlined">auto_stories</span>
-                Manajemen Semester
-            </a>
+            <!-- Akademik Dropdown -->
+            <div class="relative">
+                <button onclick="document.getElementById('akademik-submenu').classList.toggle('hidden'); document.getElementById('akademik-chevron').classList.toggle('rotate-180')" class="w-full flex items-center justify-between px-4 py-3 text-secondary hover:bg-surface-container-low hover:text-primary rounded-lg font-bold transition-all duration-200">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined">auto_stories</span>
+                        <span class="font-label-md text-label-md">Akademik</span>
+                    </div>
+                    <span class="material-symbols-outlined text-sm transition-transform duration-200" id="akademik-chevron">expand_more</span>
+                </button>
+                <div id="akademik-submenu" class="hidden flex-col pl-11 pr-4 py-2 space-y-1 bg-surface-container-lowest/50 rounded-b-lg">
+                    <a data-view="semester" class="nav-link block px-3 py-2 text-sm text-secondary hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors" href="#semester">
+                        Manajemen Semester
+                    </a>
+                    <a data-view="khs" class="nav-link block px-3 py-2 text-sm text-secondary hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors" href="#khs">
+                        Kartu Hasil Studi
+                    </a>
+                </div>
+            </div>
             <!-- KRS Dropdown -->
             <div class="relative">
                 <button onclick="document.getElementById('krs-submenu').classList.toggle('hidden'); document.getElementById('krs-chevron').classList.toggle('rotate-180')" class="w-full flex items-center justify-between px-4 py-3 text-secondary hover:bg-surface-container-low hover:text-primary rounded-lg font-bold transition-all duration-200">
@@ -322,6 +336,7 @@
     <script src="js/views/krs-draft.js"></script>
     <script src="js/views/krs-fixed.js"></script>
     <script src="js/views/timetable.js"></script>
+    <script src="js/views/khs.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
