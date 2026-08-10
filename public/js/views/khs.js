@@ -78,13 +78,17 @@ window.KhsView = {
         let optionsHtml = '';
         
         // Add all historical semesters
+        let hasData = false;
         data.semesters.forEach(sem => {
             optionsHtml += `<option value="${sem.id}">${sem.name}</option>`;
+            if (sem.courses && sem.courses.length > 0) {
+                hasData = true;
+            }
         });
 
-        // Add Active Semester if not empty
-        if (data.krsFixed && data.krsFixed.length > 0) {
-            optionsHtml += `<option value="active">Semester Berjalan (KRS Fix)</option>`;
+        // Add Active Semester alias
+        if (hasData) {
+            optionsHtml += `<option value="active">Semester Berjalan</option>`;
         }
 
         if (optionsHtml === '') {
@@ -122,7 +126,8 @@ window.KhsView = {
         let courses = [];
         
         if (val === 'active') {
-            courses = data.krsFixed || [];
+            const activeSem = [...data.semesters].reverse().find(s => s.courses && s.courses.length > 0);
+            courses = activeSem ? (activeSem.courses || []) : [];
         } else {
             const sem = data.semesters.find(s => s.id === val);
             if (sem) courses = sem.courses || [];
@@ -146,7 +151,6 @@ window.KhsView = {
             
             // Default logic if it's active semester or un-graded
             let grade = crs.grade || '-';
-            if (val === 'active') grade = '-'; // Active semester has not received final grades yet
             
             let nilaiMutu = '-';
             let bobot = '-';
