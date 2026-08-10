@@ -161,7 +161,7 @@ window.KhsView = {
                     nilaiMutuNum = gradeInfo.gpa;
                     nilaiMutu = nilaiMutuNum.toFixed(2);
                     bobotNum = sksNum * nilaiMutuNum;
-                    bobot = bobotNum;
+                    bobot = parseFloat(bobotNum.toFixed(2));
                     totalBobot += bobotNum;
                 }
             }
@@ -195,7 +195,7 @@ window.KhsView = {
                 <td colspan="3" class="py-4 px-4 font-bold text-on-surface">Total SKS</td>
                 <td class="py-4 px-4 text-center font-bold text-on-surface">${totalSks}</td>
                 <td class="py-4 px-4"></td>
-                <td class="py-4 px-4 text-center font-bold text-on-surface">${totalBobot.toFixed(0) === '0' && totalBobot !== 0 ? totalBobot.toFixed(2) : totalBobot}</td>
+                <td class="py-4 px-4 text-center font-bold text-on-surface">${totalBobot === 0 ? '0' : parseFloat(totalBobot.toFixed(2))}</td>
                 <td class="py-4 px-4"></td>
             </tr>
             <tr class="text-[13px] border-t border-surface-border">
