@@ -382,12 +382,15 @@ window.DashboardView = {
             const ipsData = [];
             const sksData = [];
             
-            for (let i = 0; i < data.semesters.length; i++) {
-                const sem = data.semesters[i];
+            // Filter semesters that have courses
+            const chartSemesters = data.semesters.filter(s => s.courses && s.courses.length > 0);
+            
+            for (let i = 0; i < chartSemesters.length; i++) {
+                const sem = chartSemesters[i];
                 labels.push(sem.name || `Sem ${i+1}`);
                 
                 // IPK
-                const historicalSlice = data.semesters.slice(0, i + 1);
+                const historicalSlice = chartSemesters.slice(0, i + 1);
                 ipkData.push(window.AcademicLogic.calculateIPKAndSKS(historicalSlice).ipk);
                 
                 // IPS
