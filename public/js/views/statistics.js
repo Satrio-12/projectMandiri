@@ -51,13 +51,29 @@ window.StatisticsView = {
                             <h4 class="font-headline-md text-on-surface">Beban SKS</h4>
                             <p class="text-sm text-text-muted">Jumlah SKS yang diambil per semester.</p>
                         </div>
-                        <div class="w-10 h-10 rounded-full bg-success-green/10 text-success-green flex items-center justify-center">
-                            <span class="material-symbols-outlined">library_books</span>
+                        <div class="w-10 h-10 rounded-full bg-secondary-container/30 text-secondary flex items-center justify-center">
+                            <span class="material-symbols-outlined">stacked_bar_chart</span>
                         </div>
                     </div>
                     <div class="h-64 w-full relative">
                         <canvas id="chart-sks"></canvas>
                     </div>
+                </div>
+            </div>
+
+            <!-- Radar Skill Chart (Full Width) -->
+            <div id="container-chart-radar" class="bg-surface-container-lowest border border-surface-border rounded-2xl shadow-sm p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h4 class="font-headline-md text-on-surface">Peta Keahlian (Skill Radar)</h4>
+                        <p class="text-sm text-text-muted">Distribusi nilai rata-rata berdasarkan kategori mata kuliah yang telah diselesaikan.</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-warning-amber/10 text-warning-amber flex items-center justify-center">
+                        <span class="material-symbols-outlined">radar</span>
+                    </div>
+                </div>
+                <div class="h-[400px] w-full relative flex justify-center">
+                    <canvas id="chart-radar"></canvas>
                 </div>
             </div>
             
@@ -242,6 +258,107 @@ window.StatisticsView = {
                 }
             });
             this.charts.push(chartSks);
+        }
+
+        // --- Render Radar Skill Chart ---
+        const ctxRadar = document.getElementById('chart-radar');
+        if (ctxRadar) {
+            // Heuristic Parsing Logic
+            const skillCategories = {
+                'Logika & Pemrograman': { keywords: ['algoritma', 'pemrograman', 'web', 'data', 'sistem', 'kecerdasan', 'software', 'logika', 'ai'], totalMutu: 0, count: 0 },
+                'Matematika & Analisis': { keywords: ['kalkulus', 'aljabar', 'matematika', 'diskrit', 'statistika', 'numerik'], totalMutu: 0, count: 0 },
+                'Jaringan & Hardware': { keywords: ['sirkuit', 'elektronik', 'jaringan', 'hardware', 'komputer', 'keamanan', 'arsitektur'], totalMutu: 0, count: 0 },
+                'Desain & Interaksi': { keywords: ['desain', 'interaksi', 'ui', 'ux', 'grafika', 'multimedia', 'animasi'], totalMutu: 0, count: 0 },
+                'Soft Skill & Umum': { keywords: ['agama', 'pancasila', 'bahasa', 'kewarganegaraan', 'etika', 'manajemen', 'komunikasi'], totalMutu: 0, count: 0 },
+                'Lain-Lain': { keywords: [], totalMutu: 0, count: 0 }
+            };
+
+            semesters.forEach(sem => {
+                if (sem.courses) {
+                    sem.courses.forEach(crs => {
+                        if (!crs.grade || crs.grade === '-') return;
+                        const gradeInfo = window.AcademicLogic.getGradeInfoFromLetter(crs.grade);
+                        if (!gradeInfo) return;
+
+                        const nameLower = crs.name.toLowerCase();
+                        let categorized = false;
+
+                        for (const [catName, catData] of Object.entries(skillCategories)) {
+                            if (catName === 'Lain-Lain') continue;
+                            if (catData.keywords.some(kw => nameLower.includes(kw))) {
+                                catData.totalMutu += gradeInfo.gpa;
+                                catData.count++;
+                                categorized = true;
+                                break;
+                            }
+                        }
+
+                        if (!categorized) {
+                            skillCategories['Lain-Lain'].totalMutu += gradeInfo.gpa;
+                            skillCategories['Lain-Lain'].count++;
+                        }
+                    });
+                }
+            });
+
+            // Extract labels and data
+            const radarLabels = [];
+            const radarData = [];
+            
+            for (const [catName, catData] of Object.entries(skillCategories)) {
+                if (catName !== 'Lain-Lain' || catData.count > 0) { // Only show 'Lain-Lain' if it has data, but always show the others to maintain the pentagon shape
+                    radarLabels.push(catName);
+                    const avg = catData.count > 0 ? (catData.totalMutu / catData.count).toFixed(2) : 0;
+                    radarData.push(parseFloat(avg));
+                }
+            }
+
+            const chartRadar = new Chart(ctxRadar.getContext('2d'), {
+                type: 'radar',
+                data: {
+                    labels: radarLabels,
+                    datasets: [{
+                        label: 'Nilai Rata-Rata',
+                        data: radarData,
+                        backgroundColor: 'rgba(125, 82, 96, 0.2)', // warning-amberish (tertiary)
+                        borderColor: '#7D5260', // tertiary-container or a distinct color
+                        pointBackgroundColor: '#7D5260',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#7D5260',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 4.0,
+                            ticks: {
+                                stepSize: 1,
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' Rata-rata IP: ' + context.parsed.r.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            this.charts.push(chartRadar);
         }
     }
 };
