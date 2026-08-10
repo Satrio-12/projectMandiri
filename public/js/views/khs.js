@@ -125,15 +125,7 @@ window.KhsView = {
             courses = data.krsFixed || [];
         } else {
             const sem = data.semesters.find(s => s.id === val);
-            if (sem) {
-                // If the selected semester matches the currently active KRS semester,
-                // pull the live data from krsFixed instead of the empty semester history.
-                if (sem.name === data.activeKrsSemesterName && data.krsFixed && data.krsFixed.length > 0) {
-                    courses = data.krsFixed;
-                } else {
-                    courses = sem.courses || [];
-                }
-            }
+            if (sem) courses = sem.courses || [];
         }
 
         if (courses.length === 0) {
@@ -154,10 +146,12 @@ window.KhsView = {
             
             // Default logic if it's active semester or un-graded
             let grade = crs.grade || '-';
+            if (val === 'active') grade = '-'; // Active semester has not received final grades yet
+            
             let nilaiMutu = '-';
             let bobot = '-';
             
-            if (grade !== '-') {
+            if (grade !== '-' && !crs.isRetaken) {
                 const gradeInfo = window.AcademicLogic.getGradeInfoFromLetter(grade);
                 if (gradeInfo) {
                     nilaiMutuNum = gradeInfo.gpa;
@@ -168,11 +162,24 @@ window.KhsView = {
                 }
             }
 
+            let retakeHtml = '';
+            if (crs.isRetaken) {
+                retakeHtml = '<br><span class="inline-block mt-1 px-2 py-0.5 bg-warning-amber/10 text-warning-amber text-[10px] font-bold rounded-full border border-warning-amber/20">MENGULANG (DIGANTIKAN)</span>';
+                // Remove from total SKS
+                totalSks -= sksNum;
+                grade = '-';
+                nilaiMutu = '-';
+                bobot = '-';
+            }
+
             return `
-                <tr class="border-b border-surface-border/50 hover:bg-surface-container-lowest transition-colors text-[13px]">
+                <tr class="border-b border-surface-border/50 hover:bg-surface-container-lowest transition-colors text-[13px] ${crs.isRetaken ? 'opacity-50' : ''}">
                     <td class="py-3 px-4 text-center text-secondary">${idx + 1}</td>
                     <td class="py-3 px-4 font-bold text-secondary">${crs.code}</td>
-                    <td class="py-3 px-4 text-on-surface">${crs.name}</td>
+                    <td class="py-3 px-4 text-on-surface">
+                        <span class="${crs.isRetaken ? 'line-through text-outline' : ''}">${crs.name}</span>
+                        ${retakeHtml}
+                    </td>
                     <td class="py-3 px-4 text-center font-bold">${sksNum}</td>
                     <td class="py-3 px-4 text-center text-secondary">${nilaiMutu}</td>
                     <td class="py-3 px-4 text-center text-secondary">${bobot}</td>
