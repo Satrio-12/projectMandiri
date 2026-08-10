@@ -77,14 +77,17 @@ window.KhsView = {
         const data = window.appStore.data;
         let optionsHtml = '';
         
-        // Add all historical semesters
+        // Add historical semesters that have courses
         data.semesters.forEach(sem => {
-            optionsHtml += `<option value="${sem.id}">${sem.name}</option>`;
+            if (sem.courses && sem.courses.length > 0) {
+                optionsHtml += `<option value="${sem.id}">${sem.name}</option>`;
+            }
         });
 
         // Add Active Semester if not empty
         if (data.krsFixed && data.krsFixed.length > 0) {
-            optionsHtml += `<option value="active">Semester Berjalan (KRS Fix)</option>`;
+            const activeName = data.activeKrsSemesterName || 'Semester Berjalan';
+            optionsHtml += `<option value="active">${activeName} (KRS Fix)</option>`;
         }
 
         if (optionsHtml === '') {
