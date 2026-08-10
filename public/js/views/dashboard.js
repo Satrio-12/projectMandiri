@@ -43,7 +43,7 @@ window.DashboardView = {
             </div>
 
             <!-- KPI Card: IPS (Semester Terakhir) -->
-            <div onclick="window.app.navigate('semester'); setTimeout(() => { const num = document.getElementById('dash-ips-sem-num').innerText; const el = document.getElementById('semester-block-' + num); if(el) { el.scrollIntoView({behavior: 'smooth', block: 'start'}); el.classList.add('ring-4', 'ring-primary/50'); setTimeout(() => el.classList.remove('ring-4', 'ring-primary/50'), 2000); } }, 100);" class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative overflow-hidden group cursor-pointer hover:border-primary/50 hover:shadow-md transition-all">
+            <div onclick="window.app.navigate('semester').then(() => { const num = document.getElementById('dash-ips-sem-num').innerText; const el = document.getElementById('semester-block-' + num); if(el) { el.scrollIntoView({behavior: 'smooth', block: 'start'}); el.classList.add('ring-4', 'ring-primary/50'); setTimeout(() => el.classList.remove('ring-4', 'ring-primary/50'), 2000); } });" class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative overflow-hidden group cursor-pointer hover:border-primary/50 hover:shadow-md transition-all">
                 <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity group-hover:scale-110">
                     <span class="material-symbols-outlined text-[80px]" data-icon="show_chart">show_chart</span>
                 </div>
