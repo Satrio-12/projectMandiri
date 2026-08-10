@@ -77,17 +77,14 @@ window.KhsView = {
         const data = window.appStore.data;
         let optionsHtml = '';
         
-        // Add historical semesters that have courses
+        // Add all historical semesters
         data.semesters.forEach(sem => {
-            if (sem.courses && sem.courses.length > 0) {
-                optionsHtml += `<option value="${sem.id}">${sem.name}</option>`;
-            }
+            optionsHtml += `<option value="${sem.id}">${sem.name}</option>`;
         });
 
         // Add Active Semester if not empty
         if (data.krsFixed && data.krsFixed.length > 0) {
-            const activeName = data.activeKrsSemesterName || 'Semester Berjalan';
-            optionsHtml += `<option value="active">${activeName} (KRS Fix)</option>`;
+            optionsHtml += `<option value="active">Semester Berjalan (KRS Fix)</option>`;
         }
 
         if (optionsHtml === '') {
@@ -128,7 +125,15 @@ window.KhsView = {
             courses = data.krsFixed || [];
         } else {
             const sem = data.semesters.find(s => s.id === val);
-            if (sem) courses = sem.courses || [];
+            if (sem) {
+                // If the selected semester matches the currently active KRS semester,
+                // pull the live data from krsFixed instead of the empty semester history.
+                if (sem.name === data.activeKrsSemesterName && data.krsFixed && data.krsFixed.length > 0) {
+                    courses = data.krsFixed;
+                } else {
+                    courses = sem.courses || [];
+                }
+            }
         }
 
         if (courses.length === 0) {
