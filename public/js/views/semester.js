@@ -200,7 +200,7 @@ window.SemesterView = {
                 }
 
                 return `
-                <div class="bg-surface-container-lowest border border-surface-border rounded-2xl shadow-sm overflow-hidden">
+                <div id="semester-block-${sem.name.replace(/[^0-9]/g, '') || (index + 1)}" class="bg-surface-container-lowest border border-surface-border rounded-2xl shadow-sm overflow-hidden scroll-mt-24 transition-all duration-1000">
                     <!-- Custom Header Layout -->
                     <div class="p-6 border-b border-surface-border flex flex-col xl:flex-row xl:items-center justify-between gap-4">
                         <div class="flex flex-wrap items-center gap-3 md:gap-6">

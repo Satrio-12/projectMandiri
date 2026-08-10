@@ -43,11 +43,11 @@ window.DashboardView = {
             </div>
 
             <!-- KPI Card: IPS (Semester Terakhir) -->
-            <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <div onclick="window.app.navigate('semester'); setTimeout(() => { const num = document.getElementById('dash-ips-sem-num').innerText; const el = document.getElementById('semester-block-' + num); if(el) { el.scrollIntoView({behavior: 'smooth', block: 'start'}); el.classList.add('ring-4', 'ring-primary/50'); setTimeout(() => el.classList.remove('ring-4', 'ring-primary/50'), 2000); } }, 100);" class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative overflow-hidden group cursor-pointer hover:border-primary/50 hover:shadow-md transition-all">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity group-hover:scale-110">
                     <span class="material-symbols-outlined text-[80px]" data-icon="show_chart">show_chart</span>
                 </div>
-                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2">IPS Semester <span id="dash-ips-sem-num"></span></p>
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2 flex items-center gap-1 group-hover:text-primary transition-colors">IPS Semester <span id="dash-ips-sem-num"></span> <span class="material-symbols-outlined text-[14px]">open_in_new</span></p>
                 <div class="flex items-baseline gap-2">
                     <h4 class="font-headline-xl text-[48px] text-primary" id="dash-ips">0.00</h4>
                 </div>
