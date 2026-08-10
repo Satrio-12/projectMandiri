@@ -155,7 +155,7 @@ window.KhsView = {
             let nilaiMutu = '-';
             let bobot = '-';
             
-            if (grade !== '-' && !crs.isRetaken) {
+            if (grade !== '-') {
                 const gradeInfo = window.AcademicLogic.getGradeInfoFromLetter(grade);
                 if (gradeInfo) {
                     nilaiMutuNum = gradeInfo.gpa;
@@ -169,11 +169,6 @@ window.KhsView = {
             let retakeHtml = '';
             if (crs.isRetaken) {
                 retakeHtml = '<br><span class="inline-block mt-1 px-2 py-0.5 bg-warning-amber/10 text-warning-amber text-[10px] font-bold rounded-full border border-warning-amber/20">MENGULANG (DIGANTIKAN)</span>';
-                // Remove from total SKS
-                totalSks -= sksNum;
-                grade = '-';
-                nilaiMutu = '-';
-                bobot = '-';
             }
 
             return `
