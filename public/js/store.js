@@ -175,6 +175,14 @@ class Store {
         this.saveLocal();
     }
 
+    updateKrsCourse(id, updatedData) {
+        const index = this.data.krsPlan.findIndex(c => c.id === id);
+        if (index !== -1) {
+            this.data.krsPlan[index] = { ...this.data.krsPlan[index], ...updatedData };
+            this.saveLocal();
+        }
+    }
+
     clearKrsPlan() {
         this.data.krsPlan = [];
         this.data.krsExtraSks = 0;

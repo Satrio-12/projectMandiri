@@ -267,6 +267,9 @@ window.KrsDraftView = {
                         <td class="py-4 px-6 text-sm text-secondary">${scheduleText}</td>
                         <td class="py-4 px-6 text-center font-bold text-secondary">${crs.sks}</td>
                         <td class="py-4 px-6 text-right">
+                            <button onclick="window.KrsDraftView.editCourse('${crs.id}')" class="text-outline hover:text-primary hover:bg-primary-container p-2 rounded-lg transition-colors mr-1">
+                                <span class="material-symbols-outlined text-[20px]">edit</span>
+                            </button>
                             <button onclick="window.KrsDraftView.deleteCourse('${crs.id}')" class="text-outline hover:text-danger-red hover:bg-error-container p-2 rounded-lg transition-colors">
                                 <span class="material-symbols-outlined text-[20px]">delete</span>
                             </button>
@@ -277,7 +280,24 @@ window.KrsDraftView = {
         }
     },
 
+    editCourseId: null,
+
+    editCourse: function(id) {
+        const course = window.appStore.data.krsPlan.find(c => c.id === id);
+        if (course) {
+            this.editCourseId = id;
+            document.getElementById('input-krs-code').value = course.code;
+            document.getElementById('input-krs-name').value = course.name;
+            document.getElementById('input-krs-sks').value = course.sks;
+            document.getElementById('input-krs-day').value = course.day || '';
+            document.getElementById('input-krs-start').value = course.timeStart || '';
+            document.getElementById('input-krs-end').value = course.timeEnd || '';
+            document.getElementById('modal-krs-course').classList.remove('hidden');
+        }
+    },
+
     openCourseModal: function() {
+        this.editCourseId = null;
         document.getElementById('input-krs-code').value = '';
         document.getElementById('input-krs-name').value = '';
         document.getElementById('input-krs-sks').value = '3';
@@ -291,10 +311,11 @@ window.KrsDraftView = {
         document.getElementById('modal-krs-course').classList.add('hidden');
     },
 
-    handleCourseCodeInput: function(input) {
-        let val = input.value.toUpperCase().replace(/\s/g, '');
-        if (val.length > 2) val = val.substring(0, 2) + ' ' + val.substring(2);
-        input.value = val;
+    handleCourseCodeInput: function(inputEl) {
+        const start = inputEl.selectionStart;
+        const end = inputEl.selectionEnd;
+        inputEl.value = inputEl.value.toUpperCase();
+        inputEl.setSelectionRange(start, end);
     },
 
     saveCourse: function() {
@@ -316,7 +337,12 @@ window.KrsDraftView = {
             }
             limit += (window.appStore.data.krsExtraSks || 0);
             
-            const totalSksTaken = krsPlan.reduce((sum, c) => sum + parseInt(c.sks), 0);
+            const isEditing = !!this.editCourseId;
+            const originalCourse = isEditing ? krsPlan.find(c => c.id === this.editCourseId) : null;
+            const originalSks = originalCourse ? parseInt(originalCourse.sks) : 0;
+            
+            let totalSksTaken = krsPlan.reduce((sum, c) => sum + parseInt(c.sks), 0);
+            if (isEditing) totalSksTaken -= originalSks;
             const addedSks = parseInt(sks);
             
             if (totalSksTaken + addedSks > limit) {
@@ -324,9 +350,14 @@ window.KrsDraftView = {
                 return;
             }
 
-            window.appStore.addKrsCourse({ code, name, sks, day, timeStart, timeEnd });
+            if (isEditing) {
+                window.appStore.updateKrsCourse(this.editCourseId, { code, name, sks, day, timeStart, timeEnd });
+                window.app.showToast('Mata kuliah berhasil diperbarui');
+            } else {
+                window.appStore.addKrsCourse({ code, name, sks, day, timeStart, timeEnd });
+                window.app.showToast('Mata kuliah ditambahkan ke draf KRS');
+            }
             window.KrsDraftView.closeCourseModal();
-            window.app.showToast('Mata kuliah ditambahkan ke draf KRS');
         } else {
             window.app.showAlert("Kode dan Nama mata kuliah harus diisi");
         }
