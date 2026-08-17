@@ -321,7 +321,7 @@ window.DashboardView = {
                 
                 sem.courses.forEach(crs => {
                     const gradeInfo = window.AcademicLogic.getGradeInfoFromLetter(crs.grade);
-                    if (gradeInfo && gradeInfo.passed && !crs.isRetaken) {
+                    if (gradeInfo && gradeInfo.gpa >= 2.00 && !crs.isRetaken) {
                         if (isOdd) sksGanjil += crs.sks;
                         else sksGenap += crs.sks;
                     }
