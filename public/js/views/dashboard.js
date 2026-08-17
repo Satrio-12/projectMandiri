@@ -158,6 +158,26 @@ window.DashboardView = {
                 </div>
             </div>
         </div>
+
+        <!-- Grade Distribution Modal -->
+        <div id="dash-grade-modal" class="fixed inset-0 z-[100] hidden bg-inverse-surface/50 backdrop-blur-sm flex items-center justify-center">
+            <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-lg border border-surface-border overflow-hidden">
+                <div class="flex justify-between items-center px-6 py-4 border-b border-surface-border">
+                    <h4 class="font-headline-md text-on-surface" id="dash-grade-modal-title">Daftar Mata Kuliah</h4>
+                    <button onclick="window.DashboardView.closeGradeModal()" class="text-secondary hover:bg-surface-container-high rounded-full p-1 transition-colors">
+                        <span class="material-symbols-outlined text-xl">close</span>
+                    </button>
+                </div>
+                <div class="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                    <div id="dash-grade-modal-list" class="space-y-3">
+                        <!-- List injected by JS -->
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t border-surface-border flex justify-end">
+                    <button onclick="window.DashboardView.closeGradeModal()" class="bg-primary text-white px-4 py-2 rounded-lg font-label-md hover:bg-primary-hover transition-colors">Tutup</button>
+                </div>
+            </div>
+        </div>
         `;
     },
 
@@ -273,18 +293,24 @@ window.DashboardView = {
             const grades = ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C'];
             distContainer.innerHTML = grades.map(g => {
                 const count = gradeCounts[g];
-                let colorClass = 'bg-surface-container text-secondary';
+                let colorClass = 'bg-surface-container text-secondary opacity-50';
+                let cursorClass = 'cursor-default';
+                let onclick = '';
+                
                 if (count > 0) {
+                    cursorClass = 'cursor-pointer hover:opacity-80';
+                    onclick = `onclick="window.DashboardView.openGradeModal('${g}')"`;
+                    
                     if (g.startsWith('A')) colorClass = 'bg-success-green text-white border-transparent';
                     else if (g.startsWith('B')) colorClass = 'bg-primary text-white border-transparent';
                     else if (g.startsWith('C')) colorClass = 'bg-tertiary text-on-tertiary border-transparent';
                 }
                 
                 return `
-                    <div class="flex flex-col items-center justify-center py-2 rounded-lg border border-surface-border ${colorClass} transition-all">
+                    <button ${onclick} class="flex flex-col items-center justify-center py-2 rounded-lg border border-surface-border ${colorClass} ${cursorClass} transition-all focus:outline-none">
                         <span class="font-headline-md font-bold">${g}</span>
                         <span class="font-label-sm text-[10px] uppercase opacity-90">${count} Matkul</span>
-                    </div>
+                    </button>
                 `;
             }).join('');
         }
@@ -461,5 +487,45 @@ window.DashboardView = {
             document.getElementById('dash-welcome').insertAdjacentHTML('afterend', '<pre class="text-danger-red text-[10px] break-words whitespace-pre-wrap max-w-full">' + err.stack + '</pre>');
             throw err; // throw it so app.js also catches it
         }
+    },
+
+    openGradeModal: function(grade) {
+        const data = window.appStore.data;
+        const courses = [];
+        data.semesters.forEach(sem => {
+            if (sem.courses) {
+                sem.courses.forEach(crs => {
+                    if (crs.grade === grade) {
+                        courses.push({
+                            ...crs,
+                            semName: sem.name
+                        });
+                    }
+                });
+            }
+        });
+        
+        document.getElementById('dash-grade-modal-title').innerText = `Mata Kuliah dengan Nilai ${grade}`;
+        
+        const listContainer = document.getElementById('dash-grade-modal-list');
+        if (courses.length === 0) {
+            listContainer.innerHTML = `<p class="text-secondary text-center italic">Tidak ada mata kuliah</p>`;
+        } else {
+            listContainer.innerHTML = courses.map(c => `
+                <div class="flex justify-between items-center p-3 bg-surface-container-low rounded-lg border border-surface-border">
+                    <div class="flex flex-col">
+                        <span class="font-bold text-on-surface text-sm">${c.name}</span>
+                        <span class="text-xs text-secondary">${c.code} &bull; ${c.semName}</span>
+                    </div>
+                    <span class="font-bold text-primary bg-primary/10 px-2 py-1 rounded text-sm">${c.sks} SKS</span>
+                </div>
+            `).join('');
+        }
+        
+        document.getElementById('dash-grade-modal').classList.remove('hidden');
+    },
+    
+    closeGradeModal: function() {
+        document.getElementById('dash-grade-modal').classList.add('hidden');
     }
 };
