@@ -106,7 +106,6 @@ window.DashboardView = {
                     </div>
                 </div>
             </div>
-        </div>
 
         <!-- Mini Charts (IPK, IPS, SKS) -->
             <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
