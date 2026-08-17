@@ -85,7 +85,36 @@ window.DashboardView = {
                 </div>
             </div>
 
-            <!-- Mini Charts (IPK, IPS, SKS) -->
+            <!-- KPI Card: SKS Ganjil -->
+            <div class="col-span-12 md:col-span-6 lg:col-span-6 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative">
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span> SKS Ganjil Ditempuh</p>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="font-headline-xl text-[48px] text-on-surface" id="dash-sks-ganjil">0</h4>
+                        <p class="font-body-sm text-body-sm text-text-muted">Total SKS lulus di semester ganjil</p>
+                    </div>
+                    <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-3xl">exposure_plus_1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Card: SKS Genap -->
+            <div class="col-span-12 md:col-span-6 lg:col-span-6 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative">
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary"></span> SKS Genap Ditempuh</p>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="font-headline-xl text-[48px] text-on-surface" id="dash-sks-genap">0</h4>
+                        <p class="font-body-sm text-body-sm text-text-muted">Total SKS lulus di semester genap</p>
+                    </div>
+                    <div class="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-secondary text-3xl">exposure_plus_2</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini Charts (IPK, IPS, SKS) -->
             <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border">
                 <div class="flex justify-between items-center mb-4">
                     <h5 class="font-headline-md text-headline-md text-text-main">Tren IPK</h5>
@@ -275,6 +304,33 @@ window.DashboardView = {
         document.getElementById('dash-sks-text').innerText = `${stats.totalSKSPassed} / ${target} SKS`;
         document.getElementById('dash-sks-bar').style.width = `${pct}%`;
         document.getElementById('dash-sks-pct').innerText = `${pct}% Terpenuhi (Lulus)`;
+        
+        // SKS Ganjil & Genap
+        let sksGanjil = 0;
+        let sksGenap = 0;
+        data.semesters.forEach(sem => {
+            if (sem.courses) {
+                // Parse semester number
+                const match = sem.name.match(/\d+/);
+                let isOdd = true; // default ganjil jika tidak ada angka
+                if (match) {
+                    isOdd = parseInt(match[0]) % 2 !== 0;
+                } else if (sem.name.toLowerCase().includes('genap')) {
+                    isOdd = false;
+                }
+                
+                sem.courses.forEach(crs => {
+                    const gradeInfo = window.AcademicLogic.getGradeInfoFromLetter(crs.grade);
+                    if (gradeInfo && gradeInfo.passed && !crs.isRetaken) {
+                        if (isOdd) sksGanjil += crs.sks;
+                        else sksGenap += crs.sks;
+                    }
+                });
+            }
+        });
+        
+        document.getElementById('dash-sks-ganjil').innerText = sksGanjil;
+        document.getElementById('dash-sks-genap').innerText = sksGenap;
         
         // Grade Distribution
         const gradeCounts = { 'A':0, 'A-':0, 'B+':0, 'B':0, 'B-':0, 'C+':0, 'C':0 };
