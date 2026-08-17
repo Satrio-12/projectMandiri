@@ -87,28 +87,22 @@ window.DashboardView = {
 
             <!-- KPI Card: SKS Ganjil -->
             <div class="col-span-12 md:col-span-6 lg:col-span-6 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative">
-                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span> SKS Ganjil Ditempuh</p>
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2">SKS Ganjil Ditempuh</p>
                 <div class="flex items-center justify-between">
                     <div>
                         <h4 class="font-headline-xl text-[48px] text-on-surface" id="dash-sks-ganjil">0</h4>
                         <p class="font-body-sm text-body-sm text-text-muted">Total SKS lulus di semester ganjil</p>
-                    </div>
-                    <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-primary text-3xl">exposure_plus_1</span>
                     </div>
                 </div>
             </div>
 
             <!-- KPI Card: SKS Genap -->
             <div class="col-span-12 md:col-span-6 lg:col-span-6 bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-border relative">
-                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary"></span> SKS Genap Ditempuh</p>
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-2">SKS Genap Ditempuh</p>
                 <div class="flex items-center justify-between">
                     <div>
                         <h4 class="font-headline-xl text-[48px] text-on-surface" id="dash-sks-genap">0</h4>
                         <p class="font-body-sm text-body-sm text-text-muted">Total SKS lulus di semester genap</p>
-                    </div>
-                    <div class="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-secondary text-3xl">exposure_plus_2</span>
                     </div>
                 </div>
             </div>
