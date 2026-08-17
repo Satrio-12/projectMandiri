@@ -267,12 +267,14 @@ window.KrsDraftView = {
                         <td class="py-4 px-6 text-sm text-secondary">${scheduleText}</td>
                         <td class="py-4 px-6 text-center font-bold text-secondary">${crs.sks}</td>
                         <td class="py-4 px-6 text-right">
-                            <button onclick="window.KrsDraftView.editCourse('${crs.id}')" class="text-outline hover:text-primary hover:bg-primary-container p-2 rounded-lg transition-colors mr-1">
-                                <span class="material-symbols-outlined text-[20px]">edit</span>
-                            </button>
-                            <button onclick="window.KrsDraftView.deleteCourse('${crs.id}')" class="text-outline hover:text-danger-red hover:bg-error-container p-2 rounded-lg transition-colors">
-                                <span class="material-symbols-outlined text-[20px]">delete</span>
-                            </button>
+                            <div class="flex justify-end gap-1">
+                                <button onclick="window.KrsDraftView.editCourse('${crs.id}')" class="text-outline hover:text-primary hover:bg-primary-container p-2 rounded-lg transition-colors">
+                                    <span class="material-symbols-outlined text-[20px]">edit</span>
+                                </button>
+                                <button onclick="window.KrsDraftView.deleteCourse('${crs.id}')" class="text-outline hover:text-danger-red hover:bg-error-container p-2 rounded-lg transition-colors">
+                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `}).join('');
