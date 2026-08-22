@@ -1,10 +1,10 @@
 window.FocusView = {
     title: 'Focus Mode',
     timerId: null,
-    timeLeft: 25 * 60, // Default 25 minutes
+    timeLeft: 25 * 60,
     totalTime: 25 * 60,
     isRunning: false,
-    currentMode: 'pomodoro', // 'pomodoro', 'shortBreak', 'longBreak'
+    currentMode: 'pomodoro',
 
     modes: {
         pomodoro: { time: 25 * 60, color: 'text-primary', label: 'Pomodoro (25m)' },
@@ -13,7 +13,7 @@ window.FocusView = {
     },
 
     render: function() {
-        return \
+        return `
         <div class="max-w-container-max mx-auto pb-12">
             <div class="mb-8">
                 <h3 class="font-headline-lg text-headline-lg text-primary mb-2">Focus Mode</h3>
@@ -56,7 +56,7 @@ window.FocusView = {
                 </div>
             </div>
         </div>
-        \;
+        `;
     },
 
     init: function(container) {
@@ -77,7 +77,6 @@ window.FocusView = {
         this.currentMode = mode;
         this.totalTime = this.modes[mode].time;
         
-        // Update styling buttons
         ['pomodoro', 'shortBreak', 'longBreak'].forEach(m => {
             const btn = document.getElementById('btn-mode-' + m);
             if (m === mode) {
@@ -87,12 +86,10 @@ window.FocusView = {
             }
         });
 
-        // Update progress circle color
         const progressCircle = document.getElementById('timer-progress');
         progressCircle.classList.remove('text-primary', 'text-success', 'text-info');
         progressCircle.classList.add(this.modes[mode].color);
 
-        // Update status text
         let statusText = 'Fokus Belajar';
         if (mode === 'shortBreak') statusText = 'Istirahat Singkat';
         if (mode === 'longBreak') statusText = 'Istirahat Panjang';
@@ -156,13 +153,11 @@ window.FocusView = {
     },
 
     updateDisplay: function() {
-        // Format time
         const minutes = Math.floor(this.timeLeft / 60);
         const seconds = this.timeLeft % 60;
         document.getElementById('timer-display').innerText = 
-            \\:\\;
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-        // Update circle (Dash array is 283 for r=45 -> 2*PI*45)
         const progressCircle = document.getElementById('timer-progress');
         const dashOffset = 283 - (this.timeLeft / this.totalTime) * 283;
         progressCircle.style.strokeDashoffset = dashOffset;
@@ -173,7 +168,6 @@ window.FocusView = {
         this.updateDisplay();
         window.app.showToast('Waktu Habis! Kerja bagus.', 'success');
         
-        // Optional flash animation
         const timerContainer = document.getElementById('timer-display').parentElement;
         timerContainer.classList.add('animate-pulse');
         setTimeout(() => timerContainer.classList.remove('animate-pulse'), 3000);
