@@ -54,6 +54,16 @@ window.FocusView = {
                         <span id="toggle-text">MULAI</span>
                     </button>
                 </div>
+                
+                <!-- Adjust Time Controls -->
+                <div class="flex gap-4 w-full justify-center mt-6">
+                    <button onclick="window.FocusView.adjustTime(-5)" class="px-4 py-2 bg-surface-container-low hover:bg-surface-container-high rounded-lg text-secondary font-bold text-sm transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[18px]">remove</span> 5 Min
+                    </button>
+                    <button onclick="window.FocusView.adjustTime(5)" class="px-4 py-2 bg-surface-container-low hover:bg-surface-container-high rounded-lg text-secondary font-bold text-sm transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[18px]">add</span> 5 Min
+                    </button>
+                </div>
             </div>
         </div>
         `;
@@ -150,6 +160,18 @@ window.FocusView = {
         
         const text = document.getElementById('toggle-text');
         text.innerText = 'MULAI';
+    },
+
+    adjustTime: function(minutes) {
+        const changeInSeconds = minutes * 60;
+        this.totalTime += changeInSeconds;
+        this.timeLeft += changeInSeconds;
+        
+        // Prevent negative time
+        if (this.totalTime < 60) this.totalTime = 60;
+        if (this.timeLeft < 0) this.timeLeft = 0;
+        
+        this.updateDisplay();
     },
 
     updateDisplay: function() {
